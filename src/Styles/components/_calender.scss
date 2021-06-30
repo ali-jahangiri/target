@@ -1,0 +1,106 @@
+.schedule {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    width: 96%;
+
+    &>.row {
+        width: 100%;
+        height: 100%;
+        padding: 1rem;
+        flex-direction: row-reverse;
+        align-items: center;
+    }
+
+    &__day {
+        flex: 0 0 16.666667%;
+        max-width: 14.266667%;
+        align-self: stretch;
+        text-align: center ;
+
+        &--today {
+            > div {
+                border: 2px solid $green;
+            }
+        }
+
+        &__container {
+            height: 90.5%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: .3s;
+            cursor: pointer;
+            font-weight: 600;
+            color: grey;
+            user-select: none;
+            p {
+                transition: .3s;
+                position: relative;
+            }
+            &:hover {   
+                p {
+
+                }
+                background-color: $green;
+            }
+            
+        }
+    }
+
+    &__dayOfWeek {
+        position: relative;
+        z-index: 5000;
+        &__item {
+            flex: 0 0 16.666667%;
+            max-width: 14.266667%;
+            text-align: center;
+            color: rgba(128, 128, 128, 0.39);
+            font-size: 1.1rem;
+        }
+    }
+}
+
+
+
+
+// .scheduleDayItem {
+//     display: flex;
+//     flex-direction: row-reverse;
+//     justify-content: space-between;
+//     align-items: center;
+//     position: relative;
+//     margin: 5rem 0;
+//     border-right: 4px solid transparent;
+//     padding-right: 1rem;
+
+//     &:hover &__index {
+//         right: -5%;
+
+//     }
+
+//     &__index {
+//         position: absolute;
+//         top: 0%;
+//         right: -6%;
+//         color: grey;
+//         font-size: 1.3rem;
+//         transition: 0.3s;
+//     }
+
+//     div {
+//         display: flex;
+//         flex-direction: row-reverse;
+//     }
+
+//     p {
+//         margin: 0;
+//     }
+
+//     button {
+//         border: 2px solid green;
+//         border-radius: 5px;
+//         background-color: transparent;
+//         padding: 0.2rem 1rem;
+//     }
+// }

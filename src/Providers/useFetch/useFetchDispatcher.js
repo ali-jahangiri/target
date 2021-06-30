@@ -2,11 +2,11 @@ import { useContext } from "react";
 import { FetchContext } from "./FetchProvider";
 
 const useFetchDispatcher = () => {
-  const { changeHandler } = useContext(FetchContext);
+  const { setFetcherOption } = useContext(FetchContext);
 
-  return {
-    changeHandler,
-  };
+  return function dispatch(data) {
+    setFetcherOption(data)
+  }
 };
 
 export default useFetchDispatcher;

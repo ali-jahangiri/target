@@ -26,6 +26,7 @@ const useFetch = (path, config) => {
         api
           .get(path)
           .then(({ data }) => {
+
             setResponse(data);
             setLoading(false);
           })
@@ -35,7 +36,7 @@ const useFetch = (path, config) => {
           });
       }
     }
-  }, [path]);
+  }, [path , api]);
 
   return path ? { response, loading, error } : api;
 };

@@ -1,20 +1,14 @@
 import axios from "axios";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useState } from "react";
 
 export const FetchContext = createContext({
   changeHandler: () => {},
   api: axios.create({}),
 });
 
-// NOTE packageName , baseUrl are static values that we need to have any kine of request.
 
 const FetchProvider = ({ children, baseURL }) => {
-  const [fetcherOption, setFetcherOption] = useState({});
-
-  const changeHandler = (data) => {
-    console.log("chnage", { headers: { ...data } });
-    setFetcherOption(() => ({}));
-  };
+  const [fetcherOption, setFetcherOption] = useState(null);
 
   const api = axios.create({
     baseURL,
@@ -23,9 +17,8 @@ const FetchProvider = ({ children, baseURL }) => {
     },
   });
 
-  console.log("after set", fetcherOption);
   return (
-    <FetchContext.Provider value={{ api, changeHandler }}>
+    <FetchContext.Provider value={{ api, setFetcherOption }}>
       {children}
     </FetchContext.Provider>
   );

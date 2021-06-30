@@ -1,4 +1,11 @@
 import { combineSlice, createStore } from "./Y-State";
-const appStore = createStore(combineSlice({}));
+
+import artWorkSlice from "./slices/artWorkSlice";
+import userSlice from "./slices/userSlice";
+
+const appStore = createStore(combineSlice({
+    artwork : artWorkSlice,
+    user : userSlice
+}));
 
 export default appStore;
