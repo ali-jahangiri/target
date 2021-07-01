@@ -1,8 +1,8 @@
-const Btn = ({ onClick , children , style }) => {
+const Btn = ({ onClick , children , style , type = "button" }) => {
     return (
-        <div onClick={onClick} style={style} className="btn">
+        <button type={type} onClick={onClick} style={style} className="btn">
             {children}
-        </div>
+        </button>
     )
 }
 

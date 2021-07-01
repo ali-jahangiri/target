@@ -1,14 +1,11 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import { Home, NewTarget, Targets, Today, UserSetup } from "../Pages";
-import { useSelector } from "../Store/Y-State";
+import { HabitPerDay, Home, NewTarget, Targets, Today, UserSetup } from "../Pages";
+
 import PrivateRoute from "./PrivateRoute";
 
-const AppRouter = () => {
-  const state = useSelector(state => state)
-  console.log(state, " *//*/**//*");
-  return (
-    <BrowserRouter>
+const AppRouter = () => (
+  <BrowserRouter>
         <Switch>
           <Route path="/setup" component={UserSetup} />
           <PrivateRoute>
@@ -16,10 +13,10 @@ const AppRouter = () => {
             <Route path="/target" component={Targets} />
             <Route path="/newTarget" component={NewTarget} />
             <Route path="/today" component={Today} />
+            <Route path="/scheduleHabit" component={HabitPerDay} />
           </PrivateRoute>
         </Switch>
     </BrowserRouter>
-  );
-};
+)
 
 export default AppRouter;

@@ -1,5 +1,28 @@
 .inputCustom {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        input {
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.534);
+            }
+            &:placeholder-shown {
+                color: white;
+            }
+            color: white;
+        }
+        p {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.534);
+            span {
+                font-size: 2.5rem;
+                color: white;
+            }
+        }
+    }
+
     font-size: 4rem;
     border: none;
     outline: none;
+    background: transparent;
 }

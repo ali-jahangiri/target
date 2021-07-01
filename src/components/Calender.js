@@ -1,8 +1,16 @@
 import persian from "persian-date";
 import { useState } from "react";
 import { useHistory } from "react-router";
-import { useSelector } from "../Store/Y-State";
 
+const namesOfDaysOfWeek = [
+  "شنبه",
+  "یکشنبه",
+  "دوشنبه",
+  "سه شنبه",
+  "چهارشنبه",
+  "پنجشنبه",
+  "جمعه",
+];
 
 const Calender = () => {
   const now = new persian();
@@ -10,7 +18,7 @@ const Calender = () => {
   
   const [currentMonth, setCurrentMonth] = useState(0);
   const nthDayOfWeek = now.local("fa").day();
-  const nthDayOfMonth = now.date()
+  const nthDayOfMonth = now.date() + 1
   
   const startDayOfMonthForEmptiness = Array(
     now.add("month", currentMonth).startOf("month").day() - 1
@@ -18,15 +26,7 @@ const Calender = () => {
 
   const allDays = new Array(now.add("month", currentMonth).daysInMonth()).fill(1);
 
-  const namesOfDaysOfWeek = [
-    "شنبه",
-    "یکشنبه",
-    "دوشنبه",
-    "سه شنبه",
-    "چهارشنبه",
-    "پنجشنبه",
-    "جمعه",
-  ];
+  
 
   const daySelectHandler = dayNumber => {
     if(dayNumber === nthDayOfMonth) {

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { set } from "../../Store/slices/artWorkSlice";
-import { useDispatch, useSelector } from "../../Store/Y-State";
+import { useDispatch } from "../../Store/Y-State";
 
 import db from "../../firebase";
 
 import useFetch, { useFetchDispatcher } from "../useFetch";
 import { setUser } from "../../Store/slices/userSlice";
+import { ErrorPage, LoadingPage } from "../../Pages";
 
 const client_id = "764ed27cabac1f5a2fc3";
 const client_secret = "f33bec95761c696f667fdb06674fbc3f";
@@ -14,9 +15,9 @@ const client_secret = "f33bec95761c696f667fdb06674fbc3f";
 const InitialLoader = ({ children }) => {
     const api = useFetch();
     const [loading, setLoading] = useState(true);
+    const [stuckInLoading, setStuckInLoading] = useState(false);
     const fetchDispatcher = useFetchDispatcher()
     const dispatch = useDispatch();
-    
     
     useEffect(() => {
         api.post("https://api.artsy.net/api/tokens/xapp_token", { client_id , client_secret })
@@ -36,13 +37,14 @@ const InitialLoader = ({ children }) => {
                     dispatch(() => setUser(data))
                     setLoading(false)
                 })
+            }).catch(err => {
+                setStuckInLoading(err.message)
             })
         
     } , [])
-
-    if(loading) {
-        return <div>loading</div>
-    }
+    
+    if(stuckInLoading) return <ErrorPage message={stuckInLoading} />
+    else if(loading) return <LoadingPage />
     else {
         return children
     }

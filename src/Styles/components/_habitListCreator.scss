@@ -1,0 +1,33 @@
+.habitListCreator {
+    &__title {
+        font-size: 4rem;
+        color : rgba(255, 255, 255, 0.534);
+    }
+    &__inputPart {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    &__directory {
+        max-height: 450px;
+        overflow-y: auto;
+    }
+    &__habit {
+        display: flex;
+        margin: 1rem 0;
+        align-items: center;
+
+        &__index {
+            background: lighten($color: $cream, $amount: 10%);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1rem;
+            &:hover {
+                background: $cream;
+            }
+        }
+    }
+}

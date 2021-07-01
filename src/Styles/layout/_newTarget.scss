@@ -1,0 +1,13 @@
+.newTarget {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    &__container {
+        backdrop-filter: blur(10px) brightness(0.5);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
