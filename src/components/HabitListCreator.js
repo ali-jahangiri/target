@@ -25,9 +25,13 @@ const HabitListCreator = ({ onChange , habit , haveTargetColor }) => {
         onChange('habit' , [...newHabitList]);
     }
     
+
+    const focusOnInputHandler = () => 
+        inputRef.current?.focus();
+
     return (
         <div className="habitListCreator">
-            <p className="habitListCreator__title">Which habits help you to achieve target ? </p>
+            <p onClick={focusOnInputHandler} className="habitListCreator__title">Which habits help you to achieve target ? </p>
             <div className="row habitListCreator__directory">
                 {
                     habit.map((el , i) => (

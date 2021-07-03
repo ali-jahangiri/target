@@ -1,0 +1,13 @@
+.habitScheduleBlock {
+    text-align: center;
+    padding: 1rem 0;
+    border: 2px solid transparent;
+    transition: $animeDuration .3s;
+    z-index: 55555;
+    user-select: none;
+    
+    &--selected {
+        border-color: #fff2;
+        backdrop-filter: blur(10px);
+    }
+}
