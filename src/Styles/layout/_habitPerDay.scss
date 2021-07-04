@@ -9,6 +9,7 @@
     &__done {
         cursor: pointer;
         user-select: none;
+
         &:hover {
             color: $cream;
         }
@@ -18,7 +19,7 @@
 
     &__schedulePlayground {
         display: flex;
-        
+
         .habitPerDay__weekDay {
             flex: 1;
             user-select: none;
@@ -26,7 +27,7 @@
 
     }
 
-    
+
     &__habitSidebar {
         flex: .18;
         transition: .3s;
@@ -34,16 +35,19 @@
         padding: 0 1rem;
         overflow-y: hidden;
         height: 70vh;
+
         .ss {
             transition: .3s;
         }
+
         &--active {
             flex: .05;
+
             .ss {
                 opacity: 0;
             }
         }
-        
+
         &__trigger {
             user-select: none;
             cursor: pointer;
@@ -61,16 +65,19 @@
             text-align: center;
             border: 2px solid transparent;
             transition: .3s;
+
             &:hover {
                 border-color: red;
             }
         }
     }
+
     &__header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-size: 5rem;
+
         p {
             &:first-child {
                 font-size: 3rem;
@@ -78,6 +85,7 @@
             }
         }
     }
+
     &__weekDay {
         transition: .3s;
         display: flex;
@@ -88,14 +96,14 @@
             text-align: center;
             padding: 1rem 0;
         }
-        
+
         &__item {
             width: 100%;
             transition: .3s;
             position: relative;
-            min-height: 150px;
+            // min-height: 150px;
 
-            &::after{
+            &::after {
                 content: "";
                 position: absolute;
                 top: 0;
@@ -123,7 +131,7 @@
             }
 
             &__innerContainer {
-                max-height: 70vh;
+                // max-height: 70vh;
                 overflow-y: auto;
                 transition: .3s;
                 background-color: white;
