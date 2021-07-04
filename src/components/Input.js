@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Input = ({ placeholder , value , onChange , showLabel , reference , style , onBlur }) => {
+const Input = ({ placeholder , value , onChange , showLabel , reference , style , onBlur  , mode}) => {
     const [haveValue, setHaveValue] = useState(false);
 
     const changeHandler = value => {
@@ -8,7 +8,7 @@ const Input = ({ placeholder , value , onChange , showLabel , reference , style 
         value ? setHaveValue(true) : setHaveValue(false)
     }
     return (
-        <div className="inputCustom__container">
+        <div className={`inputCustom__container inputCustom__container--${mode}`}>
             <input
                 onBlur={onBlur}
                 style={style}

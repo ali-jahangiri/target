@@ -2,7 +2,7 @@ import { useState } from "react";
 import Input from "./Input";
 
 const HabitCreatorItem = ({ index , children , bgColor , changeHandler }) => {
-    const [newValue, setNewValue] = useState(children);
+    const [newValue, setNewValue] = useState(children.name);
 
     const style = (() => {
         if(bgColor) {
@@ -13,9 +13,10 @@ const HabitCreatorItem = ({ index , children , bgColor , changeHandler }) => {
     })()
 
     const onChange = () => {
+        console.log();
         changeHandler(index - 1 , newValue)
     }   
-    
+
     return (
         <div className="habitCreatorItem col-md-4">
             <div style={style} className="habitCreatorItem__container">

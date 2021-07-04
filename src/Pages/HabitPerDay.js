@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Container from "../components/Container";
-import { generateColor } from "../utils";
+import { generateColor, idGenerator } from "../utils";
 
 import { DragDropContext , Draggable, Droppable } from "react-beautiful-dnd";
 import { useEffect } from "react";
@@ -13,9 +13,6 @@ import { Redirect } from "react-router";
 import db from "../firebase";
 
 var ID = function () {
-    // Math.random should be unique because of its seeding algorithm.
-    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-    // after the decimal.
     return '_' + Math.random().toString(36).substr(2, 9);
 };
 
@@ -69,9 +66,7 @@ const HabitPerDay = ({ location }) => {
     if(!location.state) return <Redirect to='/' />
 
     const { targetName , habit , color } = location.state.target;
-    const newHabit = habit.map(el => ({ value : el , id : ID() }))
-    
-    
+       
     const dragEndHandler = ({ destination , ...other }) => {
         setCurrentHabitBlock(null)
         if (!destination) return;
@@ -89,12 +84,18 @@ const HabitPerDay = ({ location }) => {
                 ...prev,
                 [targetDayColumn] : [
                     ...prev[targetDayColumn],
-                    selectedHabit
+                    {
+                        id: idGenerator(),
+                        name: selectedHabit
+                    }
                 ]
             }));
 
         }   
     }
+
+
+    console.log(schedule);
 
 
     const habitOrderHandler = (destination , other) => {
@@ -164,7 +165,7 @@ const HabitPerDay = ({ location }) => {
                                                                             {...provided.dragHandleProps}
                                                                             ref={provided.innerRef}
                                                                             className="habitPerDay__weekDay__addedHabit" key={i}>
-                                                                            {el}
+                                                                            {el.name}
                                                                         </div>
                                                                     )
                                                                 }
@@ -191,11 +192,11 @@ const HabitPerDay = ({ location }) => {
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}>
                                         {
-                                            newHabit.map((el , i) => (
+                                            habit.map((el , i) => (
                                                 <HabitScheduleBlock
                                                     picked={currentHabitBlock}
                                                     index={i}
-                                                    draggableId={el.value}
+                                                    draggableId={el.name}
                                                     key={i}
                                                 />
                                             ))

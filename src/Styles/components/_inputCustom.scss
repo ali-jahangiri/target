@@ -2,6 +2,7 @@
     &__container {
         display: flex;
         flex-direction: column;
+
         input {
             &::placeholder {
                 color: rgba(255, 255, 255, 0.534);
@@ -17,6 +18,18 @@
             span {
                 font-size: 2.5rem;
                 color: white;
+            }
+        }
+        &--dark {
+            input {
+                color: black;
+                &:placeholder-shown {
+                    color: black;
+                }
+
+                &::placeholder {
+                    color: grey;
+                }
             }
         }
     }

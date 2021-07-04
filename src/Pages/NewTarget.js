@@ -28,6 +28,8 @@ const NewTarget = () => {
     } , [])
 
 
+    console.log(target);
+
     const createNewTargetHandler = () => {
         history.push('/scheduleHabit' , { target })
         db.collection("target")

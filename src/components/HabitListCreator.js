@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import Input from "./Input";
 import Btn from "./Btn";
 import HabitCreatorItem from "./HabitCreatorItem";
+import { idGenerator } from "../utils";
 
 const HabitListCreator = ({ onChange , habit , haveTargetColor }) => {
     const [value, setValue] = useState("");
@@ -14,14 +15,17 @@ const HabitListCreator = ({ onChange , habit , haveTargetColor }) => {
     }
 
     const submitHandler = () => {
-        onChange('habit' , [...habit , value])
+        onChange('habit' , [...habit , { id : idGenerator() , name : value }])
         setValue("");
         inputRef.current.focus();
     }
 
     const habitEditHandler = (index , newValue) => {
         const newHabitList = [...habit];
-        newHabitList[index] = newValue
+        newHabitList[index] = {
+            id : newHabitList[index].id,
+            name : newValue
+        }
         onChange('habit' , [...newHabitList]);
     }
     

@@ -17,7 +17,7 @@ const UserSetup = ({ history }) => {
     return (
         <div className="container setup">
             <p >welcome</p>
-            <Input value={value} onChange={setValue} placeholder="Enter your Email" />
+            <Input mode="dark" value={value} onChange={setValue} placeholder="Enter your Email" />
             {
                 value.trim() && 
                 <Btn onClick={setUserHandler} style={{ alignSelf : "flex-end", color : "white" }}>

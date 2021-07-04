@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import { HabitPerDay, Home, NewTarget, Targets, Today, UserSetup } from "../Pages";
+import { HabitPerDay, Home, NewTarget, NotFound, Targets, Today, UserSetup } from "../Pages";
 
 import PrivateRoute from "./PrivateRoute";
 
@@ -15,6 +15,7 @@ const AppRouter = () => (
             <Route path="/today" component={Today} />
             <Route path="/scheduleHabit" component={HabitPerDay} />
           </PrivateRoute>
+          <Route component={NotFound} />
         </Switch>
     </BrowserRouter>
 )
