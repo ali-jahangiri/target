@@ -7,7 +7,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import HabitScheduleBlock from "../components/HabitScheduleBlock";
 
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { Redirect } from "react-router";
+import { Redirect, useHistory } from "react-router";
 
 import db from "../firebase";
 
@@ -42,8 +42,9 @@ const namesOfDaysOfWeek = [
   },
 ];
 
-const HabitPerDay = ({ location }) => {
+const HabitPerDay = ({ location, history }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   const [schedule, setSchedule] = useState(() => {
     return namesOfDaysOfWeek.map((el) => ({
       day: el.name,
@@ -110,7 +111,9 @@ const HabitPerDay = ({ location }) => {
   const doneHandler = () => {
     db.collection("target")
       .add({ schedule })
-      .then((data) => {});
+      .then((data) => {
+        history.push("/");
+      });
   };
 
   return (

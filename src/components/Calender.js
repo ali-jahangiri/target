@@ -1,6 +1,8 @@
 import persian from "persian-date";
 import { useState } from "react";
+
 import { useHistory } from "react-router";
+import Alert from "./Alert";
 
 const namesOfDaysOfWeek = [
   "شنبه",
@@ -15,24 +17,25 @@ const namesOfDaysOfWeek = [
 const Calender = () => {
   const now = new persian();
   const history = useHistory();
-  
+
   const [currentMonth, setCurrentMonth] = useState(0);
   const nthDayOfWeek = now.local("fa").day();
-  const nthDayOfMonth = now.date() + 1
-  
+  const nthDayOfMonth = now.date() + 1;
+
   const startDayOfMonthForEmptiness = Array(
     now.add("month", currentMonth).startOf("month").day() - 1
   ).fill("");
 
-  const allDays = new Array(now.add("month", currentMonth).daysInMonth()).fill(1);
+  const allDays = new Array(now.add("month", currentMonth).daysInMonth()).fill(
+    1
+  );
 
-  
-
-  const daySelectHandler = dayNumber => {
-    if(dayNumber === nthDayOfMonth) {
-      history.push('today')
+  const daySelectHandler = (dayNumber) => {
+    Alert.warning("this is a custom warning");
+    if (dayNumber === nthDayOfMonth) {
+      history.push("today");
     }
-  }
+  };
 
   return (
     <div className="container-fluid schedule">
@@ -49,15 +52,98 @@ const Calender = () => {
         {startDayOfMonthForEmptiness.map((_, i) => (
           <div key={i} className="schedule__day schedule__day--empty"></div>
         ))}
-        {
-            allDays.map((_, i) => (
-                <div className={`schedule__day ${nthDayOfMonth === i + 1 ? "schedule__day--today" : ""}`} key={i}>
-                  <div onClick={() => daySelectHandler(i + 1)} className="schedule__day__container">
-                    <p>{i + 1}</p>
-                  </div>
-                </div>
-            ))
-        }
+        {allDays.map((_, i) => (
+          <div
+            className={`schedule__day ${
+              nthDayOfMonth === i + 1 ? "schedule__day--today" : ""
+            }`}
+            key={i}
+          >
+            <div
+              onClick={() => daySelectHandler(i + 1)}
+              className="schedule__day__container"
+            >
+              <p>{i + 1}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div>
+        Et mollitia quibusdam sint voluptatibus cum blanditiis ut. Quod deserunt
+        architecto beatae repudiandae. Minima at error dolor quia est vel aut.
+        Quidem voluptatem tempora dicta tempore iusto qui temporibus deleniti.
+        Odio voluptates voluptates. Enim incidunt possimus id eius vel accusamus
+        esse consequatur aut. Laboriosam minus modi eum sunt. Dolore laboriosam
+        voluptatem aut. Aut non quod. Quia ea quis aut assumenda sed tempora.
+        Sed est sit. Maiores corporis dolorum porro maiores. Sunt amet ut sunt
+        veniam ut dolorem ut a. Et mollitia quibusdam sint voluptatibus cum
+        blanditiis ut. Quod deserunt architecto beatae repudiandae. Minima at
+        error dolor quia est vel aut. Quidem voluptatem tempora dicta tempore
+        iusto qui temporibus deleniti. Odio voluptates voluptates. Enim incidunt
+        possimus id eius vel accusamus esse consequatur aut. Laboriosam minus
+        modi eum sunt. Dolore laboriosam voluptatem aut. Aut non quod. Quia ea
+        quis aut assumenda sed tempora. Sed est sit. Maiores corporis dolorum
+        porro maiores. Sunt amet ut sunt veniam ut dolorem ut a. Et mollitia
+        quibusdam sint voluptatibus cum blanditiis ut. Quod deserunt architecto
+        beatae repudiandae. Minima at error dolor quia est vel aut. Quidem
+        voluptatem tempora dicta tempore iusto qui temporibus deleniti. Odio
+        voluptates voluptates. Enim incidunt possimus id eius vel accusamus esse
+        consequatur aut. Laboriosam minus modi eum sunt. Dolore laboriosam
+        voluptatem aut. Aut non quod. Quia ea quis aut assumenda sed tempora.
+        Sed est sit. Maiores corporis dolorum porro maiores. Sunt amet ut sunt
+        veniam ut dolorem ut a. Et mollitia quibusdam sint voluptatibus cum
+        blanditiis ut. Quod deserunt architecto beatae repudiandae. Minima at
+        error dolor quia est vel aut. Quidem voluptatem tempora dicta tempore
+        iusto qui temporibus deleniti. Odio voluptates voluptates. Enim incidunt
+        possimus id eius vel accusamus esse consequatur aut. Laboriosam minus
+        modi eum sunt. Dolore laboriosam voluptatem aut. Aut non quod. Quia ea
+        quis aut assumenda sed tempora. Sed est sit. Maiores corporis dolorum
+        porro maiores. Sunt amet ut sunt veniam ut dolorem ut a. Et mollitia
+        quibusdam sint voluptatibus cum blanditiis ut. Quod deserunt architecto
+        beatae repudiandae. Minima at error dolor quia est vel aut. Quidem
+        voluptatem tempora dicta tempore iusto qui temporibus deleniti. Odio
+        voluptates voluptates. Enim incidunt possimus id eius vel accusamus esse
+        consequatur aut. Laboriosam minus modi eum sunt. Dolore laboriosam
+        voluptatem aut. Aut non quod. Quia ea quis aut assumenda sed tempora.
+        Sed est sit. Maiores corporis dolorum porro maiores. Sunt amet ut sunt
+        veniam ut dolorem ut a. Et mollitia quibusdam sint voluptatibus cum
+        blanditiis ut. Quod deserunt architecto beatae repudiandae. Minima at
+        error dolor quia est vel aut. Quidem voluptatem tempora dicta tempore
+        iusto qui temporibus deleniti. Odio voluptates voluptates. Enim incidunt
+        possimus id eius vel accusamus esse consequatur aut. Laboriosam minus
+        modi eum sunt. Dolore laboriosam voluptatem aut. Aut non quod. Quia ea
+        quis aut assumenda sed tempora. Sed est sit. Maiores corporis dolorum
+        porro maiores. Sunt amet ut sunt veniam ut dolorem ut a. Et mollitia
+        quibusdam sint voluptatibus cum blanditiis ut. Quod deserunt architecto
+        beatae repudiandae. Minima at error dolor quia est vel aut. Quidem
+        voluptatem tempora dicta tempore iusto qui temporibus deleniti. Odio
+        voluptates voluptates. Enim incidunt possimus id eius vel accusamus esse
+        consequatur aut. Laboriosam minus modi eum sunt. Dolore laboriosam
+        voluptatem aut. Aut non quod. Quia ea quis aut assumenda sed tempora.
+        Sed est sit. Maiores corporis dolorum porro maiores. Sunt amet ut sunt
+        veniam ut dolorem ut a. Et mollitia quibusdam sint voluptatibus cum
+        blanditiis ut. Quod deserunt architecto beatae repudiandae. Minima at
+        error dolor quia est vel aut. Quidem voluptatem tempora dicta tempore
+        iusto qui temporibus deleniti. Odio voluptates voluptates. Enim incidunt
+        possimus id eius vel accusamus esse consequatur aut. Laboriosam minus
+        modi eum sunt. Dolore laboriosam voluptatem aut. Aut non quod. Quia ea
+        quis aut assumenda sed tempora. Sed est sit. Maiores corporis dolorum
+        porro maiores. Sunt amet ut sunt veniam ut dolorem ut a. Et mollitia
+        quibusdam sint voluptatibus cum blanditiis ut. Quod deserunt architecto
+        beatae repudiandae. Minima at error dolor quia est vel aut. Quidem
+        voluptatem tempora dicta tempore iusto qui temporibus deleniti. Odio
+        voluptates voluptates. Enim incidunt possimus id eius vel accusamus esse
+        consequatur aut. Laboriosam minus modi eum sunt. Dolore laboriosam
+        voluptatem aut. Aut non quod. Quia ea quis aut assumenda sed tempora.
+        Sed est sit. Maiores corporis dolorum porro maiores. Sunt amet ut sunt
+        veniam ut dolorem ut a. Et mollitia quibusdam sint voluptatibus cum
+        blanditiis ut. Quod deserunt architecto beatae repudiandae. Minima at
+        error dolor quia est vel aut. Quidem voluptatem tempora dicta tempore
+        iusto qui temporibus deleniti. Odio voluptates voluptates. Enim incidunt
+        possimus id eius vel accusamus esse consequatur aut. Laboriosam minus
+        modi eum sunt. Dolore laboriosam voluptatem aut. Aut non quod. Quia ea
+        quis aut assumenda sed tempora. Sed est sit. Maiores corporis dolorum
+        porro maiores. Sunt amet ut sunt veniam ut dolorem ut a.
       </div>
     </div>
   );

@@ -1,0 +1,60 @@
+$green : #3A6351;
+$red : #FF616D;
+$yellow : #ECD662;
+$blue: #5F939A;
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        bottom: -200px;
+    }
+
+    to {
+        opacity: 1;
+        bottom: 10px;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+.alertBar {
+    width: 90vw;
+    padding: 15px;
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: fadeIn .3s alternate;
+
+    &--fadeout {
+        animation: fadeout .3s forwards alternate;
+    }
+
+    &--success {
+        background: $green;
+
+    }
+
+    &--warning {
+        background: $yellow;
+
+    }
+
+    &--error {
+        background: $red;
+
+    }
+
+    &--info {
+        background: $blue;
+
+    }
+}
