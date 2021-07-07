@@ -3,7 +3,6 @@ import Container from "../components/Container";
 import { idGenerator } from "../utils";
 
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useEffect } from "react";
 
 import HabitScheduleBlock from "../components/HabitScheduleBlock";
 
@@ -12,57 +11,46 @@ import { Redirect } from "react-router";
 
 import db from "../firebase";
 
-var ID = function () {
-  return "_" + Math.random().toString(36).substr(2, 9);
-};
-
 const namesOfDaysOfWeek = [
   {
     name: "جمعه",
-    id: ID(),
+    id: idGenerator(),
   },
   {
     name: "پنجشنبه",
-    id: ID(),
+    id: idGenerator(),
   },
   {
     name: "چهارشنبه",
-    id: ID(),
+    id: idGenerator(),
   },
   {
     name: "سه شنبه",
-    id: ID(),
+    id: idGenerator(),
   },
   {
     name: "دوشنبه",
-    id: ID(),
+    id: idGenerator(),
   },
   {
     name: "یکشنبه",
-    id: ID(),
+    id: idGenerator(),
   },
   {
     name: "شنبه",
-    id: ID(),
+    id: idGenerator(),
   },
 ];
 
 const HabitPerDay = ({ location }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [schedule, setSchedule] = useState({});
+  const [schedule, setSchedule] = useState(() => {
+    return namesOfDaysOfWeek.map((el) => ({
+      day: el.name,
+      habit: [],
+    }));
+  });
   const [currentHabitBlock, setCurrentHabitBlock] = useState(null);
-
-  useEffect(() => {
-    if (location.state) {
-      const dayName = {};
-      namesOfDaysOfWeek.map((el) => (dayName[el.name] = []));
-      setSchedule(dayName);
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log(schedule);
-  }, [schedule]);
 
   if (!location.state) return <Redirect to="/" />;
 
@@ -73,44 +61,44 @@ const HabitPerDay = ({ location }) => {
     if (!destination) return;
     // TODO handle already have habit
 
+    console.log(destination, other);
     if (
       namesOfDaysOfWeek
         .map((el) => el.name)
         .includes(destination.droppableId) &&
       other.source.droppableId !== "habitItems"
     ) {
-      return habitOrderHandler(destination, other, schedule);
+      return habitOrderHandler(destination, other);
     } else if (destination && destination.droppableId !== "habitItems") {
-      const selectedHabit = other.draggableId;
-      const targetDayColumn = destination.droppableId;
-
-      setSchedule((prev) => ({
-        ...prev,
-        [targetDayColumn]: [
-          ...prev[targetDayColumn],
-          {
-            id: idGenerator(),
-            name: selectedHabit,
-          },
-        ],
-      }));
+      setSchedule((prev) =>
+        [...prev].map((el) =>
+          el.day === destination.droppableId
+            ? {
+                day: el.day,
+                habit: (() => {
+                  let currentHabit = [...el.habit];
+                  currentHabit.splice(destination.index, 0, {
+                    name: other.draggableId,
+                    id: idGenerator(),
+                  });
+                  return currentHabit;
+                })(),
+              }
+            : el
+        )
+      );
     }
   };
 
   const habitOrderHandler = (destination, other) => {
-    setSchedule((prev) => {
-      const depped = JSON.stringify(prev);
-      const newOrderScheduleArray = Array.from(
-        JSON.parse(depped)[destination.droppableId]
-      );
-      const newItem = newOrderScheduleArray.splice(other.source.index, 1);
-      newOrderScheduleArray.splice(destination.index, 0, ...newItem);
-      console.log(prev, "prevvvvvvvvvv******");
-      return {
-        ...prev,
-        [destination.droppableId]: newOrderScheduleArray,
-      };
-    });
+    const result = Array.from(schedule).find(
+      (el) => el.day === destination.droppableId
+    );
+    const [removed] = result.habit.splice(other.source.index, 1);
+    result.habit.splice(destination.index, 0, removed);
+    setSchedule((prev) =>
+      prev.map((el) => (el.day === destination.droppableId ? result : el))
+    );
   };
 
   const dragStartHandler = (e) => {
@@ -163,25 +151,27 @@ const HabitPerDay = ({ location }) => {
                       </div>
                       <>
                         {(() => {
-                          return schedule[el.name]?.map((el, i) => (
-                            <Draggable
-                              key={i}
-                              draggableId={(() => el.id)()}
-                              index={i}
-                            >
-                              {(provided) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  key={i}
-                                  className="habitPerDay__weekDay__addedHabit"
-                                  {...provided.dragHandleProps}
-                                  {...provided.draggableProps}
-                                >
-                                  {el.name}
-                                </div>
-                              )}
-                            </Draggable>
-                          ));
+                          return schedule
+                            .find((day) => day.day === el.name)
+                            .habit?.map((el, i) => (
+                              <Draggable
+                                key={el.id}
+                                draggableId={(() => el.id)()}
+                                index={i}
+                              >
+                                {(provided) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    key={i}
+                                    className="habitPerDay__weekDay__addedHabit"
+                                    {...provided.dragHandleProps}
+                                    {...provided.draggableProps}
+                                  >
+                                    {el.name}
+                                  </div>
+                                )}
+                              </Draggable>
+                            ));
                         })()}
                         {provided.placeholder}
                       </>
