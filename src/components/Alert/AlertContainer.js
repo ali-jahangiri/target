@@ -3,7 +3,7 @@ import reactDom from "react-dom";
 
 import AlertBar from "./AlertBar";
 
-const AlertContainer = ({ dismissibleTimeout = 5000 }) => {
+const AlertContainer = ({ dismissibleTimeout = 1000 }) => {
   const [alertType, setAlertType] = useState(null);
   const [config, setConfig] = useState(null);
 
@@ -15,12 +15,26 @@ const AlertContainer = ({ dismissibleTimeout = 5000 }) => {
     window.alertTypeHandler = (type, message, config) => {
       setAlertType({ type, message });
       setConfig(config);
+      let timer = setTimeout(() => {
+        setAlertType({ type : null , message : '' })
+        console.log('clear');
+        clearTimeout(timer)
+      }, dismissibleTimeout);
     };
   }, []);
 
+  useEffect(() => {
+    if(alertType) {
+      // let timer = setTimeout(() => {
+      //   setAlertType({ type : null , message : '' })
+      //   console.log('clear');
+      //   clearTimeout(timer)
+      // }, dismissibleTimeout);
+    }
+  } , [])
+
   const Render = () => {
     if (alertType) {
-      let timer = setTimeout(() => {}, dismissibleTimeout);
       return (
         <AlertBar
           dismissibleTimeout={dismissibleTimeout}

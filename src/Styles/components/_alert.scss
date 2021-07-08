@@ -11,7 +11,7 @@ $blue: #5F939A;
 
     to {
         opacity: 1;
-        bottom: 10px;
+        bottom: 40px;
     }
 }
 
@@ -29,7 +29,7 @@ $blue: #5F939A;
     width: 90vw;
     padding: 15px;
     position: fixed;
-    bottom: 10px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     animation: fadeIn .3s alternate;

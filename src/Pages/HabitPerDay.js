@@ -7,7 +7,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import HabitScheduleBlock from "../components/HabitScheduleBlock";
 
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { Redirect, useHistory } from "react-router";
+import { Redirect } from "react-router";
 
 import db from "../firebase";
 
