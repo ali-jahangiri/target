@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-
 import { HabitPerDay, Home, NewTarget, NotFound, Targets, Today, UserSetup } from "../Pages";
 
 import PrivateRoute from "./PrivateRoute";

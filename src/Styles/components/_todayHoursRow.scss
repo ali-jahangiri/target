@@ -1,0 +1,17 @@
+.todayHoursRow {
+    height: 100px;
+    padding-left: 50px;
+    // background-color: red;
+    display: flex;
+    align-items: center;
+
+    &:nth-child(2n) {
+        background: #0000000a;
+    }
+
+    &__index {
+        font-size: 4.5rem;
+        font-weight: 600;
+        color: rgb(82, 82, 82);
+    }
+}

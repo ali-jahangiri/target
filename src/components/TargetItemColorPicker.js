@@ -56,7 +56,7 @@ const TargetItemColorPicker = ({ selectedColor , onChange , onDone }) => {
                         <Color selectedColor={selectedColor} onSelect={onChange} {...el} key={i} />
                     ))
                 }
-                <span className="targetItemColorPicker__doneTrigger" onClick={onDone}>and Go !</span>
+                <span className="targetItemColorPicker__doneTrigger" onClick={() => onDone()}>and Go !</span>
             </div>
         </div>
     )

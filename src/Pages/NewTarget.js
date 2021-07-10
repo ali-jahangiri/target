@@ -27,12 +27,8 @@ const NewTarget = () => {
     setCurrentImage(randomItemFromArr(image));
   }, []);
 
-  console.log(target);
-
-  const createNewTargetHandler = () => {
-    history.push("/scheduleHabit", { target });
-    db.collection("target").add({ ...target });
-  };
+  const createNewTargetHandler = () => 
+        history.push('/scheduleHabit', {target} );
 
   return (
     <div

@@ -55,14 +55,13 @@ const HabitPerDay = ({ location, history }) => {
 
   if (!location.state) return <Redirect to="/" />;
 
-  const { targetName, habit, color } = location.state.target;
+  const { targetName, habit, color = "" } = location.state.target;
 
   const dragEndHandler = ({ destination, ...other }) => {
     setCurrentHabitBlock(null);
     if (!destination) return;
     // TODO handle already have habit
 
-    console.log(destination, other);
     if (
       namesOfDaysOfWeek
         .map((el) => el.name)
@@ -109,11 +108,17 @@ const HabitPerDay = ({ location, history }) => {
   };
 
   const doneHandler = () => {
+    const endResult = {
+      targetName,
+      habit : schedule.filter(el => el.habit.length),
+      color
+    }
+    
     db.collection("target")
-      .add({ schedule })
-      .then((data) => {
-        history.push("/");
-      });
+      .add({ ...endResult })
+        .then(_ => {
+          history.replace("/");
+        });
   };
 
   return (

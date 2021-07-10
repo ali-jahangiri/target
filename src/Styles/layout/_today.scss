@@ -1,0 +1,47 @@
+.today {
+    &__introHeader {
+
+    }
+
+    &__habitSidebar {
+        height: 100vh;
+        position: fixed;
+        z-index: 500;
+        right: 0;
+        top: 0;
+        width: 30vw;
+        transition: 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
+        background-color: white;
+        
+        &__habitDirectory {
+            transition: .3s;
+            opacity: 1;
+            padding: 35px;
+            height: 100%;
+            overflow-y: auto;
+
+        }
+        
+        &--close {
+            transform: translateX(100%);
+            .today__habitSidebar__habitDirectory {
+                opacity: 0;
+            }
+        }
+
+
+        &__closeTrigger {
+            position: absolute;
+            top: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(82, 82, 82, 0.384);
+            left: -15%;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+    }
+}

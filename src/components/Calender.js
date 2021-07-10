@@ -20,7 +20,7 @@ const Calender = () => {
 
   const [currentMonth, setCurrentMonth] = useState(0);
   const nthDayOfWeek = now.local("fa").day();
-  const nthDayOfMonth = now.date() + 1;
+  const nthDayOfMonth = now.date();
 
   const startDayOfMonthForEmptiness = Array(
     now.add("month", currentMonth).startOf("month").day() - 1
