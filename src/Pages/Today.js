@@ -1,19 +1,24 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import TodayHoursRow from "../components/TodayHoursRow";
-import db from "../firebase";
-
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { FiChevronLeft } from "react-icons/fi"
 
+import db from "../firebase";
 import { habitForTodayExtractor, idGenerator } from "../utils";
 
 
+import { Resizable} from "re-resizable";
+
+import TodayHoursRow from "../components/TodayHoursRow";
 import { LoadingPage } from "../Pages"
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
+
+
+
+
+
+// Static variables
 const hours = new Array(24).fill().map((_ , i) => i + 1)
-
-
 const TODAY_ID = "todayHabit";
 
 
@@ -33,19 +38,33 @@ const NonValidHabitFiller = ({ index , id }) => {
 }
 
 
-const HabitInStreamItem = ({ id , index , color , habitName }) => {
+
+const HabitInStreamItem = ({ id , index , color , habitName , resizeHandler, hoursGoNext }) => {
     return (
         <Draggable  draggableId={id} index={index} >
             {provided => (
-                <div 
+                 <Resizable 
+                 className='habitMainContainer' 
+                 enable={{ bottom : true}} 
+                 maxWidth="80%" 
+                 minWidth={'80%'} 
+                 grid={[100 , 100]}
+                 onResizeStop={(e, direction, ref, d) => resizeHandler({ id , height : d.height , index })} 
+                 defaultSize={{
+                 width: '80%',
+                 height : hoursGoNext * 100
+             }}>
+                 <div 
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 className="today__habitInStreamItem">
-                    <div style={{ backgroundColor : `#${color || "dcdcdc"}` }}>
+                    <div className="today__habitInStreamItem__container" style={{ backgroundColor : `#${color || "dcdcdc"}` }}>
                         {habitName}
+                    <div className="resizeTrigger"></div>
                     </div>
                 </div>
+             </Resizable>
             )}
         </Draggable>
     )
@@ -60,8 +79,6 @@ const Today = () => {
     const [isDraggingStart, setIsDraggingStart] = useState(false)
     const [currentHabitBlock, setCurrentHabitBlock] = useState(null);
 
-
-    
 
     useEffect(() => {
         db.collection("target").onSnapshot(snapshot => {
@@ -86,7 +103,7 @@ const Today = () => {
         setHabitInStream(prev => {
             const clone = [...prev];
             if(!clone[insertIndex].name) {
-                clone[insertIndex] = {...todayHabit.find(el => el.id === draggableId) , id : idGenerator() };
+                clone[insertIndex] = {...todayHabit.find(el => el.id === draggableId) , id : idGenerator() , hoursGoNext: 1};
                 return clone
             }else {
                 console.log('ressss');
@@ -99,8 +116,20 @@ const Today = () => {
     const reorderHandler = (destination, other) => {
         const habitClone = [...habitInStream];
         const [removed] = habitClone.splice(other.index , 1);
-        habitClone.splice(destination.index , 0 , removed)
-        setHabitInStream(habitClone)
+        habitClone.splice(destination.index , 0 , removed);
+        setHabitInStream(habitClone);
+    }
+
+
+    const resizeHandler = ({height , index , id }) => {
+        if(height) {
+            if(height >= 100) {
+                let hoursWasPassed = height / 100;
+                console.log(index + 1, 'want pass' , hoursWasPassed , "step" , 'with id of' , id);
+            }else {
+
+            }
+        }
     }
 
 
@@ -115,9 +144,6 @@ const Today = () => {
         <DragDropContext 
                 onDragStart={() => setIsDraggingStart(true)} 
                 onDragEnd={dragEndHandler}>
-                {/* <div className="today__introHeader">  
-                <p>you have these habit for today</p>
-                </div> */}
                 <div style={{ height : 100 * 24 }} className={`todayHoursRow__container ${isDraggingStart ? "todayHoursRow__container--rowInHover" : ""}`}>
                     <div>
                     {
@@ -139,7 +165,8 @@ const Today = () => {
                                             habitInStream.map((el , i) => {
                                                 if(!el.name) return <NonValidHabitFiller id={el.id} index={i} key={el.id} />
                                                 else return (
-                                                    <HabitInStreamItem 
+                                                    <HabitInStreamItem
+                                                        resizeHandler={resizeHandler}
                                                         index={i}
                                                         id={el.id}
                                                         color={el?.color}

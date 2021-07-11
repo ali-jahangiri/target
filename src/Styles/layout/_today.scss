@@ -29,15 +29,35 @@
         padding-left: 180px;
     }
 
+    .habitMainContainer {
+        transition: .3s cubic-bezier(1, 0.11, 0.58, 1);
+    }
 
     &__habitInStreamItem {
-        height: 100px;
+        height: 100%;
         // animation: fadeIn .3s forwards alternate;
         user-select: none;
-        & > div {
+        &__container {
             height: 100%;
             display: flex;
             align-items: center;
+            position: relative;
+            .resizeTrigger {         
+                position: absolute;
+                bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 55555555555;
+                height: 14px;
+                background: rgba(236, 236, 236, 0.253);
+                width: 20%;
+                cursor: n-resize;
+                transition: .3s;
+                
+                &:hover {
+                    background: rgba(236, 236, 236, 0.514);
+                }
+            }
         }
     }
 
