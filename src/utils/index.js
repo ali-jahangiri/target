@@ -27,11 +27,10 @@ const weekDays = [
 
 export const habitForTodayExtractor = habits => {
     const nameOfToday = weekDays[today - 1];
-    return habits
-            .filter(el => el.data.habit.filter(singleHabit => singleHabit.day === nameOfToday).length)
-            .map(el => ({
-                id : el.id,
-                habitsForToday : el.data.habit.filter(el => el.day === nameOfToday).map(el => el.habit).flat(1),
-                color : el.data.color
-            }))
+    // TODO change static name of day
+    return habits.reduce((acc , res) => {
+        return [...acc , ...res.habit
+                .filter(el => el.day === "شنبه")
+                .map(habit => habit.habit.map(el => ({ name : el.name, color: res.color , id : el.id })))]
+    } , []).flat()
 }

@@ -1,6 +1,44 @@
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+
 .today {
     &__introHeader {
 
+    }
+
+
+
+    &__nonValidHabit {
+        height: 100px;
+    }
+
+    &__droppableContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding-left: 180px;
+    }
+
+
+    &__habitInStreamItem {
+        height: 100px;
+        // animation: fadeIn .3s forwards alternate;
+        user-select: none;
+        & > div {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
     }
 
     &__habitSidebar {
