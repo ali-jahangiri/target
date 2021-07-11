@@ -9,19 +9,48 @@
 }
 
 
+.resizeTrigger {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 55555555555;
+    height: 14px;
+    background: rgba(236, 236, 236, 0.253);
+    width: 20%;
+    cursor: n-resize;
+    transition: .3s;
 
-.today {
-    &__introHeader {
 
+
+
+    &:hover {
+        background: rgba(236, 236, 236, 0.514);
     }
 
 
+    &--active {
+        &:hover {
+            background: rgba(236, 236, 236, 0.842) !important;
+        }
+
+        background: rgba(236, 236, 236, 0.842);
+    }
+}
+
+
+
+
+.today {
+    &__introHeader {}
 
     &__nonValidHabit {
         height: 100px;
     }
 
     &__droppableContainer {
+        max-height: 2400px;
+        overflow: hidden;
         position: absolute;
         top: 0;
         left: 0;
@@ -30,34 +59,42 @@
     }
 
     .habitMainContainer {
-        transition: .3s cubic-bezier(1, 0.11, 0.58, 1);
+        transition: .3s;
+        max-width: 100%;
+        width: 100%;
     }
 
     &__habitInStreamItem {
         height: 100%;
         // animation: fadeIn .3s forwards alternate;
         user-select: none;
+
+
+        &+div {
+            &>div {
+                transition: .3s;
+                opacity: 1;
+                height: 0px !important;
+            }
+
+        }
+
+        &--hideResizeTrigger {
+            &+div {
+                &>div {
+                    opacity: 0;
+                }
+
+            }
+        }
+
         &__container {
             height: 100%;
             display: flex;
             align-items: center;
             position: relative;
-            .resizeTrigger {         
-                position: absolute;
-                bottom: 10px;
-                left: 50%;
-                transform: translateX(-50%);
-                z-index: 55555555555;
-                height: 14px;
-                background: rgba(236, 236, 236, 0.253);
-                width: 20%;
-                cursor: n-resize;
-                transition: .3s;
-                
-                &:hover {
-                    background: rgba(236, 236, 236, 0.514);
-                }
-            }
+
+
         }
     }
 
@@ -70,7 +107,7 @@
         width: 30vw;
         transition: 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
         background-color: white;
-        
+
         &__habitDirectory {
             transition: .3s;
             opacity: 1;
@@ -79,9 +116,10 @@
             overflow-y: auto;
 
         }
-        
+
         &--close {
             transform: translateX(100%);
+
             .today__habitSidebar__habitDirectory {
                 opacity: 0;
             }

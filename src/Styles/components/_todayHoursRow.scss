@@ -6,7 +6,6 @@
     transition: .5s;
 
     &__container {
-
         &--rowInHover {
             &:hover {
                 .todayHoursRow:nth-child(2n) {
@@ -15,7 +14,7 @@
             }
         }
     }
-    
+
 
 
     &__index {
