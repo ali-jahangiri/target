@@ -11,33 +11,33 @@ import { ErrorPage, LoadingPage } from "../../Pages";
 const client_id = "764ed27cabac1f5a2fc3";
 const client_secret = "f33bec95761c696f667fdb06674fbc3f";
 
-const timeoutPromise = (promise, timeout = 1000) => {
-  const timeoutThrower = new Promise((_, rej) => {
-    let timer = setTimeout(() => {
-      rej(new Error("timeout error!"));
-      clearTimeout(timer);
-    }, timeout);
-  });
+// const timeoutPromise = (promise, timeout = 1000) => {
+//   const timeoutThrower = new Promise((_, rej) => {
+//     let timer = setTimeout(() => {
+//       rej(new Error("timeout error!"));
+//       clearTimeout(timer);
+//     }, timeout);
+//   });
 
-  return Promise.race([promise, timeoutThrower])
-    .then((data) => {
-      console.log(data);
-      return data;
-    })
-    .catch((err) => {
-      throw new Error(err);
-    });
-};
+//   return Promise.race([promise, timeoutThrower])
+//     .then((data) => {
+//       console.log(data);
+//       return data;
+//     })
+//     .catch((err) => {
+//       throw new Error(err);
+//     });
+// };
 
-const fetchFromJson = fetch("https://jsonplaceholder.typicode.com/todos/1");
+// const fetchFromJson = fetch("https://jsonplaceholder.typicode.com/todos/1");
 
-timeoutPromise(fetchFromJson, 2000)
-  .then((data) => {
-    console.log("data", data);
-  })
-  .catch((err) => {
-    console.error(err, "");
-  });
+// timeoutPromise(fetchFromJson, 2000)
+//   .then((data) => {
+//     console.log("data", data);
+//   })
+//   .catch((err) => {
+//     console.error(err, "");
+//   });
 
 const InitialLoader = ({ children }) => {
   const api = useFetch();
@@ -46,7 +46,10 @@ const InitialLoader = ({ children }) => {
   const fetchDispatcher = useFetchDispatcher();
   const dispatch = useDispatch();
 
+
+
   useEffect(() => {
+
     api
       .post("https://api.artsy.net/api/tokens/xapp_token", {
         client_id,
@@ -61,12 +64,7 @@ const InitialLoader = ({ children }) => {
           .get("artworks", { headers: { "X-XAPP-Token": token } })
           .then(({ data }) => {
             dispatch(() =>
-              set(
-                data._embedded.artworks.map((el) =>
-                  el._links.image.href.replace("{image_version}", "larger")
-                )
-              )
-            );
+              set(data._embedded.artworks.map((el) => el._links.image.href.replace("{image_version}", "larger"))));
           });
       })
       .then((_) => {

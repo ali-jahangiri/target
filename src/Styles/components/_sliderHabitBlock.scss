@@ -11,13 +11,14 @@
             transform: rotate(10deg) !important;
         }
 
+       
+
         &__container {
             transition: .3s transform;
             height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: red;
         }
     }
 }

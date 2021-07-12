@@ -59,3 +59,12 @@ export function debounce(func, wait, immediate) {
     if (callNow) func.apply(context, args);
   };
 }
+
+
+
+export const selfClearTimeout = (callback , timeout) => {
+  let timer = setTimeout(() => {
+    callback();
+    clearTimeout(timer);
+  } , timeout)
+}

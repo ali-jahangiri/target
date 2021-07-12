@@ -1,3 +1,13 @@
+@keyframes test {
+    // from {
+    //     color: rgb(82, 82, 82);
+    // }
+    to {
+        color: white;
+    }
+}
+
+
 .todayHoursRow {
     height: 100px;
     padding-left: 50px;
@@ -5,6 +15,8 @@
     align-items: center;
     transition: .5s;
 
+
+    
     &__container {
         &--rowInHover {
             &:hover {
@@ -21,5 +33,14 @@
         font-size: 4.5rem;
         font-weight: 600;
         color: rgb(82, 82, 82);
+        transition: .3s 1s;
+    }
+
+
+    &--timelineSelected {
+        position: relative;
+        p {
+            color: white !important;
+        }
     }
 }
