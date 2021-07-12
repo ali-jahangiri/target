@@ -8,7 +8,18 @@
     }
 }
 
-.layout__ {
+
+@keyframes growWidth {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100px;
+    }
+}
+
+.helperOverlay {
     width: 100%;
     height: 100vh;
     position: absolute;
@@ -16,6 +27,29 @@
     top: 0;
     background: #000000d4;
     animation: fadeIn .3s forwards alternate;
+    z-index: 50000;
+
+    &__timeline {
+        content: "";
+        width: 10px;
+        height: 200px;
+        background-color: #ffffff0f;
+        display: block;
+        position: absolute;
+        left: 4.8%;
+        transition: .3s 1s;
+
+        span {
+            content: "";
+            height: 10px;
+            background-color: #383838;
+            position: absolute;
+            bottom: 0;
+            right: 0%;
+            animation: growWidth .3s forwards alternate 1.3s;
+        }
+    }
+
 }
 
 
@@ -54,7 +88,59 @@
 
 .today {
     user-select: none;
-    
+
+
+
+    &__detailsModeCtaContainer {
+        display: flex;
+        align-items: center;
+
+        &>div {
+            margin: 0 .3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            transition: .3s;
+            cursor: pointer;
+
+            &:hover {
+                background-color: white;
+            }
+        }
+
+        .determiner {
+            width: 0;
+            padding: 0;
+            transition: .3s;
+
+            &>div {
+                position: absolute;
+                top: -100%;
+                transform: translateY(-50%);
+                transition: .3s;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            & .visible {
+                top: 50% !important;
+            }
+
+            svg {
+                width: 60px;
+            }
+
+            &--active {
+                width: 60px;
+
+            }
+        }
+    }
+
+
     &__nonValidHabit {
         height: 100px;
     }
@@ -73,6 +159,10 @@
         transition: .3s;
         max-width: 100%;
         width: 100%;
+
+        &--inDetailsMode {
+            z-index: 50000000;
+        }
     }
 
     &__habitInStreamItem {
@@ -86,7 +176,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            z-index: 50000;
+            z-index: 5;
 
             &>div {
                 transition: .3s;
@@ -107,24 +197,39 @@
 
 
         &__detailsTrigger {
+            transition: transform .3s 1.5s, background .3s 0s !important;
+
+            &--rotate {
+                transform: rotate(90deg);
+            }
+
+        }
+
+        .innerContainer {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            transition: .3s;
-            cursor: pointer;
-            &:hover {
-                background-color: white;
+            position: absolute;
+            width: 95%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transition: .3s .8s;
+
+            &--setUp {
+                top: 8% !important;
             }
         }
 
+
         &__container {
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            // display: flex;
+            // align-items: center;
+            // justify-content: space-between;
             padding: 0 2rem;
             position: relative;
+            overflow: hidden;
         }
     }
 
@@ -155,6 +260,11 @@
             }
         }
 
+        &--lock {
+            transition-delay: 1s;
+            transform: translateX(200%);
+
+        }
 
         &__closeTrigger {
             position: absolute;
@@ -173,6 +283,7 @@
             &--flipped {
                 transform: rotate(180deg);
             }
+
         }
     }
 }

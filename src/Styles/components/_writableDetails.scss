@@ -1,0 +1,22 @@
+@keyframes growAsWidth {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+.writableDetails {
+    width: 0%;
+    outline: none;
+    background: transparent;
+    border: none;
+    animation: growAsWidth 2s alternate forwards 2s;
+
+
+    &::placeholder {
+        color: rgba(0, 0, 0, 0.425);
+    }
+}

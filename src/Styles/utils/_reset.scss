@@ -4,7 +4,9 @@
     box-sizing: border-box;
 }
 
-body , input {
+body,
+input,
+textarea {
     font-family: 'Darker Grotesque', 'Vazir', sans-serif;
     font-size: 1.6rem;
     font-weight: 500;
