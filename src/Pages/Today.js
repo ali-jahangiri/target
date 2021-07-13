@@ -43,11 +43,7 @@ const NonValidHabitFiller = ({ index, id }) => {
   );
 };
 
-const WritableDetails = ({
-  value,
-  onChange,
-  placeholder = "write and save your idea about this habit...",
-}) => {
+const WritableDetails = ({value,onChange,placeholder = "write and save your idea about this habit...",}) => {
   const inputRef = useRef();
 
   useEffect(() => {
@@ -67,23 +63,7 @@ const WritableDetails = ({
   );
 };
 
-const HabitInStreamItem = ({
-  detailsShowHandler,
-  id,
-  sidebarClosedByUser,
-  index,
-  setIsSidebarOpen,
-  color,
-  habitName,
-  resizeHandler,
-  hoursGoNext,
-  setNthChildHandler,
-  isInDragging,
-  isInResizing,
-  isInDetailsMode,
-  setHabitInStream,
-  habitInStream,
-}) => {
+const HabitInStreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index, setIsSidebarOpen, color, habitName, resizeHandler, hoursGoNext, setNthChildHandler, isInDragging, isInResizing, isInDetailsMode, setHabitInStream, habitInStream, }) => {
   const [internalH, setInternalH] = useState(0);
   const [isDetailsOptionMenuOpen, setIsDetailsOptionMenuOpen] = useState(false);
 

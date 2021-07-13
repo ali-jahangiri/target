@@ -106,15 +106,15 @@
             cursor: pointer;
 
             &:hover {
-                background-color: white;
+                background-color: white !important; 
             }
         }
 
         .determiner {
             width: 0;
             padding: 0;
-            transition: .3s;
-
+            position: relative;
+            overflow: hidden;
             &>div {
                 position: absolute;
                 top: -100%;
@@ -124,8 +124,9 @@
                 justify-content: center;
                 align-items: center;
             }
-
+            
             & .visible {
+                transition: .3s;
                 top: 50% !important;
             }
 

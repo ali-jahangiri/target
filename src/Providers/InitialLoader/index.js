@@ -7,6 +7,7 @@ import db from "../../firebase";
 import useFetch, { useFetchDispatcher } from "../useFetch";
 import { setUser } from "../../Store/slices/userSlice";
 import { ErrorPage, LoadingPage } from "../../Pages";
+import axios from "axios";
 
 const client_id = "764ed27cabac1f5a2fc3";
 const client_secret = "f33bec95761c696f667fdb06674fbc3f";
@@ -49,6 +50,15 @@ const InitialLoader = ({ children }) => {
 
 
   useEffect(() => {
+
+
+    axios.get("https://insurco.ir/baseApi/generateAppToken")
+      .then(data => {
+        console.log('====================================');
+        console.log(data);
+        console.log('====================================');
+      })
+
 
     api
       .post("https://api.artsy.net/api/tokens/xapp_token", {
