@@ -5,6 +5,7 @@ import {
   FiMoreHorizontal,
   FiLock,
   FiCheck,
+  FiArrowRight,
 } from "react-icons/fi";
 
 import { CgClose } from "react-icons/cg";
@@ -21,6 +22,7 @@ import { Resizable } from "re-resizable";
 import TodayHoursRow from "../components/TodayHoursRow";
 import { LoadingPage } from "../Pages";
 import Alert from "../components/Alert";
+import DetailsOptionsMenu from "../components/DetailsOptionMenu";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -43,7 +45,11 @@ const NonValidHabitFiller = ({ index, id }) => {
   );
 };
 
-const WritableDetails = ({value,onChange,placeholder = "write and save your idea about this habit...",}) => {
+const WritableDetails = ({
+  value,
+  onChange,
+  placeholder = "write and save your idea about this habit...",
+}) => {
   const inputRef = useRef();
 
   useEffect(() => {
@@ -63,9 +69,26 @@ const WritableDetails = ({value,onChange,placeholder = "write and save your idea
   );
 };
 
-const HabitInStreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index, setIsSidebarOpen, color, habitName, resizeHandler, hoursGoNext, setNthChildHandler, isInDragging, isInResizing, isInDetailsMode, setHabitInStream, habitInStream, }) => {
+const HabitInStreamItem = ({
+  detailsShowHandler,
+  id,
+  sidebarClosedByUser,
+  index,
+  setIsSidebarOpen,
+  color,
+  habitName,
+  resizeHandler,
+  hoursGoNext,
+  setNthChildHandler,
+  isInDragging,
+  isInResizing,
+  isInDetailsMode,
+  setHabitInStream,
+  habitInStream,
+}) => {
   const [internalH, setInternalH] = useState(0);
   const [isDetailsOptionMenuOpen, setIsDetailsOptionMenuOpen] = useState(false);
+  const [needToFillGap, setNeedToFillGap] = useState(null);
 
   const inputDetailsChangeHandler = (key, value) => {
     setHabitInStream((prev) => {
@@ -89,10 +112,40 @@ const HabitInStreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index,
   const _initialWasSettled = !!habitInStream.find((el) => el.id === id)
     ?._initial;
 
+  const refContainer = useRef();
+
+  const showDetailsHandler = (reset) => {
+    if (reset === false) {
+      setNeedToFillGap(0);
+      detailsShowHandler();
+      return;
+    }
+
+    if (isInDetailsMode) {
+      setIsDetailsOptionMenuOpen((prev) => !prev);
+    } else {
+      detailsShowHandler(id);
+      selfClearTimeout(() => {
+        const currentTopGap =
+          refContainer.current?.resizable?.getClientRects()[0].top;
+        if (currentTopGap) {
+          setNeedToFillGap(currentTopGap * -1);
+        }
+      }, 500);
+    }
+  };
+
+  let ss = hoursGoNext * 100;
+
   return (
     <Draggable isDragDisabled={isInDetailsMode} draggableId={id} index={index}>
       {(provided) => (
         <Resizable
+          style={{
+            top: needToFillGap || 0,
+            marginBottom: (needToFillGap && ss * -1) || 0,
+          }}
+          ref={refContainer}
           onResize={internalResizeHandler}
           onResizeStop={resizeEndHandler}
           className={`habitMainContainer ${
@@ -120,6 +173,12 @@ const HabitInStreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index,
             ),
           }}
         >
+          {isDetailsOptionMenuOpen && (
+            <DetailsOptionsMenu
+              closeHandler={setIsDetailsOptionMenuOpen}
+              bgColor={color}
+            />
+          )}
           <div
             ref={provided.innerRef}
             {...provided.draggableProps}
@@ -140,11 +199,7 @@ const HabitInStreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index,
                 <p>{habitName}</p>
                 <div className="today__detailsModeCtaContainer">
                   <div
-                    onClick={() =>
-                      isInDetailsMode
-                        ? setIsDetailsOptionMenuOpen((prev) => !prev)
-                        : detailsShowHandler(id)
-                    }
+                    onClick={showDetailsHandler}
                     className={`today__habitInStreamItem__detailsTrigger ${
                       isInDetailsMode
                         ? "today__habitInStreamItem__detailsTrigger--rotate"
@@ -154,7 +209,7 @@ const HabitInStreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index,
                     <FiMoreHorizontal />
                   </div>
                   <div
-                    onClick={() => detailsShowHandler(id)}
+                    onClick={() => showDetailsHandler(false)}
                     className={`determiner ${
                       isInDetailsMode ? "determiner--active" : ""
                     }`}
@@ -296,10 +351,10 @@ const Today = () => {
   };
 
   useEffect(() => {
-    console.log(detailsTimeline, "timeline");
-  }, [detailsTimeline]);
+    console.log(habitInStream, "timeline");
+  }, [habitInStream]);
 
-  const detailsShowHandler = (id) => {
+  const detailsShowHandler = (id, h) => {
     const bodyStyle = document.body.style;
 
     if (!isDetailsModeActive) {
