@@ -23,6 +23,7 @@ import TodayHoursRow from "../components/TodayHoursRow";
 import { LoadingPage } from "../Pages";
 import Alert from "../components/Alert";
 import DetailsOptionsMenu from "../components/DetailsOptionMenu";
+import TodoInjector from "../components/TodoInjector";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -261,6 +262,9 @@ const Today = () => {
   const [timelineHeight, setTimelineHeight] = useState(0);
   const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
 
+  const [injectedTodo, setInjectedTodo] = useState("")
+
+  
   useEffect(() => {
     db.collection("target").onSnapshot((snapshot) => {
       setTodayHabit(
@@ -271,9 +275,11 @@ const Today = () => {
   }, []);
 
   const dragEndHandler = ({ source, destination, draggableId }) => {
+    console.log(source, destination, draggableId);
     setIsDraggingStart(false);
-    if (!isSidebarOpen && !sidebarClosedByUser)
+    if (!isSidebarOpen && !sidebarClosedByUser) {
       selfClearTimeout(() => setIsSidebarOpen(true), 500);
+    }
 
     if (currentHabitBlock) {
       ["leftRotate", "rightRotate"].map((el) =>
@@ -289,6 +295,9 @@ const Today = () => {
     if (source.droppableId === TODAY_ID)
       return reorderHandler(destination, source);
 
+    if(draggableId === "injectedTodo") {
+      return todoInjectionHandler(destination, source)
+    }
     let insertIndex = destination.index;
     setHabitInStream((prev) => {
       const clone = [...prev];
@@ -312,9 +321,42 @@ const Today = () => {
     });
   };
 
+
+
+  const todoInjectionHandler = (destination, source) => {
+    let insertIndex = destination.index;
+    setHabitInStream((prev) => {
+      const clone = [...prev];
+      if (!clone[insertIndex].name) {
+        clone[insertIndex] = {
+          name : injectedTodo,
+          color : "988989",
+          id: idGenerator(),
+          hoursGoNext: 1,
+        };
+        return clone;
+      } else {
+        const habitClone = [...habitInStream];
+        habitClone.splice(insertIndex, 0, {
+          name : injectedTodo,
+          color : "988989",
+          id: idGenerator(),
+          hoursGoNext: 1,
+        });
+        return habitClone;
+      }
+    });
+  }
+
+
+  useEffect(() => {
+      console.log('habitInSteam' , habitInStream);
+  } , [habitInStream])
+
+
   const dragStartHandler = ({ source }) => {
     setIsDraggingStart(true);
-    if (source.droppableId === TODAY_ID) setIsSidebarOpen(false);
+    if (source.droppableId === TODAY_ID || source.droppableId === "injectedTodo") setIsSidebarOpen(false);
   };
 
   const reorderHandler = (destination, other) => {
@@ -440,10 +482,7 @@ const Today = () => {
     <div className="today">
       {isDetailsModeActive && (
         <div style={{ top: isDetailsModeActive }} className="helperOverlay">
-          <span
-            style={{ height: timelineHeight }}
-            className="helperOverlay__timeline"
-          >
+          <span style={{ height: timelineHeight }} className="helperOverlay__timeline">
             <span></span>
           </span>
         </div>
@@ -452,19 +491,8 @@ const Today = () => {
         onDragStart={dragStartHandler}
         onDragEnd={dragEndHandler}
       >
-        <div
-          className={`todayHoursRow__container ${
-            isDraggingStart || isResizeStart
-              ? "todayHoursRow__container--rowInHover"
-              : ""
-          }`}
-        >
-          <div
-            style={{
-              position: "relative",
-              zIndex: currentDetailsModeHabit ? 50000 : -1,
-            }}
-          >
+        <div className={`todayHoursRow__container ${isDraggingStart || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
+          <div style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : -1}}>
             {hours.map((el, i) => (
               <TodayHoursRow
                 indexInTimeline={
@@ -548,32 +576,21 @@ const Today = () => {
                           {...provided.dragHandleProps}
                           className="sliderHabitBlock__habitItem"
                         >
-                          <div
-                            onMouseDown={({ currentTarget, nativeEvent }) => {
+                          <div onMouseDown={({ currentTarget, nativeEvent }) => {
                               if (!isDraggingStart) return;
                               let className = "sliderHabitBlock__habitItem";
                               setCurrentHabitBlock(currentTarget);
                               let x = nativeEvent.offsetX;
                               if (x >= 105 && x <= 205) return;
                               if (x > 105) {
-                                currentTarget.classList.add(
-                                  `${className}--leftRotate`
-                                );
-                                currentTarget.classList.remove(
-                                  `${className}--rightRotate`
-                                );
+                                currentTarget.classList.add(`${className}--leftRotate`);
+                                currentTarget.classList.remove(`${className}--rightRotate`);
                               } else {
-                                currentTarget.classList.add(
-                                  `${className}--rightRotate`
-                                );
-                                currentTarget.classList.remove(
-                                  `${className}--leftRotate`
-                                );
+                                currentTarget.classList.add(`${className}--rightRotate`);
+                                currentTarget.classList.remove(`${className}--leftRotate`);
                               }
                             }}
-                            style={{
-                              backgroundColor: `#${el.color || "dcdcdc"}`,
-                            }}
+                            style={{backgroundColor: `#${el.color || "dcdcdc"}`}}
                             className="sliderHabitBlock__habitItem__container"
                           >
                             <p>{el.name}</p>
@@ -582,6 +599,10 @@ const Today = () => {
                       )}
                     </Draggable>
                   ))}
+                  <TodoInjector 
+                    value={injectedTodo} 
+                    changeHandler={setInjectedTodo} 
+                    index={todayHabit.length} />
                   {provided.placeholder}
                 </div>
               )}
