@@ -4,7 +4,7 @@ import { FiPlus } from "react-icons/fi";
 import Input from "./Input";
 
 
-const TodoInjector = ({ index , value , changeHandler }) => {
+const Todo = ({ index , value , changeHandler }) => {
     
 
     const inputRef = useRef();
@@ -39,4 +39,4 @@ const TodoInjector = ({ index , value , changeHandler }) => {
 }
 
 
-export default TodoInjector;
+export default Todo;

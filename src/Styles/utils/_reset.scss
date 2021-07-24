@@ -11,3 +11,22 @@ textarea {
     font-size: 1.6rem;
     font-weight: 500;
 }
+
+.mainContainer {
+    overflow: hidden;
+    height: 100vh;
+}
+.__dayContainer {
+    min-width: 100vw;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.innerContainer {
+    width: 95%;
+    height: 90%;
+    background-color: lightsalmon;
+    display: flex;
+}

@@ -1,26 +1,47 @@
-import React, { createContext, useState } from "react";
+  
+import React, { createContext, useState } from 'react';
+import { useEffect } from 'react';
 
 export const Store = createContext({
-  store: {},
-  setStore: ({ type, payload }) => {},
+    store : {},
+    setStore : ({ type , payload }) => {}
 });
 
-const StoreProvider = ({ children, store }) => {
-  if (!store) throw new Error("Please pass your store to Provider!");
-  const [_store, set_Store] = useState(() => store.value);
+const StoreProvider = ({ children , store , logger = false , persistorEnabled , whiteSlice = [] }) => {
+    if(!store) throw new Error("Please pass your store to Provider!");
+    const [_store, set_Store] = useState(() => store.value);
 
-  const changeStore = ({ valueMaker, sliceName, payload }) => {
-    set_Store((prev) => ({
-      ...prev,
-      [sliceName]: valueMaker(prev[sliceName], payload),
-    }));
-  };
+    const persistOnChange = (sliceName , newValue) => {
+        if(persistorEnabled && whiteSlice.includes(sliceName)) {
+            localStorage.setItem(sliceName , JSON.stringify(newValue))
+        }
+    }
 
-  return (
-    <Store.Provider value={{ store: _store, setStore: changeStore }}>
-      {children}
-    </Store.Provider>
-  );
-};
+
+    const changeStore = ({ valueMaker , sliceName , payload , ...other }) => {
+        set_Store(prev => ({
+            ...prev,
+            [sliceName] : valueMaker(prev[sliceName] , payload)
+        }));
+        persistOnChange(sliceName , valueMaker(_store[sliceName] , payload))
+        // console.log(`Action => ${other.type} - inside ' ${sliceName} ' slice` , _store);
+        // console.groupCollapsed('Dispatching')
+        // console.log(`Action => ${other.type} - inside ' ${sliceName} ' slice`);
+        // console.groupEnd("end")
+    }
+
+    useEffect(() => {
+        if(persistorEnabled) {
+            Object.entries(_store)
+            .map(([key]) => set_Store(prev => ({ ...prev ,  [key] : JSON.parse(localStorage.getItem(key)) || _store[key] })))
+        }
+    } , [])
+
+    return (
+        <Store.Provider value={{ store : _store , setStore : changeStore }}>
+            {children}
+        </Store.Provider>
+    )
+}
 
 export default StoreProvider;

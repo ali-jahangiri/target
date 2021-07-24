@@ -1,0 +1,29 @@
+
+.monthDetails {
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // padding: 1rem;
+    // padding-bottom: 1.5rem;
+    transition: .5s;
+    max-height: 0;
+    opacity: 0;
+
+    &--active {
+        max-height: 500px;
+        opacity: 1;
+        
+    }
+
+    div {
+        display: flex;
+        justify-self: center;
+        padding: .8rem;
+        cursor: pointer;
+        transition: .3s;
+        &:hover {
+            background-color: $green;
+        }
+    }
+}

@@ -9,6 +9,10 @@ const firebaseApp = firebase.initializeApp({
   appId: "1:569979414355:web:13683a393681631ef923a6",
 });
 
+
+const serverTimestamp = firebase.firestore.FieldValue.serverTimestamp
+
 const db = firebaseApp.firestore();
+
 
 export default db;

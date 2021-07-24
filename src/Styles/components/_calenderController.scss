@@ -1,0 +1,33 @@
+.calender__controller {
+    user-select: none;
+    position: absolute;
+    width: 4rem;
+    height: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: .3s;
+
+    &:hover {
+        opacity: 1;
+    }
+    
+    //before icon
+    &:first-child {
+        left: 0%;
+    }
+
+    // next icon
+    &:nth-child(2) {
+        right: 0%;
+    }
+
+    svg {
+        width: 2.2rem;
+        height: 2.2rem;
+    }
+}

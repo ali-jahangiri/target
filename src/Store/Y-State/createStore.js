@@ -1,9 +1,12 @@
 const createStore = (slice) => {
   const initialsValue = {};
-  Object.entries(slice).map(([sliceName, value]) => {
-    initialsValue[sliceName] = value;
+  Object.entries(slice)
+  .map(([sliceName , value]) => {
+      initialsValue[sliceName] = value
   });
-  return initialsValue;
-};
+  return initialsValue
+  
+}
+
 
 export default createStore;

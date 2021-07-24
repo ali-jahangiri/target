@@ -1,29 +1,22 @@
 import { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import {
-  FiChevronLeft,
-  FiMoreHorizontal,
-  FiLock,
-  FiCheck,
-  FiArrowRight,
-} from "react-icons/fi";
-
+import { FiChevronLeft, FiMoreHorizontal, FiLock, FiCheck } from "react-icons/fi";
 import { CgClose } from "react-icons/cg";
-
-import db from "../firebase";
-import {
-  habitForTodayExtractor,
-  idGenerator,
-  selfClearTimeout,
-} from "../utils";
-
 import { Resizable } from "re-resizable";
+
+import { references } from "../firebase";
+
+
+import { habitForTodayExtractor, idGenerator, selfClearTimeout } from "../utils";
+
 
 import TodayHoursRow from "../components/TodayHoursRow";
 import { LoadingPage } from "../Pages";
 import Alert from "../components/Alert";
 import DetailsOptionsMenu from "../components/DetailsOptionMenu";
-import TodoInjector from "../components/TodoInjector";
+import Todo from "../components/Todo";
+
+const { stream , target } = references;
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -54,7 +47,7 @@ const WritableDetails = ({
   const inputRef = useRef();
 
   useEffect(() => {
-    selfClearTimeout(() => {
+    selfClearTimeout(() => {  
       inputRef.current?.focus();
     }, 3000);
   }, [inputRef]);
@@ -70,23 +63,7 @@ const WritableDetails = ({
   );
 };
 
-const HabitInStreamItem = ({
-  detailsShowHandler,
-  id,
-  sidebarClosedByUser,
-  index,
-  setIsSidebarOpen,
-  color,
-  habitName,
-  resizeHandler,
-  hoursGoNext,
-  setNthChildHandler,
-  isInDragging,
-  isInResizing,
-  isInDetailsMode,
-  setHabitInStream,
-  habitInStream,
-}) => {
+const HabitInStreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index, setIsSidebarOpen, color, habitName, resizeHandler, hoursGoNext, setNthChildHandler, isInDragging, isInResizing, isInDetailsMode, setHabitInStream, habitInStream, }) => {
   const [internalH, setInternalH] = useState(0);
   const [isDetailsOptionMenuOpen, setIsDetailsOptionMenuOpen] = useState(false);
   const [needToFillGap, setNeedToFillGap] = useState(null);
@@ -166,12 +143,7 @@ const HabitInStreamItem = ({
           defaultSize={{ width: "100%", height: hoursGoNext * 100 }}
           handleComponent={{
             bottom: (
-              <div
-                className={`resizeTrigger ${
-                  isInResizing === id ? "resizeTrigger--active" : ""
-                }`}
-              ></div>
-            ),
+              <div className={`resizeTrigger ${isInResizing === id ? "resizeTrigger--active" : ""}`}></div>),
           }}
         >
           {isDetailsOptionMenuOpen && (
@@ -209,12 +181,7 @@ const HabitInStreamItem = ({
                   >
                     <FiMoreHorizontal />
                   </div>
-                  <div
-                    onClick={() => showDetailsHandler(false)}
-                    className={`determiner ${
-                      isInDetailsMode ? "determiner--active" : ""
-                    }`}
-                  >
+                  <div onClick={() => showDetailsHandler(false)} className={`determiner ${isInDetailsMode ? "determiner--active" : ""}`} >
                     <div className={`${_initialWasSettled ? "visible" : ""}`}>
                       <FiCheck />
                     </div>
@@ -242,14 +209,12 @@ const HabitInStreamItem = ({
   );
 };
 
-const Today = () => {
+const Today = ({ match : { params } }) => {
+
   const [todayHabit, setTodayHabit] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const [habitInStream, setHabitInStream] = useState(
-    hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }))
-  );
   const [isDraggingStart, setIsDraggingStart] = useState(false);
   const [currentHabitBlock, setCurrentHabitBlock] = useState(null);
 
@@ -264,15 +229,50 @@ const Today = () => {
 
   const [injectedTodo, setInjectedTodo] = useState("")
 
+  const today = params.date.split("-").join("")
+
+  const [habitInStream, setHabitInStream] = useState([]);
+
+  const initialRender = useRef(true);
+
+  useEffect(() => {
+    stream
+    .doc(today)
+    .get()
+    .then(data => {
+      if(!data.exists) {
+        const items = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }));
+        stream
+          .doc(today)
+          .set({ items })
+          .then(_ => {
+            setHabitInStream(items); 
+          })
+      }else {
+        setHabitInStream(data.data().items)
+      }
+      initialRender.current = false
+    })
+
+  } , [])
   
   useEffect(() => {
-    db.collection("target").onSnapshot((snapshot) => {
-      setTodayHabit(
-        habitForTodayExtractor(snapshot.docs.map((el) => ({ ...el.data() })))
-      );
+    target
+    .onSnapshot(snapshot => {
+      setTodayHabit(habitForTodayExtractor(snapshot.docs.map((el) => ({ ...el.data() }))));
       setLoading(false);
     });
   }, []);
+
+
+  useEffect(() => {
+    if(!initialRender.current) {
+      console.log('in initial');
+      stream
+      .doc(today)
+      .update({ items : habitInStream })
+    }
+  } , [habitInStream]) 
 
   const dragEndHandler = ({ source, destination, draggableId }) => {
     console.log(source, destination, draggableId);
@@ -321,8 +321,6 @@ const Today = () => {
     });
   };
 
-
-
   const todoInjectionHandler = (destination, source) => {
     let insertIndex = destination.index;
     setHabitInStream((prev) => {
@@ -347,12 +345,6 @@ const Today = () => {
       }
     });
   }
-
-
-  useEffect(() => {
-      console.log('habitInSteam' , habitInStream);
-  } , [habitInStream])
-
 
   const dragStartHandler = ({ source }) => {
     setIsDraggingStart(true);
@@ -392,9 +384,6 @@ const Today = () => {
     setIsSidebarOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    console.log(habitInStream, "timeline");
-  }, [habitInStream]);
 
   const detailsShowHandler = (id, h) => {
     const bodyStyle = document.body.style;
@@ -453,9 +442,11 @@ const Today = () => {
   // }
   // // const scrollHelperOnResizeHandler = debounce(({ pageY }) => {
   // //   if(isResizeStart) {
-  // //     console.log(pageY ,"**");
-  // //   }
-  // // } , 0)
+    // //     console.log(pageY ,"**");
+    // //   }
+    // // } , 0)
+  
+
 
   useLayoutEffect(() => {
     let timer = setInterval(() => {
@@ -469,6 +460,8 @@ const Today = () => {
         clearTimeout(timer);
       }
     }, 3.6e6);
+
+
 
     return () => {
       clearInterval(timer);
@@ -599,7 +592,7 @@ const Today = () => {
                       )}
                     </Draggable>
                   ))}
-                  <TodoInjector 
+                  <Todo
                     value={injectedTodo} 
                     changeHandler={setInjectedTodo} 
                     index={todayHabit.length} />
