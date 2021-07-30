@@ -90,7 +90,12 @@
 
 .today {
     user-select: none;
+    width: 100%;
+    position: relative;
 
+    ::-webkit-scrollbar {
+        display: none !important;
+    }
 
 
     &__detailsModeCtaContainer {
@@ -161,13 +166,19 @@
         left: 0;
         width: 100%;
         padding-left: 180px;
+        ::-webkit-scrollbar {
+            display: none !important;
+        }
     }
 
     .habitMainContainer {
         transition: .3s  ,margin-bottom .3s .2s;
         max-width: 100%;
+        z-index: 555;
         width: 100%;
-
+        ::-webkit-scrollbar {
+            display: none !important;
+        }
         &--inDetailsMode {
             z-index: 50000000;
         }
@@ -252,12 +263,17 @@
     }
 
     &__habitSidebar {
-        height: 100vh;
+        height: 90vh;
         position: fixed;
-        z-index: 500000000000;
-        right: 0;
-        top: 0;
-        width: 30vw;
+        z-index: 99999999;
+        right: 2%;
+        top: 2%;
+        width: 25vw;
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
         transition: 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
         background-color: white;
 
@@ -271,8 +287,7 @@
         }
 
         &--close {
-            transform: translateX(100%);
-
+            transform: translateX(110%);
             .today__habitSidebar__habitDirectory {
                 opacity: 0;
             }
@@ -303,5 +318,15 @@
             }
 
         }
+    }
+}
+#Container {
+    ::-webkit-scrollbar {
+        display: none !important;
+    }
+}
+#Container2 {
+    ::-webkit-scrollbar {
+        display: none !important;
     }
 }

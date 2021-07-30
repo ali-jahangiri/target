@@ -39,20 +39,19 @@ const client_secret = "f33bec95761c696f667fdb06674fbc3f";
 
 const InitialLoader = ({ children }) => {
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [stuckInLoading, setStuckInLoading] = useState(false);
   const dispatch = useDispatch();
 
 
 
   useEffect(() => {
-    db
-    .collection("user").onSnapshot((snapshot) => {
-      const data = snapshot.docs.map((el) => el.data()).pop();
-      dispatch(() => setUser(data));
-      setLoading(false);
-    });
-
+    // db
+    // .collection("user").onSnapshot((snapshot) => {
+    //   const data = snapshot.docs.map((el) => el.data()).pop();
+    //   dispatch(() => setUser(data));
+    //   setLoading(false);
+    // });
   }, []);
 
   if (stuckInLoading) return <ErrorPage message={stuckInLoading} />;

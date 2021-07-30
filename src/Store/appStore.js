@@ -1,13 +1,13 @@
 import { combineSlice, createStore } from "./Y-State";
 
-import artWorkSlice from "./slices/artWorkSlice";
-import userSlice from "./slices/userSlice";
-import habitStreamSlice from "./slices/habitStreamSlice";
+import targetSlice from "./slices/targetSlice";
+import habitPerWeekSlice from "./slices/habitPerWeekSlice";
+import streamSlice from "./slices/streamSlice";
 
 const appStore = createStore(combineSlice({
-    artwork : artWorkSlice,
-    user : userSlice,
-    habitStream : habitStreamSlice
+    target : targetSlice,
+    habitPerWeek : habitPerWeekSlice,
+    stream : streamSlice
 }));
 
 export default appStore;

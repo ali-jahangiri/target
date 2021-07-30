@@ -50,13 +50,13 @@ const TargetItemColorPicker = ({ selectedColor , onChange , onDone }) => {
     
     return (
         <div className="targetItemColorPicker">
-            <div className="targetItemColorPicker__title">
+            <div className="targetItemColorPicker__container">
                 {
                     colors.map((el , i) => (
                         <Color selectedColor={selectedColor} onSelect={onChange} {...el} key={i} />
                     ))
                 }
-                <span className="targetItemColorPicker__doneTrigger" onClick={() => onDone()}>and Go !</span>
+                <span className="targetItemColorPicker__doneTrigger" onClick={() => onDone()}>and Go</span>
             </div>
         </div>
     )

@@ -8,5 +8,7 @@ import LoadingPage from "./LoadingPage";
 import HabitPerDay from "./HabitPerDay";
 import NotFound from "./NotFound";
 import Playground from "./Playground";
+import HabitPerWeek from "./HabitPerWeek";
 
-export { Home , Targets , NewTarget , Today , UserSetup , ErrorPage , LoadingPage , HabitPerDay , NotFound , Playground};
+
+export { Home , Targets , NewTarget , Today , UserSetup , ErrorPage , LoadingPage , HabitPerDay , NotFound , Playground , HabitPerWeek};

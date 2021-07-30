@@ -35,7 +35,7 @@ const HabitListCreator = ({ onChange , habit , haveTargetColor }) => {
 
     return (
         <div className="habitListCreator">
-            <p onClick={focusOnInputHandler} className="habitListCreator__title">Which habits help you to achieve target ? </p>
+            {/* <p onClick={focusOnInputHandler} className="habitListCreator__title">Which habits help you to achieve target ? </p> */}
             <div className="row habitListCreator__directory">
                 {
                     habit.map((el , i) => (
@@ -50,11 +50,12 @@ const HabitListCreator = ({ onChange , habit , haveTargetColor }) => {
                 }
             </div>
             <form onSubmit={e => e.preventDefault()} className="habitListCreator__inputPart">
-                <Input 
+                <Input
+                    containerStyle={{ width : "100%" }}
                     reference={inputRef}
                     onChange={changeHandler}
                     value={value}
-                    placeholder="For example ..."
+                    placeholder="Which habits help you to achieve target ? "
                 />
                 {
                     value && 

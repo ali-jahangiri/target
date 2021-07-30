@@ -4,19 +4,16 @@ import { FiChevronLeft, FiMoreHorizontal, FiLock, FiCheck } from "react-icons/fi
 import { CgClose } from "react-icons/cg";
 import { Resizable } from "re-resizable";
 
-import { references } from "../firebase";
 
-
-import { habitForTodayExtractor, idGenerator, selfClearTimeout } from "../utils";
+import { idGenerator, selfClearTimeout } from "../utils";
 
 
 import TodayHoursRow from "../components/TodayHoursRow";
-import { LoadingPage } from "../Pages";
 import Alert from "../components/Alert";
 import DetailsOptionsMenu from "../components/DetailsOptionMenu";
 import Todo from "../components/Todo";
-
-const { stream , target } = references;
+import { useDispatch, useSelector } from "../Store/Y-State";
+import { setStream } from "../Store/slices/streamSlice";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -67,6 +64,8 @@ const HabitInStreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index,
   const [internalH, setInternalH] = useState(0);
   const [isDetailsOptionMenuOpen, setIsDetailsOptionMenuOpen] = useState(false);
   const [needToFillGap, setNeedToFillGap] = useState(null);
+
+
 
   const inputDetailsChangeHandler = (key, value) => {
     setHabitInStream((prev) => {
@@ -209,11 +208,13 @@ const HabitInStreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index,
   );
 };
 
-const Today = ({ match : { params } }) => {
+const Today = ({ date , sideBarEnabled }) => {
 
-  const [todayHabit, setTodayHabit] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [loading, setLoading] = useState(true);
+  
+  const todayHabit = useSelector(state => Object.values(state.target).map(({ color , habit }) => ({ color , habit })));
+  
+  // console.log(todayHabit);
 
   const [isDraggingStart, setIsDraggingStart] = useState(false);
   const [currentHabitBlock, setCurrentHabitBlock] = useState(null);
@@ -227,55 +228,28 @@ const Today = ({ match : { params } }) => {
   const [timelineHeight, setTimelineHeight] = useState(0);
   const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
 
+  const habitInStreamInsideStore = useSelector(state => state.stream[date] || hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 })))
+
+  const [habitInStream, setHabitInStream] = useState(() => habitInStreamInsideStore);
+
+
   const [injectedTodo, setInjectedTodo] = useState("")
-
-  const today = params.date.split("-").join("")
-
-  const [habitInStream, setHabitInStream] = useState([]);
-
-  const initialRender = useRef(true);
-
-  useEffect(() => {
-    stream
-    .doc(today)
-    .get()
-    .then(data => {
-      if(!data.exists) {
-        const items = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }));
-        stream
-          .doc(today)
-          .set({ items })
-          .then(_ => {
-            setHabitInStream(items); 
-          })
-      }else {
-        setHabitInStream(data.data().items)
-      }
-      initialRender.current = false
-    })
-
-  } , [])
   
-  useEffect(() => {
-    target
-    .onSnapshot(snapshot => {
-      setTodayHabit(habitForTodayExtractor(snapshot.docs.map((el) => ({ ...el.data() }))));
-      setLoading(false);
-    });
-  }, []);
+  const [firstTime, setFirstTime] = useState(true);
+
+  useEffect(() => setFirstTime(false) , []);
+  const storeDispatcher = useDispatch();
+
 
 
   useEffect(() => {
-    if(!initialRender.current) {
-      console.log('in initial');
-      stream
-      .doc(today)
-      .update({ items : habitInStream })
+    if(!firstTime) {
+      storeDispatcher(setStream({ id : date , items : habitInStream }))
     }
-  } , [habitInStream]) 
+  } , [habitInStream])
+
 
   const dragEndHandler = ({ source, destination, draggableId }) => {
-    console.log(source, destination, draggableId);
     setIsDraggingStart(false);
     if (!isSidebarOpen && !sidebarClosedByUser) {
       selfClearTimeout(() => setIsSidebarOpen(true), 500);
@@ -302,17 +276,20 @@ const Today = ({ match : { params } }) => {
     setHabitInStream((prev) => {
       const clone = [...prev];
       if (!clone[insertIndex].name) {
+        const _targetHabit = todayHabit.find(el => el.habit.some(el => el.id === draggableId));
         clone[insertIndex] = {
-          ...todayHabit.find((el) => el.id === draggableId),
+          color : _targetHabit.color,
+          name : _targetHabit.habit.find(el => el.id === draggableId).name,   
           id: idGenerator(),
           hoursGoNext: 1,
         };
         return clone;
       } else {
         const habitClone = [...habitInStream];
-        let targetWasInvalid;
+        const _targetHabit =  todayHabit.find(el => el.habit.some(el => el.id === draggableId));
         habitClone.splice(insertIndex, 0, {
-          ...todayHabit.find((el) => el.id === draggableId),
+          color : _targetHabit.color,
+          name : _targetHabit.habit.find(el => el.id === draggableId).name,
           id: idGenerator(),
           hoursGoNext: 1,
         });
@@ -363,19 +340,10 @@ const Today = ({ match : { params } }) => {
       Alert.warning("your habit cannot ross over today hours");
       return;
     }
-    const wasUnderValidH =
-      height <= 0 && habitInStream[index].hoursGoNext === 1 ? true : false;
+    const wasUnderValidH = height <= 0 && habitInStream[index].hoursGoNext === 1 ? true : false;
     if (height && !wasUnderValidH) {
-      let floatedHours = Math.round(
-        height >= 100 ? height / 100 : height / 100
-      );
-      setHabitInStream((prev) =>
-        prev.map((el, i) =>
-          i === index
-            ? { ...el, hoursGoNext: el.hoursGoNext + floatedHours }
-            : el
-        )
-      );
+      let floatedHours = Math.round(height >= 100 ? height / 100 : height / 100);
+      setHabitInStream((prev) => prev.map((el, i) => i === index ? { ...el, hoursGoNext: el.hoursGoNext + floatedHours } : el ));
     }
   };
 
@@ -469,9 +437,10 @@ const Today = ({ match : { params } }) => {
     };
   }, []);
 
-  return loading ? (
-    <LoadingPage />
-  ) : (
+
+  // console.log('render --------------------' , habitInStreamInsideStore);
+
+  return (
     <div className="today">
       {isDetailsModeActive && (
         <div style={{ top: isDetailsModeActive }} className="helperOverlay">
@@ -484,8 +453,8 @@ const Today = ({ match : { params } }) => {
         onDragStart={dragStartHandler}
         onDragEnd={dragEndHandler}
       >
-        <div className={`todayHoursRow__container ${isDraggingStart || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
-          <div style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : -1}}>
+        <div id="Container2" className={`todayHoursRow__container ${isDraggingStart || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
+          <div id="Container" style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : 5}}>
             {hours.map((el, i) => (
               <TodayHoursRow
                 indexInTimeline={
@@ -539,8 +508,9 @@ const Today = ({ match : { params } }) => {
             )}
           </Droppable>
         </div>
-        <div
-          className={`today__habitSidebar today__habitSidebar--${
+        {
+          sideBarEnabled ? 
+          <div className={`today__habitSidebar today__habitSidebar--${
             isSidebarOpen ? "open" : "close"
           } ${currentDetailsModeHabit ? "today__habitSidebar--lock" : ""}`}
         >
@@ -550,18 +520,15 @@ const Today = ({ match : { params } }) => {
               isSidebarOpen ? "today__habitSidebar__closeTrigger--flipped" : ""
             }`}
           >
-            {currentDetailsModeHabit ? (
-              <FiLock color="rgb(82, 82, 82)" />
-            ) : (
-              <FiChevronLeft color="rgb(82, 82, 82)" />
-            )}
+            {currentDetailsModeHabit ? <FiLock color="rgb(82, 82, 82)" /> : <FiChevronLeft color="rgb(82, 82, 82)" />}
           </div>
           <div className="today__habitSidebar__habitDirectory">
             <Droppable isDropDisabled droppableId={HABIT_LIST_ID}>
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   {todayHabit.map((el, i) => (
-                    <Draggable key={i} draggableId={el.id} index={i}>
+                    el.habit.map((habit , index) => (
+                      <Draggable key={index} draggableId={habit.id} index={index}>
                       {(provided) => (
                         <div
                           ref={provided.innerRef}
@@ -570,27 +537,28 @@ const Today = ({ match : { params } }) => {
                           className="sliderHabitBlock__habitItem"
                         >
                           <div onMouseDown={({ currentTarget, nativeEvent }) => {
-                              if (!isDraggingStart) return;
-                              let className = "sliderHabitBlock__habitItem";
-                              setCurrentHabitBlock(currentTarget);
-                              let x = nativeEvent.offsetX;
-                              if (x >= 105 && x <= 205) return;
-                              if (x > 105) {
-                                currentTarget.classList.add(`${className}--leftRotate`);
-                                currentTarget.classList.remove(`${className}--rightRotate`);
-                              } else {
-                                currentTarget.classList.add(`${className}--rightRotate`);
-                                currentTarget.classList.remove(`${className}--leftRotate`);
-                              }
+                              // if (!isDraggingStart) return;
+                              // let className = "sliderHabitBlock__habitItem";
+                              // setCurrentHabitBlock(currentTarget);
+                              // let x = nativeEvent.offsetX;
+                              // if (x >= 105 && x <= 205) return;
+                              // if (x > 105) {
+                              //   currentTarget.classList.add(`${className}--leftRotate`);
+                              //   currentTarget.classList.remove(`${className}--rightRotate`);
+                              // } else {
+                              //   currentTarget.classList.add(`${className}--rightRotate`);
+                              //   currentTarget.classList.remove(`${className}--leftRotate`);
+                              // }
                             }}
                             style={{backgroundColor: `#${el.color || "dcdcdc"}`}}
                             className="sliderHabitBlock__habitItem__container"
                           >
-                            <p>{el.name}</p>
+                            <p>{habit.name}</p>
                           </div>
                         </div>
                       )}
                     </Draggable>
+                    ))
                   ))}
                   <Todo
                     value={injectedTodo} 
@@ -601,7 +569,8 @@ const Today = ({ match : { params } }) => {
               )}
             </Droppable>
           </div>
-        </div>
+        </div> : null
+        }
       </DragDropContext>
     </div>
   );

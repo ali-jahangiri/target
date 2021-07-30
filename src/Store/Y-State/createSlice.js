@@ -1,5 +1,7 @@
 const createSlice = (sliceConfig = { name : "string" , initialState : {} , reducers : {} }) => {
   const actions = {};
+  if(!sliceConfig?.reducers || typeof sliceConfig.reducers !== "object") throw new Error("Passed Slice don't provide any reducers")
+
   
   Object.entries(sliceConfig.reducers)
       .map(([actionName , actionGenerator]) => {

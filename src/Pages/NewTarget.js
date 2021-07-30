@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Container from "../components/Container";
 import Input from "../components/Input";
 import HabitListCreator from "../components/HabitListCreator";
 import TargetItemColorPicker from "../components/TargetItemColorPicker";
-import { useSelector } from "../Store/Y-State";
-import { randomItemFromArr } from "../utils";
 
-import db from "../firebase";
+
 import { useHistory } from "react-router";
+import { idGenerator } from "../utils";
+import { useDispatch } from "../Store/Y-State";
+import { setNewTarget } from "../Store/slices/targetSlice";
 
 const NewTarget = () => {
   const [target, setTarget] = useState({});
   const history = useHistory();
-  const [currentImage, setCurrentImage] = useState("");
-  const image = useSelector((state) => state.artwork);
+
+  const dispatcher = useDispatch();
 
   const changeHandler = (key, value) => {
     setTarget((prev) => ({
@@ -23,25 +24,18 @@ const NewTarget = () => {
     }));
   };
 
-  useEffect(() => {
-    setCurrentImage(randomItemFromArr(image));
-  }, []);
 
-  const createNewTargetHandler = () => 
-        history.push('/scheduleHabit', {target} );
+  const createNewTargetHandler = () => {
+	const id = idGenerator();
+    dispatcher(setNewTarget({ id , details : target }));
+    history.push(`habitPerWeek/${id}`);
+  }
 
   return (
-    <div
-      style={{ backgroundImage: `url(${currentImage})` }}
-      className="newTarget"
-    >
+    <div className="newTarget" >
       <div className="newTarget__container">
         <Container>
-          <Input
-            showLabel
-            onChange={(value) => changeHandler("targetName", value)}
-            placeholder="Target Name"
-          />
+          <Input showLabel onChange={(value) => changeHandler("targetName", value)} placeholder="Target Name" />
           <HabitListCreator
             haveTargetColor={target?.color}
             habit={target?.habit || []}

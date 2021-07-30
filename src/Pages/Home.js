@@ -1,10 +1,8 @@
-import Calender from "../components/Calender";
+// import Calender from "../components/Calender";
 
 const Home = () => {
   return (
-    <div>
-      <Calender />
-    </div>
+    <div></div>
   );
 };
 

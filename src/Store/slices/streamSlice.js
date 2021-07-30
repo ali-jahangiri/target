@@ -1,10 +1,10 @@
 import { createSlice } from "../Y-State";
 
-const habitStreamSlice = createSlice({
-    name : "habitStream",
+const streamSlice = createSlice({
+    name : "stream",
     initialState : {},
     reducers : {
-        setInStream(state , payload) {
+        setStream(state , payload) {
             return {
                 ...state,
                 [payload.id] : payload.items
@@ -13,5 +13,5 @@ const habitStreamSlice = createSlice({
     }
 });
 
-export const { setInStream } = habitStreamSlice.actions;
-export default habitStreamSlice.reducer;
+export const { setStream } = streamSlice.actions;
+export default streamSlice.reducer;

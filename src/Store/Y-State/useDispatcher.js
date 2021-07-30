@@ -4,7 +4,7 @@ import { Store } from "./StoreProvider";
 
 const useDispatch = () => {
     const { setStore } = useContext(Store);
-    return action => setStore(action())
+    return action => setStore(action)
 }
 
 
