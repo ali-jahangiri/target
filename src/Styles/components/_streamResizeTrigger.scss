@@ -1,0 +1,25 @@
+.streamResizeTrigger {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 55555555555;
+    height: 14px;
+    background: rgba(236, 236, 236, 0.253);
+    width: 20%;
+    cursor: n-resize;
+    transition: .3s;
+
+    &:hover {
+        background: rgba(236, 236, 236, 0.514);
+    }
+
+
+    &--active {
+        &:hover {
+            background: rgba(236, 236, 236, 0.842) !important;
+        }
+
+        background: rgba(236, 236, 236, 0.842);
+    }
+}

@@ -1,7 +1,7 @@
 import Home from "./Home";
 import Targets from "./Targets";
 import NewTarget from "./NewTarget";
-import Today from "./Today";
+import Stream from "./Stream";
 import UserSetup from "./UserSetup";
 import ErrorPage from "./ErrorPage";
 import LoadingPage from "./LoadingPage";
@@ -11,4 +11,4 @@ import Playground from "./Playground";
 import HabitPerWeek from "./HabitPerWeek";
 
 
-export { Home , Targets , NewTarget , Today , UserSetup , ErrorPage , LoadingPage , HabitPerDay , NotFound , Playground , HabitPerWeek};
+export { Home , Targets , NewTarget , Stream as Today , UserSetup , ErrorPage , LoadingPage , HabitPerDay , NotFound , Playground , HabitPerWeek};

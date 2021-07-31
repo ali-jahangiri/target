@@ -1,14 +1,11 @@
 .todoInjector {
     margin-top: 1rem;
     backdrop-filter: blur(10px);
+
     &__container {
         width: 100%;
         margin: .2rem;
         position: relative;
-    }
-
-    &__addTrigger {
-        position: absolute;
     }
 
     &__input {

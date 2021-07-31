@@ -25,7 +25,7 @@ textarea {
 .mainContainer {
     overflow-x: hidden;
     height: 100vh;
-    background-color: white;
+    background-color: black;
 }
 .__dayContainer {
     min-width: 100vw;
@@ -38,7 +38,6 @@ textarea {
 .__innerContainer {
     width: 95%;
     height: 90%;
-    // background-color: #706353;
     display: flex;
     position: relative;
     transition: .2s .7s cubic-bezier(0.55, 0.085, 0.68, 0.53);
@@ -134,7 +133,6 @@ textarea {
     }
 
     &--active {
-        // transform: scale(3);
         right: 5%;
         bottom: 6%;
         width: calc(100vh - 5%);
@@ -142,10 +140,4 @@ textarea {
         border-radius: 0;
     }
 
-
-
-    &:hover {
-        // border-radius: 55px;
-        // background-color: red;
-    }
 }
