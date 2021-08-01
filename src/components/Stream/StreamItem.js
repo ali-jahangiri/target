@@ -7,13 +7,11 @@ import { selfClearTimeout } from "../../utils";
 
 import DetailsOptionsMenu from "../DetailsOptionMenu";
 import StreamResizeTrigger from "./StreamResizeTrigger";
+import { useDispatch } from "../../Store/Y-State";
+import { setNavigationCircleStatus } from "../../Store/slices/uiSlice";
 
 
-const WritableDetails = ({
-    value,
-    onChange,
-    placeholder = "write and save your idea about this habit...",
-  }) => {
+const WritableDetails = ({ value, onChange, placeholder = "write and save your idea about this habit..."}) => {
     const inputRef = useRef();
   
     useEffect(() => {
@@ -36,7 +34,12 @@ const WritableDetails = ({
   const StreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index, setIsSidebarOpen, color, habitName, resizeHandler, hoursGoNext, setNthChildHandler, isInDragging, isInResizing, isInDetailsMode, setHabitInStream, habitInStream, }) => {
     const [internalH, setInternalH] = useState(0);
     const [isDetailsOptionMenuOpen, setIsDetailsOptionMenuOpen] = useState(false);
-      
+
+    const [detailsActive, setDetailsActive] = useState(false);
+
+
+    const dispatcher = useDispatch();
+
     const inputDetailsChangeHandler = (key, value) => {
       setHabitInStream((prev) => {
         return prev.map((el, i) => (el.id === id ? { ...el, [key]: value } : el));
@@ -60,22 +63,41 @@ const WritableDetails = ({
     
     const refContainer = useRef();
   
+
+    const determineHandler = () => {
+      setIsDetailsOptionMenuOpen(false)
+    }
+
+
+    const closeHandler = () => {
+      setIsDetailsOptionMenuOpen(false)
+      // change current stream item mode to nothing - we don't specify any mode
+      setDetailsActive(false)
+      // tell to parent handler that we are done this this side and pass nothing to detailsShowHandler method
+      detailsShowHandler();
+    }
+
     const showDetailsHandler = () => {
-      const validStream = habitInStream.filter(el => el.name);
-      const targetStreamForSelectIndex = validStream.findIndex(el => el.name === habitName);
-      const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
-      const hh = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
-
-      document.getElementsByClassName('mainContainer')[0]
-        .scroll({ top : (index + hh) * 100 , behavior : "smooth" })
-
-      let start = index + hh;
-      const end = start + hoursGoNext;
+      if(detailsActive) {
+        setIsDetailsOptionMenuOpen(true);
+      }else {
+        // dispatcher(setNavigationCircleStatus(false))
+        const validStream = habitInStream.filter(el => el.name);
+        const targetStreamForSelectIndex = validStream.findIndex(el => el.name === habitName);
+        const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
+        const hh = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
+  
+        document.getElementsByClassName('mainContainer')[0]
+                .scroll({ top : (index + hh) * 100 , behavior : "smooth" })
+  
+        let start = index + hh;
+        const end = start + hoursGoNext;
+        
+        const possibleStep = new Array(end - start).fill("").map((_) => ++start);
+        detailsShowHandler(id , possibleStep);
+        setDetailsActive(true)
+      }
       
-      const possibleStep = new Array(end - start).fill("").map((_) => ++start);
-
-      if (isInDetailsMode) setIsDetailsOptionMenuOpen((prev) => !prev);
-      else detailsShowHandler(id , possibleStep);
     };
   
     return (
@@ -94,7 +116,7 @@ const WritableDetails = ({
             handleComponent={{bottom: <StreamResizeTrigger isInResizing={isInResizing === id} /> }} >
             {isDetailsOptionMenuOpen && (
               <DetailsOptionsMenu
-                closeHandler={setIsDetailsOptionMenuOpen}
+                closeHandler={determineHandler}
                 bgColor={color}
               />
             )}
@@ -114,7 +136,7 @@ const WritableDetails = ({
                       className={`streamItem__detailsTrigger ${isInDetailsMode? "streamItem__detailsTrigger--rotate": ""}`} >
                       <FiMoreHorizontal />
                     </div>
-                    <div onClick={() => showDetailsHandler(false)} className={`determiner ${isInDetailsMode ? "determiner--active" : ""}`} >
+                    <div onClick={closeHandler} className={`determiner ${isInDetailsMode ? "determiner--active" : ""}`} >
                       <div className={`${_initialWasSettled ? "visible" : ""}`}>
                         <FiCheck />
                       </div>

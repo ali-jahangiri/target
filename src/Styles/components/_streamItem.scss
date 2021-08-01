@@ -1,8 +1,10 @@
 .habitMainContainer {
     transition: .3s  , margin-bottom .3s .2s;
     max-width: 100%;
+    overflow: hidden;
     z-index: 555;
     width: 100%;
+    
     &--inDetailsMode {
         z-index: 50000000;
     }

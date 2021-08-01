@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { FiChevronLeft, FiLock, } from "react-icons/fi";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 
-import { EmptyHabitBlock , Todo , StreamItem, StreamSidebar} from "../components/Stream";
+import { EmptyHabitBlock , StreamItem, StreamSidebar} from "../components/Stream";
 
 import { idGenerator, selfClearTimeout } from "../utils";
 
@@ -50,7 +49,6 @@ const Stream = ({ date , sideBarEnabled }) => {
 
 
   useEffect(() => {
-    console.log(habitInStream , "habitInStream");
     if(!firstTime) {
       storeDispatcher(setStream({ id : date , items : habitInStream }))
     }
@@ -168,8 +166,11 @@ const Stream = ({ date , sideBarEnabled }) => {
         setDetailsTimeline(possibleStep);
         const scroll = document.getElementsByClassName('mainContainer')[0].scrollTop;
         setIsDetailsModeActive(scroll);
-        setTimelineHeight(possibleStep.length * 100);
       }, 250);
+
+      selfClearTimeout(() => {
+        setTimelineHeight(possibleStep.length * 100);
+      } , 350)
     } else {
       setIsDetailsModeActive(false);
       setTimelineHeight(0);

@@ -34,7 +34,7 @@
     &__timeline {
         content: "";
         width: 10px;
-        height: 200px;
+        height: 0px;
         background-color: #ffffff0f;
         display: block;
         position: absolute;
@@ -42,13 +42,12 @@
         transition: .3s 1s;
 
         span {
-            content: "";
             height: 10px;
             background-color: #383838;
             position: absolute;
             bottom: 0;
             right: 0%;
-            animation: growWidth .3s forwards alternate 1.3s;
+            animation: growWidth .3s forwards alternate 1.4s;
         }
     }
 

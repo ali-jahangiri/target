@@ -1,35 +1,60 @@
 @keyframes elementScale {
     from {
-        transform: scale(0 ,0);
+        bottom: -100%;
     }
     to {
-        transform: scale(1 ,1);
+        bottom: 0%;
     }
 }
 @keyframes elementScale2 {
     to {
-        transform: scale(0 ,0);
-        opacity: 0;
+        bottom: -100%;
+    }
+}
+
+
+@keyframes opacityFade {
+    from {
+        background-color:transparent;
+    }
+    to {
+        background-color: black;
     }
 }
 
 .detailsOptionMenu {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
-    transition: .3s;
+    transition: .3s cubic-bezier(0.785, 0.135, 0.15, 0.86);
     z-index: 5555;
-    padding: 1rem;
     width: 100%;
-    height: 100%;
-    transform-origin: bottom right;
+    height: 50%;
     animation: elementScale .5s forwards alternate;
-    background-color: red;
+    background-color: white;
+    display: flex;
     
-    &__back {
+    &__container {
+        padding: 1rem;
+    }
+
+    &__overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
         width: 100%;
+        z-index: 5;
+        transition: .3s;
+        animation: opacityFade 1s forwards alternate;
+    }
+
+
+    &__back {
+        width: 0;
         display: flex;
         justify-content: flex-end;
+        transition: .6s cubic-bezier(0.785, 0.135, 0.15, 0.86);
         div {
             padding: 15px;
             display: flex;
@@ -37,10 +62,16 @@
             justify-content: center;
             cursor: pointer;
             transition: .3s;
-
+            flex-direction: column;
+            color: grey;
             &:hover {
-                transform: translateX(.5rem);
+                transform: translateX(-.2rem);
             }
+        }
+
+
+        &--active {
+            width: 100%;
         }
     }
 

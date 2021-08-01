@@ -3,12 +3,16 @@ import { useState } from "react";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 
 import Persian from "persian-date";
-import { useEffect } from "react";
+import { useSelector } from "../Store/Y-State";
 
 const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setIsHoverInNavigationCircle , currentDay }) => {
     const [isActive, setIsActive] = useState(false);
     const now = new Persian()
     const currentMonthName = now.add("month" , currentMonth).format('MMMM');
+
+    // const isVisible = useSelector(state => state.ui.navigatorVisibilityStatus);
+    const isVisible = false
+    
 
     const nextMonthAvailable = (12 - (now.month() + currentMonth) ) > 0 ? true : false
 
@@ -38,7 +42,11 @@ const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setI
     //     return window.removeEventListener("keydown" , () => {})
     // } , [])
     return (
-        <div onMouseEnter={() => setIsHoverInNavigationCircle(true)} onMouseLeave={() => setIsHoverInNavigationCircle(false)} onClick={() => setIsActive(prev => !prev)} className={`setting ${isActive ? "setting--active" : ""}`}>
+        <div 
+            onMouseEnter={() => setIsHoverInNavigationCircle(true)} 
+            onMouseLeave={() => setIsHoverInNavigationCircle(false)} 
+            onClick={() => setIsActive(prev => !prev)} 
+            className={`setting ${isActive ? "setting--active" : ""} ${!isVisible ? "setting--hide" : "" }`}>
             <div style={{ display : "flex" , flexDirection : "column" , alignItems : 'center' }}>
                 <p style={{ fontWeight : 'bold' }}>{currentDay}</p>
                 <p style={{ transform : `rotate(${isActive ? 0 : rotate}deg)` }}>{currentMonthName}</p>
