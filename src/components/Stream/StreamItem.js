@@ -37,6 +37,8 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
 
     const [detailsActive, setDetailsActive] = useState(false);
 
+    const [position, setposition] = useState(0);
+
 
     const inputDetailsChangeHandler = (key, value) => {
       setHabitInStream((prev) => {
@@ -56,7 +58,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
       !sidebarClosedByUser && setIsSidebarOpen(true);
     };
   
-    let availableNextHours = 24 - (index + hoursGoNext);
+    let availableNextHours = (24 - (index + hoursGoNext)) - position;
     const _initialWasSettled = !!habitInStream.find((el) => el.id === id)?._initial;
     
     const refContainer = useRef();
@@ -65,6 +67,19 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
     const determineHandler = () => {
       setIsDetailsOptionMenuOpen(false)
     }
+
+    useEffect(() => {
+      const validStream = habitInStream.filter(el => el.name);
+        const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
+        const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
+        const hh = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
+        let start = index + hh;
+        const end = start + hoursGoNext;
+
+        
+        setposition(hh)
+
+    })
 
 
     const closeHandler = () => {
@@ -119,6 +134,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
               />
             )}
             <div
+              id={position}
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}

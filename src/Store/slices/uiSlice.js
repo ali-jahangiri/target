@@ -3,7 +3,8 @@ import { createSlice } from "../Y-State";
 const uiSlice = createSlice({
     name : "ui",
     initialState : {
-        navigatorVisibilityStatus : true
+        navigatorVisibilityStatus : true,
+        isInDragging : false
     },
     reducers : {
         setNavigationCircleStatus(state , payload) {
@@ -11,10 +12,16 @@ const uiSlice = createSlice({
                 ...state,
                 navigatorVisibilityStatus : payload
             }
+        },
+        setIsInDragging(state , payload) {
+            return {
+                ...state,
+                isInDragging : payload
+            }
         }
     }
 })
 
 
-export const { setNavigationCircleStatus } = uiSlice.actions
+export const { setNavigationCircleStatus , setIsInDragging } = uiSlice.actions
 export default uiSlice.reducer;

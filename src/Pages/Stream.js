@@ -11,6 +11,7 @@ import TodayHoursRow from "../components/TodayHoursRow";
 import Alert from "../components/Alert";
 import { useDispatch, useSelector } from "../Store/Y-State";
 import { setStream } from "../Store/slices/streamSlice";
+import { setIsInDragging } from "../Store/slices/uiSlice";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -57,6 +58,7 @@ const Stream = ({ date , sideBarEnabled }) => {
 
   const dragEndHandler = ({ source, destination, draggableId }) => {
     setIsDraggingStart(false);
+    // storeDispatcher(setIsInDragging(false));
     if (!isSidebarOpen && !sidebarClosedByUser) {
       selfClearTimeout(() => setIsSidebarOpen(true), 500);
     }
@@ -124,6 +126,7 @@ const Stream = ({ date , sideBarEnabled }) => {
   }
 
   const dragStartHandler = ({ source }) => {
+    // storeDispatcher(setIsInDragging(true));
     setIsDraggingStart(true);
     if (source.droppableId === TODAY_ID || source.droppableId === "injectedTodo") setIsSidebarOpen(false);
   };

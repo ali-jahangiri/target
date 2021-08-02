@@ -6,6 +6,7 @@ import { fixNumbers, selfClearTimeout } from "../utils";
 import ScheduleSettingCircle from "../components/ScheduleSettingCircle";
 
 import Stream from "./Stream";
+import { useSelector } from "../Store/Y-State";
 
 const Home = () => {
     const now = new Persian();
@@ -19,6 +20,7 @@ const Home = () => {
     const [currentDay, setCurrentDay] = useState(currentLeftPosition.current / window.innerWidth )
     const allMonthDay = new Array(now.add("month", currentMonth).daysInMonth()).fill(1);
     
+    const isInDragging = useSelector(state => state.ui.isInDragging);
     
     const scrollHandler = left => {
       containerRef.current?.scroll({ left , behavior : "smooth"})
@@ -66,7 +68,7 @@ const Home = () => {
         <div onWheel={onWheelHandler} ref={containerRef} style={{ display : "flex" }} className="mainContainer">
             {
                 allMonthDay.map((_ , i) => (
-                    <div key={i} className="__dayContainer">
+                    <div key={i} className={`__dayContainer ${i === currentDay && isInDragging ? "__dayContainer--scrollDisabled" : ""}`}>
                         <div 
                           data-id={i} 
                           className={`__innerContainer ${i === currentDay  ? "__innerContainer--active" : "__innerContainer--deActive"}`}>

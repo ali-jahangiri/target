@@ -1,3 +1,28 @@
+@keyframes grow {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    40% {
+        opacity: .5;
+        transform: scale(6);
+    }
+
+
+    100% {
+        opacity: 0;
+        transform: scale(6);
+        // transform: scale(0);
+    }
+    // from {
+    //     transform: scale(0);
+    //     opacity: 0;
+    // }
+    // to {
+    //     transform: scale(5);
+    //     opacity: 1;
+    // }
+}
 .todoInjector {
     margin-top: 1rem;
     backdrop-filter: blur(10px);
@@ -6,11 +31,45 @@
         width: 100%;
         margin: .2rem;
         position: relative;
+        overflow: hidden;
+    }
+
+    &__flash {
+        position: absolute;
+        z-index: 5;
+        left: 0;
+        width: 50px;
+        height: 100%;
+        background: rgba(250, 189, 57, 0.151);
+        animation: grow 1.5s forwards;
+        border-radius: 50%;
     }
 
     &__input {
-        input {
-            font-size: 2rem;
+        width: 100%;
+        padding: .5rem;
+        outline: none;
+        border: none;
+        z-index: 5;
+        position: relative;
+        transition: .3s;
+        background-color: transparent;
+
+        &--interpolate {
+            color:  rgb(250, 189, 57);
         }
     }
+
+    &__helperPlayground {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        height: 100%;
+        padding-left: .5rem;
+        position: absolute;
+        top: 0;
+        user-select: none;
+        z-index: -5;
+    }
+
 }
