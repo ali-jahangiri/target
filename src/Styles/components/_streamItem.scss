@@ -1,12 +1,12 @@
 .habitMainContainer {
     transition: .3s  , margin-bottom .3s .2s;
     max-width: 100%;
-    overflow: hidden;
     z-index: 555;
     width: 100%;
     
     &--inDetailsMode {
         z-index: 50000000;
+        overflow: hidden;
     }
 }
 .streamItem {
@@ -93,6 +93,10 @@
         }
     }
 
+
+    &--overflowHidden {
+        overflow: hidden;
+    }
 
     &__detailsTrigger {
         transition: transform .3s 1.5s, background .3s 0s !important;

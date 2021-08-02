@@ -38,8 +38,6 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
     const [detailsActive, setDetailsActive] = useState(false);
 
 
-    const dispatcher = useDispatch();
-
     const inputDetailsChangeHandler = (key, value) => {
       setHabitInStream((prev) => {
         return prev.map((el, i) => (el.id === id ? { ...el, [key]: value } : el));
@@ -83,7 +81,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
       }else {
         // dispatcher(setNavigationCircleStatus(false))
         const validStream = habitInStream.filter(el => el.name);
-        const targetStreamForSelectIndex = validStream.findIndex(el => el.name === habitName);
+        const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
         const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
         const hh = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
   
@@ -124,7 +122,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
-              className={`streamItem ${isInDragging ? "streamItem--hideResizeTrigger" : ""}`}>
+              className={`streamItem ${isInDragging ? "streamItem--hideResizeTrigger" : ""} ${detailsActive ? "streamItem--overflowHidden" : ""}`}>
               <div
                 className="streamItem__container"
                 style={{ backgroundColor: `#${color || "dcdcdc"}` }}>
