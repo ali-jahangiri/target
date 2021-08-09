@@ -1,8 +1,8 @@
-import db from "./firebase";
 import references from "./references";
+import { firebaseAuth } from "./firebase"
+
 
 export {
     references,
+    firebaseAuth
 }
-
-export default db;

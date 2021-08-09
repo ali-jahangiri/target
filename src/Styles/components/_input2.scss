@@ -1,0 +1,37 @@
+.input2 {
+    position: relative;
+    margin: 1.5rem 0;
+
+
+
+    &__placeholder {
+        position: absolute;
+        top: 50%;
+        transition: .1s;
+        font-size: 1.5rem;
+        transform: translateY(-50%);
+        user-select: none;
+        cursor: text;
+        color: grey;
+        padding: .5rem;
+        left: 10px;
+        background-color: white;
+        
+        &--focused {
+            color: $textColor;
+            font-size: 1.2rem;
+            top: -0%;
+        }
+    }
+    input {
+        border: 2px solid lighten($color: $budGreen, $amount: 35);
+        outline: none;
+        padding: 1.5rem 1rem;
+        font-size: 1.5rem;
+        transition: .3s;
+        width: 100%;
+        &:focus {
+            border-color: lighten($color: $budGreen, $amount: 15);
+        }
+    }
+}

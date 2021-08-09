@@ -1,5 +1,9 @@
 import PersianDate from "persian-date";
 
+import dayjs , { Dayjs } from "dayjs";
+import jalaliday from "jalaliday";
+dayjs.extend(jalaliday)
+
 export const generateColor = (color, fade) => {
   return `${color}${fade}0`;
 };
@@ -80,3 +84,6 @@ export const fixNumbers = function (str) {
   }
   return str;
 };
+
+
+export const _date = (targetDate) => dayjs(targetDate).calendar("jalali").locale('fa')

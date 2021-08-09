@@ -1,4 +1,4 @@
-import db from "./firebase";
+import { db } from "./firebase";
 
 const stream = db.collection("stream");
 const target = db.collection("target");

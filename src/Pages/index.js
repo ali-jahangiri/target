@@ -5,10 +5,10 @@ import Stream from "./Stream";
 import UserSetup from "./UserSetup";
 import ErrorPage from "./ErrorPage";
 import LoadingPage from "./LoadingPage";
-import HabitPerDay from "./HabitPerDay";
+// import HabitPerDay from "./HabitPerDay";
 import NotFound from "./NotFound";
 import Playground from "./Playground";
 import HabitPerWeek from "./HabitPerWeek";
+import Login from './Login';
 
-
-export { Home , Targets , NewTarget , Stream as Today , UserSetup , ErrorPage , LoadingPage , HabitPerDay , NotFound , Playground , HabitPerWeek};
+export { Home , Targets , NewTarget , Stream as Today , UserSetup , ErrorPage , LoadingPage , NotFound , Playground ,  HabitPerWeek , Login};

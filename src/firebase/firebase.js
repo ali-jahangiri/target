@@ -10,9 +10,10 @@ const firebaseApp = firebase.initializeApp({
 });
 
 
-const serverTimestamp = firebase.firestore.FieldValue.serverTimestamp
-
 const db = firebaseApp.firestore();
+const firebaseAuth = firebase.auth();
 
-
-export default db;
+export {
+  db , 
+  firebaseAuth
+};

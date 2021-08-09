@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
+import Persian from "persian-date"
 
 import { EmptyHabitBlock , StreamItem, StreamSidebar} from "../components/Stream";
 
-import { idGenerator, selfClearTimeout } from "../utils";
+import { idGenerator, selfClearTimeout, _date } from "../utils";
 
 
 import TodayHoursRow from "../components/TodayHoursRow";
 import Alert from "../components/Alert";
-import { useDispatch, useSelector } from "../Store/Y-State";
-import { setStream } from "../Store/slices/streamSlice";
-import { setIsInDragging } from "../Store/slices/uiSlice";
+import { references } from "../firebase";
+
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -19,10 +19,14 @@ const hours = new Array(24).fill().map((_, i) => i + 1);
 const TODAY_ID = "todayHabit";
 
 const Stream = ({ date , sideBarEnabled }) => {
+  const [loading, setLoading] = useState(true);
+  
+  const [habitInStream, setHabitInStream] = useState(null);
+
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(sideBarEnabled);
   
-  const todayHabit = useSelector(state => Object.values(state.target).map(({ color , habit }) => ({ color , habit })));
+  const [todayHabit, setTodayHabit] = useState([]);
   
   const [isDraggingStart, setIsDraggingStart] = useState(false);
 
@@ -35,30 +39,57 @@ const Stream = ({ date , sideBarEnabled }) => {
   const [timelineHeight, setTimelineHeight] = useState(0);
   const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
 
-  const habitInStreamInsideStore = useSelector(state => state.stream[date] || hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 })))
-
-  const [habitInStream, setHabitInStream] = useState(() => habitInStreamInsideStore);
-
-
+  
   const [injectedTodo, setInjectedTodo] = useState("")
   
   const [firstTime, setFirstTime] = useState(true);
 
   useEffect(() => setFirstTime(false) , []);
-  const storeDispatcher = useDispatch();
+  
+
+  useEffect(() => {
+    references.target.get()
+      .then(res => {
+        console.log(res.docs.map(el => el.data()));
+      })
 
 
+    references
+      .stream
+      .doc(date)
+      .get()
+      .then(data => {
+        if(data.exists) {
+          setHabitInStream(data.data().item);
+        }else {
+          const curr = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }))
+          references.stream.doc(date).set({ id : date , item : curr })
+        }
+        return data
+      }).then(_ => {
+        references.habitPerWeek
+          .get()
+          .then(res => {
+            // console.log(date , _date(date).add(1 , "day").format('dddd'));
+            const todayHabit = res.docs.map(el => el.data()).filter(el => el.schedule[_date(date).format('dddd')]?.length || false)
+            console.log(todayHabit);
+            setTodayHabit(todayHabit)
+            setLoading(false)
+          })
+      })
+  } , [date])
 
   useEffect(() => {
     if(!firstTime) {
-      storeDispatcher(setStream({ id : date , items : habitInStream }))
+      // storeDispatcher(setStream({ id : date , items : habitInStream }))
     }
   } , [habitInStream])
 
 
+  
+  
   const dragEndHandler = ({ source, destination, draggableId }) => {
     setIsDraggingStart(false);
-    // storeDispatcher(setIsInDragging(false));
     if (!isSidebarOpen && !sidebarClosedByUser) {
       selfClearTimeout(() => setIsSidebarOpen(true), 500);
     }
@@ -78,7 +109,9 @@ const Stream = ({ date , sideBarEnabled }) => {
     setHabitInStream((prev) => {
       const clone = [...prev];
       if (!clone[insertIndex].name) {
-        const _targetHabit = todayHabit.find(el => el.habit.some(el => el.id === draggableId));
+        console.log(todayHabit , "****");
+
+        const _targetHabit = todayHabit.find(el => el.schedule.some(el => el.id === draggableId));
         clone[insertIndex] = {
           color : _targetHabit.color,
           name : _targetHabit.habit.find(el => el.id === draggableId).name,   
@@ -87,8 +120,9 @@ const Stream = ({ date , sideBarEnabled }) => {
         };
         return clone;
       } else {
+        console.log(todayHabit , "****");
         const habitClone = [...habitInStream];
-        const _targetHabit =  todayHabit.find(el => el.habit.some(el => el.id === draggableId));
+        const _targetHabit =  todayHabit.find(el => el.schedule.some(el => el.id === draggableId));
         habitClone.splice(insertIndex, 0, {
           color : _targetHabit.color,
           name : _targetHabit.habit.find(el => el.id === draggableId).name,
@@ -126,7 +160,6 @@ const Stream = ({ date , sideBarEnabled }) => {
   }
 
   const dragStartHandler = ({ source }) => {
-    // storeDispatcher(setIsInDragging(true));
     setIsDraggingStart(true);
     if (source.droppableId === TODAY_ID || source.droppableId === "injectedTodo") setIsSidebarOpen(false);
   };
@@ -183,42 +216,8 @@ const Stream = ({ date , sideBarEnabled }) => {
     }
   };
 
-  // const currentYPage = useRef(window.pageYOffset);
 
-  // const scrollHelperOnResizeHandler = ({ pageY }) =>  {
-  //   console.log(isResizeStart , "----------");
-  //   // console.log(pageY ,"**" , isResizeStart);
-  //   if(isResizeStart) {
-  //   }
-  // }
-  // // const scrollHelperOnResizeHandler = debounce(({ pageY }) => {
-  // //   if(isResizeStart) {
-    // //     console.log(pageY ,"**");
-    // //   }
-    // // } , 0)
-  
-  // useLayoutEffect(() => {
-  //   let timer = setInterval(() => {
-  //     if (currentYPage.current <= 2400) {
-  //       currentYPage.current += 100;
-  //       window.scroll({
-  //         top: currentYPage.current,
-  //         behavior: "smooth",
-  //       });
-  //     } else {
-  //       clearTimeout(timer);
-  //     }
-  //   }, 3.6e6);
-
-
-
-  //   return () => {
-  //     clearInterval(timer);
-  //     // window.removeEventListener("mousemove", (_) => {});
-  //   };
-  // }, []);
-
-  return (
+  return loading ? <div>loading</div> : (
     <div className="today">
       {isDetailsModeActive !== false && (
         <div style={{ top: isDetailsModeActive }} className="helperOverlay">

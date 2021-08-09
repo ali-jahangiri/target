@@ -7,8 +7,7 @@ import { selfClearTimeout } from "../../utils";
 
 import DetailsOptionsMenu from "../DetailsOptionMenu";
 import StreamResizeTrigger from "./StreamResizeTrigger";
-import { useDispatch } from "../../Store/Y-State";
-import { setNavigationCircleStatus } from "../../Store/slices/uiSlice";
+
 
 
 const WritableDetails = ({ value, onChange, placeholder = "write and save your idea about this habit..."}) => {

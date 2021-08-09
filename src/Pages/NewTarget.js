@@ -1,22 +1,19 @@
 import { useState } from "react";
+import { useHistory } from "react-router";
 
 import Container from "../components/Container";
 import Input from "../components/Input";
 import HabitListCreator from "../components/HabitListCreator";
 import TargetItemColorPicker from "../components/TargetItemColorPicker";
 
-
-import { useHistory } from "react-router";
 import { idGenerator } from "../utils";
-import { useDispatch } from "../Store/Y-State";
-import { setNewTarget } from "../Store/slices/targetSlice";
+import { references } from "../firebase";
 
 const NewTarget = () => {
   const [target, setTarget] = useState({});
   const history = useHistory();
 
-  const dispatcher = useDispatch();
-
+  
   const changeHandler = (key, value) => {
     setTarget((prev) => ({
       ...prev,
@@ -26,9 +23,11 @@ const NewTarget = () => {
 
 
   const createNewTargetHandler = () => {
-	const id = idGenerator();
-    dispatcher(setNewTarget({ id , details : target }));
-    history.push(`habitPerWeek/${id}`);
+    const id = idGenerator();
+    references.target.doc(id).set({ ...target })
+      .then(_ => {
+        history.push(`habitPerWeek/${id}`);
+      })
   }
 
   return (

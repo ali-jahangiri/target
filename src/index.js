@@ -1,21 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
-import InitialLoader from "./Providers/InitialLoader";
-import appStore from "./Store/appStore";
-import StoreProvider from "./Store/Y-State";
+import { Provider } from "react-redux";
+import {EmojiProvider } from "react-apple-emojis"
 
 import "./Styles/index.scss";
+import store from "./store/store";
+import emojiData from 'react-apple-emojis/lib/data.json'
+import AppRouter from "./Router/AppRouter"
 
-const whiteList = ['target' , 'habitPerWeek' , "stream"]
+import dayjs from "dayjs"
+import jalaliday from "jalaliday";
+
+dayjs.extend(jalaliday)
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <StoreProvider whiteSlice={whiteList} persistorEnabled store={appStore}>
-        <InitialLoader>
-            <App />
-        </InitialLoader>
-    </StoreProvider>
+    <EmojiProvider data={emojiData}>
+      <Provider store={store}>
+        <AppRouter />
+      </Provider>
+    </EmojiProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

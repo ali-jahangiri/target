@@ -1,11 +1,10 @@
 import { useState } from "react";
 
-import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
+import { FiArrowLeft, FiArrowRight, FiRotateCcw } from "react-icons/fi";
 
 import Persian from "persian-date";
-import { useSelector } from "../Store/Y-State";
 
-const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setIsHoverInNavigationCircle , currentDay }) => {
+const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setIsHoverInNavigationCircle , currentDay , goToday }) => {
     const [isActive, setIsActive] = useState(false);
     const now = new Persian()
     const currentMonthName = now.add("month" , currentMonth).format('MMMM');
@@ -50,6 +49,9 @@ const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setI
             <div style={{ display : "flex" , flexDirection : "column" , alignItems : 'center' }}>
                 <p style={{ fontWeight : 'bold' }}>{currentDay}</p>
                 <p style={{ transform : `rotate(${isActive ? 0 : rotate}deg)` }}>{currentMonthName}</p>
+            </div>
+            <div onClick={goToday} className="controller__reset">
+                <FiRotateCcw />
             </div>
             <div className={`controller ${isActive ? 'controller--active' : ""}`}>
                 <button disabled={!nextMonthAvailable} onClick={e => monthSelectHandler("next" , e)}><FiArrowRight color="white" size={30} /></button>

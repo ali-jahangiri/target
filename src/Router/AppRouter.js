@@ -6,7 +6,7 @@ import PrivateRoute from "./PrivateRoute";
 const AppRouter = () => (
   <BrowserRouter>
         <Switch>
-          <Route path="/setup" component={UserSetup} />
+          {/* <Route path="/setup" component={UserSetup} /> */}
           <Route path="/playground" component={Playground} />
           {/* <PrivateRoute> */}
             <Route path="/" component={Home} exact />

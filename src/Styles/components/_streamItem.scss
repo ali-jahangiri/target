@@ -4,6 +4,14 @@
     z-index: 555;
     width: 100%;
     
+
+    &:hover {
+        
+        .streamResizeTrigger  {
+            opacity: 1;
+        }
+    }
+
     &--inDetailsMode {
         z-index: 50000000;
         overflow: hidden;
