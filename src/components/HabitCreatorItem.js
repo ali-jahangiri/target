@@ -13,7 +13,6 @@ const HabitCreatorItem = ({ index , children , bgColor , changeHandler }) => {
     })()
 
     const onChange = () => {
-        console.log();
         changeHandler(index - 1 , newValue)
     }   
 

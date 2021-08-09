@@ -1,5 +1,4 @@
 import { useLayoutEffect , useRef , useState } from "react";
-import Persian from "persian-date";
 
 import { fixNumbers, selfClearTimeout, _date } from "../utils";
 
@@ -79,9 +78,7 @@ const Home = () => {
             {
                 allMonthDay.map((_ , i) => (
                     <div key={i} className={`__dayContainer ${i === currentDay && false ? "__dayContainer--scrollDisabled" : ""}`}>
-                        <div 
-                          data-id={i} 
-                          className={`__innerContainer ${i === currentDay  ? "__innerContainer--active" : "__innerContainer--deActive"}`}>
+                        <div className={`__innerContainer ${i === currentDay  ? "__innerContainer--active" : "__innerContainer--deActive"}`}>
                             {renderScheduleChecker(i)}
                         </div>
                     </div>

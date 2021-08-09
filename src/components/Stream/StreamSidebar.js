@@ -6,7 +6,7 @@ const HABIT_LIST_ID = "fromHabitList";
 
 
 const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , injectedTodo , setInjectedTodo }) => {
-    return (
+  return (
         <div className={`today__habitSidebar today__habitSidebar--${isSidebarOpen ? "open" : "close"} ${currentDetailsModeHabit ? "today__habitSidebar--lock" : ""}`}>
             <div
             onClick={() => !currentDetailsModeHabit && sideBarHandler()}
@@ -17,8 +17,8 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
             <Droppable isDropDisabled droppableId={HABIT_LIST_ID}>
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {todayHabit.map(el => (
-                    Object.values(el.schedule).filter(el => el.length).flat().map((habit , index) => (
+                  {todayHabit.length && todayHabit.map(el => (
+                    el.item.map((habit , index) => (
                       <Draggable key={index} draggableId={habit.id} index={index}>
                       {(provided) => (
                         <div

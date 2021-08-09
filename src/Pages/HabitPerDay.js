@@ -64,9 +64,7 @@ const HabitPerDay = ({ location : { state: { target } } }) => {
 
 
 
-    const dragEndHandler = ({ draggableId }) => {
-        console.log(draggableId);
-    }
+    const dragEndHandler = ({ draggableId }) => {}
 
 
     return (

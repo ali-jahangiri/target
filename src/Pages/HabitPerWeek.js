@@ -75,8 +75,7 @@ const HabitPerWeek = ({ match : { params } }) => {
     } , [params])  
 
 
-    console.log(schedule , "s");
-
+    
     const [currentHabitBlock, setCurrentHabitBlock] = useState(null)
     
     

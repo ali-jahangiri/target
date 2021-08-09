@@ -31,6 +31,8 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
   };
   
   const StreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index, setIsSidebarOpen, color, habitName, resizeHandler, hoursGoNext, setNthChildHandler, isInDragging, isInResizing, isInDetailsMode, setHabitInStream, habitInStream, }) => {
+
+    const [forcer, setFourcer] = useState(Date.now())
     const [internalH, setInternalH] = useState(0);
     const [isDetailsOptionMenuOpen, setIsDetailsOptionMenuOpen] = useState(false);
 
@@ -62,6 +64,10 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
     
     const refContainer = useRef();
   
+    useEffect(() => {
+      setFourcer(Date.now())
+    } , [hoursGoNext])
+
 
     const determineHandler = () => {
       setIsDetailsOptionMenuOpen(false)
@@ -116,6 +122,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
       <Draggable isDragDisabled={isInDetailsMode} draggableId={id} index={index}>
         {(provided) => (
           <Resizable
+            key={forcer}
             ref={refContainer}
             onResize={internalResizeHandler}
             onResizeStop={resizeEndHandler}

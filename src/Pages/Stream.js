@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
-import Persian from "persian-date"
 
 import { EmptyHabitBlock , StreamItem, StreamSidebar} from "../components/Stream";
 
@@ -47,41 +46,43 @@ const Stream = ({ date , sideBarEnabled }) => {
   useEffect(() => setFirstTime(false) , []);
   
 
+  const leanDate = date.split("/").join('')
+
   useEffect(() => {
-    references.target.get()
-      .then(res => {
-        console.log(res.docs.map(el => el.data()));
-      })
 
-
-    references
-      .stream
-      .doc(date)
-      .get()
-      .then(data => {
-        if(data.exists) {
-          setHabitInStream(data.data().item);
-        }else {
-          const curr = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }))
-          references.stream.doc(date).set({ id : date , item : curr })
-        }
-        return data
-      }).then(_ => {
-        references.habitPerWeek
+    references.stream.doc(leanDate).onSnapshot(snapShot => {
+      if(snapShot.exists) {
+          setHabitInStream(snapShot.data().item);
+          references.habitPerWeek
           .get()
           .then(res => {
-            // console.log(date , _date(date).add(1 , "day").format('dddd'));
-            const todayHabit = res.docs.map(el => el.data()).filter(el => el.schedule[_date(date).format('dddd')]?.length || false)
-            console.log(todayHabit);
-            setTodayHabit(todayHabit)
+            let ss = _date(date).add(1 , 'day').format('dddd')
+            const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
+            setTodayHabit(_s)
             setLoading(false)
           })
-      })
-  } , [date])
+        }else {
+          const curr = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }))
+          references.stream.doc(leanDate).set({ item : curr })
+            .then(_ => {
+              setHabitInStream(curr)
+              references.habitPerWeek
+                .get()
+                .then(res => {
+                  let ss = _date(date).add(1 , 'day').format('dddd')
+                  const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
+                  setTodayHabit(_s)
+                  setLoading(false)
+                })
+            })
+        }
+    })
+  } , [])
 
   useEffect(() => {
     if(!firstTime) {
-      // storeDispatcher(setStream({ id : date , items : habitInStream }))
+      references.stream.doc(leanDate)
+        .update({item : habitInStream})
     }
   } , [habitInStream])
 
@@ -109,23 +110,21 @@ const Stream = ({ date , sideBarEnabled }) => {
     setHabitInStream((prev) => {
       const clone = [...prev];
       if (!clone[insertIndex].name) {
-        console.log(todayHabit , "****");
 
-        const _targetHabit = todayHabit.find(el => el.schedule.some(el => el.id === draggableId));
+        const { color , item } = todayHabit.find(el => el.item.find(el => el.id === draggableId))
         clone[insertIndex] = {
-          color : _targetHabit.color,
-          name : _targetHabit.habit.find(el => el.id === draggableId).name,   
+          color,
+          name : item.find(el => el.id === draggableId).name,
           id: idGenerator(),
           hoursGoNext: 1,
         };
         return clone;
       } else {
-        console.log(todayHabit , "****");
         const habitClone = [...habitInStream];
-        const _targetHabit =  todayHabit.find(el => el.schedule.some(el => el.id === draggableId));
+        const { color , item } =  todayHabit.find(el => el.item.find(el => el.id === draggableId))
         habitClone.splice(insertIndex, 0, {
-          color : _targetHabit.color,
-          name : _targetHabit.habit.find(el => el.id === draggableId).name,
+          color,
+          name : item.find(el => el.id === draggableId).name,
           id: idGenerator(),
           hoursGoNext: 1,
         });
@@ -158,6 +157,7 @@ const Stream = ({ date , sideBarEnabled }) => {
       }
     });
   }
+
 
   const dragStartHandler = ({ source }) => {
     setIsDraggingStart(true);
