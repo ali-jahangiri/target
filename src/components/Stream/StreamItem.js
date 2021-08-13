@@ -128,7 +128,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
             onResizeStop={resizeEndHandler}
             className={`habitMainContainer ${isInDetailsMode ? "habitMainContainer--inDetailsMode" : ""}`}
             enable={{ bottom: !isInDetailsMode && index + hoursGoNext !== 24 ? true : false }}
-            minHeight={100}
+            // minHeight={100}
             maxHeight={!availableNextHours ? hoursGoNext * 100 : availableNextHours * 100 + hoursGoNext * 100}
             grid={[100, 100]}
             defaultSize={{ width: "100%", height: hoursGoNext * 100 }}

@@ -17,7 +17,7 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
             <Droppable isDropDisabled droppableId={HABIT_LIST_ID}>
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {todayHabit.length && todayHabit.map(el => (
+                  {!!todayHabit.length && todayHabit.map(el => (
                     el.item.map((habit , index) => (
                       <Draggable key={index} draggableId={habit.id} index={index}>
                       {(provided) => (

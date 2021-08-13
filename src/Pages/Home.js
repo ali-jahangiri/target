@@ -5,6 +5,7 @@ import { fixNumbers, selfClearTimeout, _date } from "../utils";
 import ScheduleSettingCircle from "../components/ScheduleSettingCircle";
 
 import Stream from "./Stream";
+import Timeline from "../components/Timeline";
 
 
 const Home = () => {

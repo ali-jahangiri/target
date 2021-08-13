@@ -1,0 +1,22 @@
+.timeline {
+    width: 100vw;
+    height: 3px;
+    background-color: #ff000017;
+    position: absolute;
+    left: 0;
+    z-index: 5;
+    transition: .3s;
+    position: relative;
+
+    &::after {
+        content: "";
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        left: 0%;
+        top: 50%;
+        transform: translate(-50% , -50%);
+        background-color: #ffe8e8;
+        border-radius: 15px;
+    }
+}

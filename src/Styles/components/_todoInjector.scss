@@ -26,6 +26,9 @@
 .todoInjector {
     margin-top: 1rem;
     backdrop-filter: blur(10px);
+    * {
+        font-size: 2rem;
+    }
 
     &__container {
         width: 100%;

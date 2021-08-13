@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FiArrowLeft, FiArrowRight, FiRotateCcw } from "react-icons/fi";
 
 import Persian from "persian-date";
+import Todo from "./Stream/Todo";
 
 const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setIsHoverInNavigationCircle , currentDay , goToday }) => {
     const [isActive, setIsActive] = useState(false);
@@ -50,13 +51,12 @@ const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setI
                 <p style={{ fontWeight : 'bold' }}>{currentDay}</p>
                 <p style={{ transform : `rotate(${isActive ? 0 : rotate}deg)` }}>{currentMonthName}</p>
             </div>
-            <div onClick={goToday} className="controller__reset">
-                <FiRotateCcw />
-            </div>
             <div className={`controller ${isActive ? 'controller--active' : ""}`}>
+                <button onClick={goToday} className="controller__reset"><FiRotateCcw size={30} color="white" /></button>
                 <button disabled={!nextMonthAvailable} onClick={e => monthSelectHandler("next" , e)}><FiArrowRight color="white" size={30} /></button>
                 <button disabled={""} onClick={e => monthSelectHandler("prev" , e)}><FiArrowLeft color="white" size={30} /></button>
             </div>
+            
         </div>
     )
 }

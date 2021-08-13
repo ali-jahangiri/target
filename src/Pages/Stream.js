@@ -10,6 +10,7 @@ import { idGenerator, selfClearTimeout, _date } from "../utils";
 import TodayHoursRow from "../components/TodayHoursRow";
 import Alert from "../components/Alert";
 import { references } from "../firebase";
+import Timeline from "../components/Timeline";
 
 
 // Static variables
@@ -171,8 +172,16 @@ const Stream = ({ date , sideBarEnabled }) => {
     setHabitInStream(habitClone);
   };
 
+
+  const removeStreamHandler = index => {
+    setHabitInStream(prev => prev.map((el , i) => i === index ? { name: null, id: idGenerator(), hoursGoNext: 1 } : el))
+  }
+
   const resizeHandler = ({ height, index }) => {
-    if (habitInStream[index].hoursGoNext + index === 24) {
+    if(height < 0) {
+      return removeStreamHandler(index)
+    }
+    else if (habitInStream[index].hoursGoNext + index === 24) {
       Alert.warning("your habit cannot ross over today hours");
       return;
     }
@@ -219,6 +228,7 @@ const Stream = ({ date , sideBarEnabled }) => {
 
   return loading ? <div>loading</div> : (
     <div className="today">
+      <Timeline />
       {isDetailsModeActive !== false && (
         <div style={{ top: isDetailsModeActive }} className="helperOverlay">
           <span style={{ height: timelineHeight }} className="helperOverlay__timeline">

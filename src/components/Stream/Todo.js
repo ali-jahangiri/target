@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import { useRef } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import Input from "../Input";
@@ -9,12 +10,14 @@ const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 const Todo = ({ index , value , changeHandler }) => {
     const inputRef = useRef();
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
+    const [completedHash, setCompletedHash] = useState(false);
 
     const focusHandler = () => inputRef.current.focus()
 
 
     const onChange = ({ target : { value = "" } }) => {
-        changeHandler(value)
+        changeHandler(value);
+        setCompletedHash(false)
         if(value.startsWith("#")) {
             setHashtagInterpolate(true)
             const timer = setTimeout(() => {
@@ -43,16 +46,26 @@ const Todo = ({ index , value , changeHandler }) => {
                     newVale += leftCharacter[currentIndex]
                     changeHandler(newVale)
                     ++currentIndex;
-                    if(!leftCharacter[currentIndex]) clearInterval(timer)
+                    if(!leftCharacter[currentIndex]) {
+                        setCompletedHash(true)
+                        clearInterval(timer)
+                    }
                 } , 30)
+                
             }else {
                 console.log('dont hace');
             }
         }
     }
 
+    useEffect(() => {
+        if(completedHash) {
+            console.log('cc' , value);
+        }
+    } , [completedHash])
+
     return (
-    <Draggable isDragDisabled={!value && !hashtagInterpolate} draggableId="injectedTodo" index={index}>
+    <Draggable draggableId="injectedTodo" index={index}>
         {provided => (
             <div 
                 className="todoInjector" 
