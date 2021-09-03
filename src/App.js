@@ -1,11 +1,18 @@
+import { Provider } from "react-redux";
+import emojiData from 'react-apple-emojis/lib/data.json'
+import { EmojiProvider } from "react-apple-emojis";
+
 import { AlertContainer } from "./components/Alert";
 import AppRouter from "./Router/AppRouter";
+import store from "./store/store";
 
-function App() {
-  return <>
+const App = () => (
+  <EmojiProvider data={emojiData}>
+      <Provider store={store}>
         <AlertContainer/>
-        <AppRouter />
-  </>;
-}
+        <AppRouter />        
+      </Provider>
+  </EmojiProvider>
+)
 
 export default App;

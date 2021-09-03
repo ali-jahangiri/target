@@ -173,15 +173,12 @@ const Stream = ({ date , sideBarEnabled }) => {
   };
 
 
-  const removeStreamHandler = index => {
-    setHabitInStream(prev => prev.map((el , i) => i === index ? { name: null, id: idGenerator(), hoursGoNext: 1 } : el))
-  }
+  // const removeStreamHandler = index => {
+  //   setHabitInStream(prev => prev.map((el , i) => i === index ? { name: null, id: idGenerator(), hoursGoNext: 1 } : el))
+  // }
 
   const resizeHandler = ({ height, index }) => {
-    if(height < 0) {
-      return removeStreamHandler(index)
-    }
-    else if (habitInStream[index].hoursGoNext + index === 24) {
+    if (habitInStream[index].hoursGoNext + index === 24) {
       Alert.warning("your habit cannot ross over today hours");
       return;
     }

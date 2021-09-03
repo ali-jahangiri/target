@@ -3,7 +3,9 @@
         font-size: 5rem;
     }
     &__container {
-        // display: flex;
+        display: flex;
+        flex-direction: column;
+        
         
     }
 }

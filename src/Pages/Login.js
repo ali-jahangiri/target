@@ -5,27 +5,27 @@ import useKeyBaseState from "../Hook/useKeyBaseState";
 
 import Btn from "../components/Btn";
 
-import { firebaseAuth } from "../firebase"
 
 const Login = () => {
     const [inputValue , setInputValue] = useKeyBaseState();
 
-    const loginHandler = () => {
+    const loginHandler = async () => {
         const { userName , password } = inputValue
-        firebaseAuth.createUserWithEmailAndPassword(userName , password)
-            .then(data => {
-                console.log(data , '!!!!!!!!!!!!!!');
-            })
+        // const result = await singInWithGoogle()
+        // // firebaseAuth.createUserWithEmailAndPassword(userName , password)
+        // //     .then(data => {
+        // //         console.log(data , '!!!!!!!!!!!!!!');
+        // //     })
     }
 
     return (
         <div className="login">
-            {/* <div className="login__intro">
+            <div className="login__intro">
                 <div className="login__introText">
                         <Emoji name="brain" />
                         <p>Discover user life as a simple stream !</p>
                 </div>
-            </div> */}
+            </div>
             <div className="login__mainSection">
                 <div className="login__form">
                     <div className="login__header">
@@ -37,7 +37,9 @@ const Login = () => {
                     </div>
                     <Input2 placeholder="User Name" value={inputValue?.userName} onChang={value => setInputValue('userName' , value)} />
                     <Input2 placeholder="Password" value={inputValue?.password} onChang={value => setInputValue('password' , value)} />
-                    <Btn onClick={loginHandler} />
+                    <Btn onClick={loginHandler}  >
+                        Click for sing in
+                    </Btn>
                 </div>
             </div>
         </div>

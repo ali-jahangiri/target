@@ -13,7 +13,22 @@ const firebaseApp = firebase.initializeApp({
 const db = firebaseApp.firestore();
 const firebaseAuth = firebase.auth();
 
+
+const singInWithGoogle = async () => {
+  const provider = new firebase.auth.GoogleAuthProvider()
+  return await firebaseAuth.signInWithPopup(provider);
+  // window.location.reload();
+}
+
+
+const checkAuth = callback => {
+  return firebaseAuth.onAuthStateChanged(callback)
+}
+
 export {
   db , 
-  firebaseAuth
+  firebaseAuth ,
+  singInWithGoogle,
+  checkAuth,
+  
 };

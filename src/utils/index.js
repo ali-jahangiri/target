@@ -1,6 +1,6 @@
 import PersianDate from "persian-date";
-
-import dayjs , { Dayjs } from "dayjs";
+import requests from './requests';
+import dayjs from "dayjs";
 import jalaliday from "jalaliday";
 dayjs.extend(jalaliday)
 
@@ -87,3 +87,9 @@ export const fixNumbers = function (str) {
 
 
 export const _date = (targetDate) => dayjs(targetDate).calendar("jalali").locale('fa')
+
+
+
+export {
+  requests
+}

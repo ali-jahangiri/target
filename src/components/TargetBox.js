@@ -1,6 +1,7 @@
 const TargetBox = ({ targetName , color , habit = [] }) => {
+
     return (
-        <div className="targetBox"> 
+        <div style={{ backgroundColor : `#${color}` }} className="targetBox"> 
             <p className="targetBox__title">{targetName}</p>
             <div className="targetBox__habitContainer">
                 {

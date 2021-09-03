@@ -1,6 +1,11 @@
 .targetBox {
-    width: 90%;
-    margin: 5rem auto;
+    padding: 1.5rem;
+    flex: 1;
+    transition: .3s;
+    
+    &:hover {
+        padding: 5rem 1.5rem;
+    }
 
     &__title {
         font-size: 2rem;
