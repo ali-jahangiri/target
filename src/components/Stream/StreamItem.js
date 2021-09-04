@@ -1,4 +1,4 @@
-import { useRef , useEffect , useState} from "react";
+import { useRef , useEffect , useState } from "react";
 import { Resizable } from "re-resizable";
 import { Draggable } from "react-beautiful-dnd";
 import { CgClose } from "react-icons/cg";
@@ -140,6 +140,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
               />
             )}
             <div
+              onDoubleClick={() => console.log('sdsds')}
               id={position}
               ref={provided.innerRef}
               {...provided.draggableProps}

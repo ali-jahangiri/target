@@ -8,6 +8,7 @@ const useFetcher = (targetRequest ,dependencyList = []) => {
         setState(prev => ({ ...prev, loading : true }));
         targetRequest(requests)()
             .then(data => {
+                console.log(data);
                 setState(prev => ({ ...prev , data , loading : false , error : false }));
             })
     } , dependencyList);

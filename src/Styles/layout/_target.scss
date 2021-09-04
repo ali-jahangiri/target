@@ -1,11 +1,23 @@
 .target {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
     &__header {
         font-size: 5rem;
     }
     &__container {
         display: flex;
-        flex-direction: column;
-        
-        
+        overflow-x: scroll;
+        overflow-y: hidden;
+        width: fit-content;
+        width: 100vw;
+
+        margin-top: auto;
+        margin-bottom: auto;
+        & > div {
+            width: fit-content;
+            display: flex;
+        }
     }
 }

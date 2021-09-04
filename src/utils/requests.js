@@ -14,10 +14,16 @@ const target = {
     getTargetList(){
         return requestWrapper(resolve => references.target.onSnapshot(snapshot => resolve(makeValidSnapshotData(snapshot))))
     },
+    addNewHabitToTarget(targetId , habit) {
+        return requestWrapper(resolve => references.target.doc(targetId).update({
+            habit: firebase.firestore.FieldValue.arrayUnion(habit)
+        }).then(resolve))
+    },
     deleteTarget(targetId) {
         return requestWrapper(resolve => references.target.doc(targetId).delete().then(resolve));
     },
     deleteTargetHabit(targetId , habitName) {
+        console.log(targetId , habitName , "***");
         return requestWrapper(resolve => references.target.doc(targetId).update({
             habit : firebase.firestore.FieldValue.arrayRemove(habitName)
         }).then(resolve));

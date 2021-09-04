@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import Input from "../Input";
 
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
@@ -11,6 +10,8 @@ const Todo = ({ index , value , changeHandler }) => {
     const inputRef = useRef();
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
+
+    const [contentHolder, setContentHolder] = useState("")
 
     const focusHandler = () => inputRef.current.focus()
 
@@ -73,7 +74,7 @@ const Todo = ({ index , value , changeHandler }) => {
                 {...provided.draggableProps}
                 {...provided.dragHandleProps} >
                 {/* <p onClick={focusHandler}>have something todo out of schedule ?</p> */}
-                <div className="todoInjector__container">
+                <div  className="todoInjector__container">
                     <form onSubmit={interpolateSubmitHandler}>
                         {
                             hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!value.slice(1) ?  command.find(el => el.includes(value.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < value.length ? "white" : "grey" }}>{el}</span>) : 'Write here...'}</p>
@@ -83,6 +84,9 @@ const Todo = ({ index , value , changeHandler }) => {
                             hashtagInterpolate && <span className="todoInjector__flash"></span>
                         }
                     </form>
+                    {
+                        !!completedHash && <input autoFocus value={contentHolder} onChange={({ target : { value } }) => setContentHolder(value)} />
+                    }
                 </div>
             </div>
             )
