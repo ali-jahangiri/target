@@ -11,7 +11,7 @@ import { requests } from "../utils";
 
 const Targets = () => {
 
-    const { data : allTarget , loading } = useFetcher(req => req.target.getTargetList)
+    const { data : allTarget , loading } = useFetcher(req => req.target.getTargetList, [])
 
     console.log(allTarget);
 

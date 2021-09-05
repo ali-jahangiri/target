@@ -7,11 +7,43 @@
     margin: 0 1rem;
     position: relative;
     padding: 1rem 1rem 0 1rem;
+    min-height: 17rem;
+    overflow: hidden;
+    
 
+    &__growUpCircle {
+        width: 5rem;
+        height: 5rem;
+        transition: .3s;
+        position: absolute;
+        left: 50%;
+        top: 80%;
+        transform: translate(-50% , -50%);
+        z-index: 0;
+
+        &--active {
+            transform: translate(-50% , -50%) scale(6);
+        }
+
+    }
 
     &__controllerContainer {
         opacity: 0;
         transition: .3s;
+        display: flex;
+        justify-content: space-between;
+
+        p {
+            user-select: none;
+            margin-left: 1rem;
+            color: rgba(255, 255, 255, 0.534);
+            cursor: pointer;
+            transition: .3s;
+
+            &:hover {
+                color: white;
+            }
+        }
     }
 
     &__innerContainer {
@@ -23,6 +55,8 @@
     }
 
     &__header {
+        position: relative;
+        z-index: 2;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -83,7 +117,7 @@
             font-size: 1rem;
             width: 6rem;
             transition: .3s;
-            left: 90%;
+            left: 94%;
             transform: translateX(-50%);
             
             &:disabled {
@@ -108,11 +142,22 @@
                 cursor: text;
             }
         }
+
+        &--hideBaseOnEdit {
+            transform: translateY(155%);
+        }
+
     }
 
 
     &__title {
         font-size: 3rem;
+        background-color: transparent;
+        border: none;
+        flex: 1;
+        width: 20rem;
+        color: black !important;
+        
     }
 
     &__habitContainer {

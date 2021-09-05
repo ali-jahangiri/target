@@ -11,8 +11,8 @@ const requestWrapper = requestCallback => {
 }
 
 const target = {
-    getTargetList(){
-        return requestWrapper(resolve => references.target.onSnapshot(snapshot => resolve(makeValidSnapshotData(snapshot))))
+    getTargetList(callback){
+        references.target.onSnapshot(snapshot => callback(makeValidSnapshotData(snapshot)))
     },
     addNewHabitToTarget(targetId , habit) {
         return requestWrapper(resolve => references.target.doc(targetId).update({
@@ -23,15 +23,12 @@ const target = {
         return requestWrapper(resolve => references.target.doc(targetId).delete().then(resolve));
     },
     deleteTargetHabit(targetId , habitName) {
-        console.log(targetId , habitName , "***");
         return requestWrapper(resolve => references.target.doc(targetId).update({
             habit : firebase.firestore.FieldValue.arrayRemove(habitName)
         }).then(resolve));
     },
-    editTargetColor(targetId , newColor) {
-        return requestWrapper(resolve => references.target.doc(targetId).update({
-            color : newColor
-        }).then(resolve))
+    editTarget(targetId , newValues) {
+        return requestWrapper(resolve => references.target.doc(targetId).update({...newValues}).then(resolve))
     }
 }
 
