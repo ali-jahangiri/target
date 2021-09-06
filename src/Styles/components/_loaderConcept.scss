@@ -1,0 +1,33 @@
+@keyframes comeInPlace {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes rotateSymbol {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loaderConcept {
+    animation: comeInPlace .5s alternate forwards;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 2.6rem;
+    background-color: white;
+    span {
+        animation: rotateSymbol 1s forwards infinite linear;
+        height: 7.7rem;
+        color: black;
+        font-weight: 900;
+    }
+}

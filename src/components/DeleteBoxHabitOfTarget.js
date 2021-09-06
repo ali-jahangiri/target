@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const DeleteBoxHabitOfTarget = ({ deleteHandler }) => {
+const DeleteBoxHabitOfTarget = ({ deleteHandler , renderSimple }) => {
     const [currentBoxSize, setCurrentBoxSize] = useState(0);
     const timerReference = useRef();
 
@@ -13,7 +13,7 @@ const DeleteBoxHabitOfTarget = ({ deleteHandler }) => {
 
 
     useEffect(() => {
-        if(currentBoxSize >= 180) {
+        if(currentBoxSize >= (renderSimple ? 300 : 180)) {
             clearInterval(timerReference.current);
             deleteHandler();
             setCurrentBoxSize(0);
@@ -29,8 +29,13 @@ const DeleteBoxHabitOfTarget = ({ deleteHandler }) => {
         <div
             onMouseDown={startDeleteHandler} 
             onMouseUp={cancelDeleteProcessHandler}
-            className="targetBox__habitItem__deleteHabitController">
-                <div style={{ width : `${currentBoxSize}%` , height : `${currentBoxSize}%` }}></div>
+            className={`targetBox__habitItem__deleteHabitController ${renderSimple ? "targetBox__habitItem__deleteHabitController--simple" : ""}`}>
+                <p>
+                    {
+                        renderSimple ? "Delete" : "Deleting"
+                    }
+                </p>
+                <div style={{ width : `${currentBoxSize}%` , opacity : renderSimple ? currentBoxSize / 100 : 1 }}></div>
         </div>
     )
 }

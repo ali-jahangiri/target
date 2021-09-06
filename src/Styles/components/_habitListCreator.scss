@@ -7,9 +7,10 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin: 1rem 0;
     }
     &__directory {
-        max-height: 450px;
+        max-height: 250px;
         overflow-y: auto;
     }
     &__habit {

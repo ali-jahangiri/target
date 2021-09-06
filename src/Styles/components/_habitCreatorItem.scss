@@ -1,11 +1,21 @@
 .habitCreatorItem {
     margin: 10px 0;
+    position: relative;
+
     &__container {
         background: $cream;
         width: 98%;
         margin: 0 auto;
         padding: 30px;
         transition: .3s;
+    }
+
+    &__index {
+        position: absolute;
+        left: 15;
+        top: -34px;
+        font-size: 4.7rem;
+        opacity: 0.1;
     }
 
     &__title {

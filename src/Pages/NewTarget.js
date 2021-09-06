@@ -12,7 +12,7 @@ import { references } from "../firebase";
 const NewTarget = () => {
   const [target, setTarget] = useState({});
   const history = useHistory();
-
+  const [isInCreationPend, setIsInCreationPend] = useState(false);
   
   const changeHandler = (key, value) => {
     setTarget((prev) => ({
@@ -23,6 +23,7 @@ const NewTarget = () => {
 
 
   const createNewTargetHandler = () => {
+    setIsInCreationPend(true);
     const id = idGenerator();
     references.target.doc(id).set({ ...target })
       .then(_ => {
@@ -41,6 +42,7 @@ const NewTarget = () => {
             onChange={changeHandler}
           />
           <TargetItemColorPicker
+            isPend={isInCreationPend}
             onDone={createNewTargetHandler}
             selectedColor={target?.color || ""}
             onChange={(color) => changeHandler("color", color)}

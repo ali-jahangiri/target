@@ -1,40 +1,11 @@
-const colors = [
-    {
-        color : "7952B3",
-        label : "You",
-    },
-    {
-        color : "FFC107",
-        label : "can",
-    },
-    {
-        color : "5F939A",
-        label : "pick",
-    },
-    {
-        color : "E2703A",
-        label : "a",
-    },
-    {
-        color : "3A6351",
-        label : "color",
-    },
-    {
-        color : "C2B8A3",
-        label : "for",
-    },
-    {
-        color : "FF616D",
-        label : "your",
-    },
-    {
-        color : "A2DBFA",
-        label : "Target",
-    },
-]
+import { colors } from "../utils";
+import LoaderConcept from "./LoaderConcept";
+
+const sentence = "You can pick a color for your current Target"
+const suggestedColor = sentence.split(" ").map((el , i) => ({ color : colors[i], label : el }))
 
 const Color = ({ onSelect , color , label , selectedColor}) => {
-    const thisItemSelected = selectedColor === color
+    const thisItemSelected = selectedColor === color;
     return (
         <span 
             onClick={() => onSelect(color)} 
@@ -42,21 +13,31 @@ const Color = ({ onSelect , color , label , selectedColor}) => {
             style={{  
                     color : `#${color}` , 
                     textDecorationColor : thisItemSelected ? `#${color}` : 'transparent' ,
-                    opacity : !selectedColor || thisItemSelected ? 1 : .5 }}> { label } </span>
+                    opacity : !selectedColor || thisItemSelected ? 1 : .5 ,
+                    fontSize: selectedColor ?  (thisItemSelected ? "3rem" : "2rem") : '3rem'
+            }}
+            > { label } </span>
     )
 }
 
-const TargetItemColorPicker = ({ selectedColor , onChange , onDone }) => {
-    
+const TargetItemColorPicker = ({ selectedColor , onChange , onDone , isPend }) => {
+
     return (
         <div className="targetItemColorPicker">
             <div className="targetItemColorPicker__container">
                 {
-                    colors.map((el , i) => (
+                    suggestedColor.map((el , i) => (
                         <Color selectedColor={selectedColor} onSelect={onChange} {...el} key={i} />
                     ))
                 }
-                <span className="targetItemColorPicker__doneTrigger" onClick={() => onDone()}>and Go</span>
+            </div>
+            <div
+                className="targetItemColorPicker__doneTrigger" 
+                onClick={onDone}>
+                    and Go
+                    {
+                        isPend && <LoaderConcept symbolColor={`#${selectedColor}`} style={{ marginLeft : "1rem" }} />
+                    }
             </div>
         </div>
     )

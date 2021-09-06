@@ -5,7 +5,7 @@ import useKayBaseState from "../Hook/useKeyBaseState";
 
 import Input from './Input';
 
-import {debounce, idGenerator, requests} from "../utils"
+import {debounce, idGenerator, requests, selfClearTimeout} from "../utils"
 import DeleteBoxHabitOfTarget from "./DeleteBoxHabitOfTarget";
 import ColorSuggest from "./ColorSuggest";
 
@@ -13,7 +13,7 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
     const [inputValues , setInputValues] = useKayBaseState({});
     const [isActive, setIsActive] = useState(false);
     const [isInEditMode, setIsInEditMode] = useState(false);
-
+    const [isInDeletingProcess, setIsInDeletingProcess] = useState(false);
 
     const createNewHabit = e => {
         e.preventDefault();
@@ -31,7 +31,10 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
     }
 
     const deleteEntireTarget = () => {
-
+        setIsInDeletingProcess(true);
+        selfClearTimeout(() => {
+            requests.target.deleteTarget(id)
+        } , 2000);
     }
 
 
@@ -63,7 +66,7 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
     } , 25);
     
     return (
-        <div style={{ backgroundColor : `#${inputValues?.newColor || color}` }} className="targetBox"> 
+        <div style={{ backgroundColor : `#${inputValues?.newColor || color}` }} className={`targetBox ${isInDeletingProcess ? "targetBox--deleted" : ""}`}> 
             <div className="targetBox__innerContainer" style={{ width : "100%" }}>
                 <div className="targetBox__header">
                     <Input
@@ -79,7 +82,7 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
                         onChange={debouncedCallback}
                         className={`targetBox__title ${isInEditMode ? "targetBox__title--active" : ""}`} />
                     <div className="targetBox__controllerContainer">
-                        <p onClick={deleteEntireTarget}>Delete</p>
+                        <DeleteBoxHabitOfTarget renderSimple deleteHandler={deleteEntireTarget} />
                         <div onClick={editTargetHandler}>
                             {
                                 (() => {
