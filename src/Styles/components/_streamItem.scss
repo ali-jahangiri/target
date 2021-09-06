@@ -1,3 +1,12 @@
+@keyframes growWidth {
+    from {
+        width: 389px;
+    }
+    to {
+        width: 1200px;
+    }
+}
+
 .habitMainContainer {
     transition: .3s  , margin-bottom .3s .2s;
     max-width: 100%;
@@ -20,7 +29,8 @@
 .streamItem {
     height: 100%;
     user-select: none;
-
+    width:389px;
+    animation: growWidth .3s alternate forwards;
     &__detailsModeCtaContainer {
         display: flex;
         align-items: center;

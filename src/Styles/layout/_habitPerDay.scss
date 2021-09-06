@@ -17,6 +17,13 @@
     }
 
 
+    .sideBarHabit {
+        height: 10rem;
+        // margin: 1rem 0;
+        & > div {
+            height: 90%;
+        }
+    }
 
     &__schedulePlayground {
         display: flex;
@@ -38,9 +45,12 @@
         height: 70vh;
         .ss {
             transition: .3s;
+            height: 100%;
+            overflow-y: scroll;
         }
         &--active {
             flex: .05;
+
             .ss {
                 opacity: 0;
             }
@@ -75,8 +85,9 @@
         font-size: 5rem;
         p {
             &:first-child {
-                font-size: 3rem;
-                margin-bottom: -30px;
+                font-size: 1.6rem;
+                margin-bottom: -1rem;
+                color: grey;
             }
         }
     }
@@ -89,6 +100,7 @@
         &__addedHabit {
             text-align: center;
             padding: 1rem 0;
+            background-color: red;
         }
         
         &__item {

@@ -74,8 +74,8 @@ const HabitPerWeek = ({ match : { params } }) => {
             })
     } , [params])  
 
+    console.log(currentTarget , "***");
 
-    
     const [currentHabitBlock, setCurrentHabitBlock] = useState(null)
     
     
@@ -202,11 +202,16 @@ const HabitPerWeek = ({ match : { params } }) => {
                                 key={i}
                                 index={i} >
                                     {provided => (
-                                        <div ref={provided.innerRef}
+                                        <div
+                                        className='sideBarHabit' 
+                                        ref={provided.innerRef}
                                         {...provided.dragHandleProps}
                                         {...provided.draggableProps}
                                         >
-                                            {el.name}
+                                            <div style={{ backgroundColor : `#${currentTarget.color}` }}>
+                                                {el.name}
+                                                
+                                            </div>
                                         </div>
                                     )}
                                 </Draggable>
