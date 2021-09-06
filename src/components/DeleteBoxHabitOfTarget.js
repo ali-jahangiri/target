@@ -16,6 +16,7 @@ const DeleteBoxHabitOfTarget = ({ deleteHandler }) => {
         if(currentBoxSize >= 180) {
             clearInterval(timerReference.current);
             deleteHandler();
+            setCurrentBoxSize(0);
         }
     } , [currentBoxSize])
 

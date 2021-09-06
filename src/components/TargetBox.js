@@ -5,7 +5,7 @@ import useKayBaseState from "../Hook/useKeyBaseState";
 
 import Input from './Input';
 
-import {idGenerator, requests} from "../utils"
+import {debounce, idGenerator, requests} from "../utils"
 import DeleteBoxHabitOfTarget from "./DeleteBoxHabitOfTarget";
 import ColorSuggest from "./ColorSuggest";
 
@@ -52,11 +52,32 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
         setInputValues({});
     }
 
+
+    const targetNameChange = newPassedTargetName => {
+        setInputValues("newHabitName" , newPassedTargetName);
+        // requests.target.editTarget()
+    }
+
+    const debouncedCallback = debounce(passedValue => {
+        console.log(passedValue , "*****");
+    } , 25);
+    
     return (
         <div style={{ backgroundColor : `#${inputValues?.newColor || color}` }} className="targetBox"> 
             <div className="targetBox__innerContainer" style={{ width : "100%" }}>
                 <div className="targetBox__header">
-                    <Input disabled value={targetName} className="targetBox__title" />
+                    <Input
+                        placeholder="Target"
+                        disabled={!isInEditMode} 
+                        value={(() => {
+                            if(isInEditMode && inputValues?.newHabitName) {
+                                return inputValues?.newHabitName
+                            }else if(isInEditMode) {
+                                return ""
+                            }else return targetName
+                        })()} 
+                        onChange={debouncedCallback}
+                        className={`targetBox__title ${isInEditMode ? "targetBox__title--active" : ""}`} />
                     <div className="targetBox__controllerContainer">
                         <p onClick={deleteEntireTarget}>Delete</p>
                         <div onClick={editTargetHandler}>
@@ -84,7 +105,7 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
                     (inputValues?.newColor || isInEditMode) && <div style={{ backgroundColor : `#${inputValues.newColor}` }} className={`targetBox__growUpCircle ${inputValues.newColor ? "targetBox__growUpCircle--active" : ""}`}></div>
                 }
                 {
-                    isInEditMode && <ColorSuggest selectedItem={inputValues?.newColor || color} selectHandler={selectColorHandler} />
+                    <ColorSuggest active={isInEditMode} selectedItem={inputValues?.newColor || color} selectHandler={selectColorHandler} />
                 }
                 <div className={`targetBox__createNewOne ${isActive || !habit.length ? "targetBox__createNewOne--active" : ""} ${isInEditMode ? "targetBox__createNewOne--hideBaseOnEdit" : ""}`}>
                    <form onSubmit={createNewHabit}>

@@ -37,6 +37,8 @@
     left: 0;
     width: 100%;
     animation: comeInto .3s .3s forwards alternate;
+    top: 100%;
+    transition: .3s;
 
     & > div {
         flex: 1 0 5rem;
@@ -67,5 +69,9 @@
             color: transparent;
             animation: showSelected .5s .1s alternate forwards;
         }
+    }
+
+    &--active {
+        top: 42%;
     }
 }

@@ -30,7 +30,7 @@ const Targets = () => {
     if(loading) return 'loading';
     return (
         <div className="target">
-            <Header>target we got started with</Header>
+            <Header>Target we got started with</Header>
             <div className="target__container">
                 <div>
                 {

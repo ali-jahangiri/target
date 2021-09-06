@@ -1,6 +1,11 @@
-const TargetCreateNewOne = ({ onClickHandler }) => {
+import { useHistory } from "react-router";
+
+const TargetCreateNewOne = () => {
+    const history = useHistory();
+
+    const clickHandler = () => history.push("/newTarget");
     return (
-        <div className="TargetCreateNewOne">
+        <div onClick={clickHandler} className="TargetCreateNewOne">
             <p>Have new Idea ? Let's bring in on as a <span>Target</span></p>
         </div>
     )

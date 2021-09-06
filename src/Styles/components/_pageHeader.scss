@@ -1,3 +1,15 @@
+
+@keyframes lineHeightGrow {
+    from {
+        line-height: 50px;
+    }
+    to {
+        line-height: 100px;
+        margin-top: -.2rem ;
+        opacity: 1;
+    }
+}
+
 .pageHeader {
     height: 500px;
     margin-bottom: -300px;
@@ -9,15 +21,19 @@
     background-size: cover;
     position: relative;
     z-index: -5;
+
     &__container {
-        backdrop-filter: blur(10px);
         height: 100%;
         width: 100%;
-        background: linear-gradient(0deg, white, #ffffffa1 , transparent);
     }
+    
     &__title {
-        font-size: 5rem;
+        font-size: 8rem;
+        font-weight: 500;
+        line-height: 50px;
+        margin-top: -.8rem;
+        opacity: .8;
+        animation: lineHeightGrow 1s .2s forwards alternate;
         margin-left: 20px;
-        margin-top: 30px;
     }
 }
