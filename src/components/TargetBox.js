@@ -5,11 +5,11 @@ import useKayBaseState from "../Hook/useKeyBaseState";
 
 import Input from './Input';
 
-import {debounce, idGenerator, requests, selfClearTimeout} from "../utils"
+import { debounce, idGenerator, requests, selfClearTimeout } from "../utils"
 import DeleteBoxHabitOfTarget from "./DeleteBoxHabitOfTarget";
 import ColorSuggest from "./ColorSuggest";
 
-const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
+const TargetBox = ({ targetName , color , habit = [] , id}) => {
     const [inputValues , setInputValues] = useKayBaseState({});
     const [isActive, setIsActive] = useState(false);
     const [isInEditMode, setIsInEditMode] = useState(false);
@@ -39,11 +39,10 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
     const editTargetHandler = () => setIsInEditMode(prev => !prev);
 
 
-    const selectColorHandler = passedColor => {
-        setInputValues("newColor" , passedColor);
-    }
+    const selectColorHandler = passedColor => setInputValues("newColor" , passedColor);
 
-    const clearDraftChange = () => {
+    const clearDraftChange = e => {
+        e.stopPropagation()
         setInputValues({});
         setIsInEditMode(false)
     }

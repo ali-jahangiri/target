@@ -65,10 +65,10 @@ const HabitPerWeek = ({ match : { params } }) => {
                         namesOfDaysOfWeek.map(el => base[el.name] = [])
                         setSchedule({...base})
                         const { color , targetName } = shit.data();
-                        references.habitPerWeek.doc(params.id).set({ targetName , color  , schedule : base })
-                            .then(_ => {
-                                setLoading(false)
-                            })
+                            references.habitPerWeek.doc(params.id).set({ targetName , color  , schedule : base })
+                                .then(_ => {
+                                    setLoading(false)
+                                })
                     }
                 })
 
@@ -134,7 +134,8 @@ const HabitPerWeek = ({ match : { params } }) => {
     return (
         <Loading loading={loading}>
             {isReady => {
-                if(isReady) return <div className="habitPerDay">
+                if(isReady) return (
+                    <div className="habitPerDay">
             <Container>
             <div className="habitPerDay__header">
             <div>
@@ -230,6 +231,7 @@ const HabitPerWeek = ({ match : { params } }) => {
             </DragDropContext>
             </Container>
         </div>
+                )
             }}
         </Loading>   
     )
