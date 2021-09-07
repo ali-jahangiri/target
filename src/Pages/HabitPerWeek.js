@@ -6,6 +6,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import { useEffect } from "react";
 import { references } from "../firebase";
+import Loading from "../components/Loading";
 
 
 const namesOfDaysOfWeek = [
@@ -130,8 +131,10 @@ const HabitPerWeek = ({ match : { params } }) => {
         }
       } , [schedule])
 
-    return loading  ? <div>loading</div> : (
-        <div className="habitPerDay">
+    return (
+        <Loading loading={loading}>
+            {isReady => {
+                if(isReady) return <div className="habitPerDay">
             <Container>
             <div className="habitPerDay__header">
             <div>
@@ -227,6 +230,8 @@ const HabitPerWeek = ({ match : { params } }) => {
             </DragDropContext>
             </Container>
         </div>
+            }}
+        </Loading>   
     )
 }
 

@@ -37,8 +37,10 @@
     left: 0;
     width: 100%;
     animation: comeInto .3s .3s forwards alternate;
-    top: 100%;
+    top: 130%;
     transition: .3s;
+    transform: translateY(-50%);
+
 
     & > div {
         flex: 1 0 5rem;
@@ -72,6 +74,6 @@
     }
 
     &--active {
-        top: 42%;
+        top: 81%;
     }
 }

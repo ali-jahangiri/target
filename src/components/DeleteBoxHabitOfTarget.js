@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const DeleteBoxHabitOfTarget = ({ deleteHandler , renderSimple }) => {
+const DeleteBoxHabitOfTarget = ({ deleteHandler , renderSimple , changeResponsibleTextInto }) => {
     const [currentBoxSize, setCurrentBoxSize] = useState(0);
     const timerReference = useRef();
 
@@ -25,14 +25,14 @@ const DeleteBoxHabitOfTarget = ({ deleteHandler , renderSimple }) => {
         setCurrentBoxSize(0)
     }
 
-    return (
+    return changeResponsibleTextInto || (
         <div
             onMouseDown={startDeleteHandler} 
             onMouseUp={cancelDeleteProcessHandler}
             className={`targetBox__habitItem__deleteHabitController ${renderSimple ? "targetBox__habitItem__deleteHabitController--simple" : ""}`}>
                 <p>
                     {
-                        renderSimple ? "Delete" : "Deleting"
+                        changeResponsibleTextInto || (renderSimple ? "Delete" : "Deleting")
                     }
                 </p>
                 <div style={{ width : `${currentBoxSize}%` , opacity : renderSimple ? currentBoxSize / 100 : 1 }}></div>

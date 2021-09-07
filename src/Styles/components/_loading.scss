@@ -1,0 +1,33 @@
+
+.loading {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: $green;
+    transition: .6s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999999999;
+
+    span {
+        font-size: 8rem;
+        font-weight: 500;
+        animation: rotateSymbol 1s forwards infinite linear;
+        height: 7.2rem;
+        color: $orange;
+        cursor: default;
+        user-select: none;
+    }
+
+    &--hide {
+        height: 0;
+
+        span {
+            cursor: pointer;
+            animation: rotateSymbol 18s forwards infinite linear;
+        }
+    }
+}

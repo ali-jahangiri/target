@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useState } from "react";
 
 import useKayBaseState from "../Hook/useKeyBaseState";
@@ -14,6 +14,7 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
     const [isActive, setIsActive] = useState(false);
     const [isInEditMode, setIsInEditMode] = useState(false);
     const [isInDeletingProcess, setIsInDeletingProcess] = useState(false);
+    
 
     const createNewHabit = e => {
         e.preventDefault();
@@ -23,11 +24,8 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
 
 
     const deleteHabit = habitNameForDelete => {
-        
-        requests.target.deleteTargetHabit(id , habit.find(el => el.id === habitNameForDelete))
-            .then(data => {
-                console.log(data);
-            })
+        const currentItemForDelete = habit.find(el => el.id === habitNameForDelete)
+        requests.target.deleteTargetHabit(id , currentItemForDelete)
     }
 
     const deleteEntireTarget = () => {
@@ -46,24 +44,25 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
     }
 
     const clearDraftChange = () => {
-
+        setInputValues({});
+        setIsInEditMode(false)
     }
 
     const saveChangeHandler = () => {
-        const { newColor : color } = inputValues;
-        requests.target.editTarget(id , { color });
+        const { newColor } = inputValues;
+        if(newColor) {
+            requests.target.editTarget(id , { color : newColor });
+        }
         setInputValues({});
     }
 
 
-    const targetNameChange = newPassedTargetName => {
-        setInputValues("newHabitName" , newPassedTargetName);
-        // requests.target.editTarget()
-    }
 
-    const debouncedCallback = debounce(passedValue => {
-        console.log(passedValue , "*****");
-    } , 25);
+    const targetNameChange = useCallback(debounce(targetName => {
+        requests.target.editTarget(id , { targetName });
+    } , 500) , []);
+
+   
     
     return (
         <div style={{ backgroundColor : `#${inputValues?.newColor || color}` }} className={`targetBox ${isInDeletingProcess ? "targetBox--deleted" : ""}`}> 
@@ -71,22 +70,19 @@ const TargetBox = ({ targetName , color , habit = [] , deleteHandler , id}) => {
                 <div className="targetBox__header">
                     <Input
                         placeholder="Target"
-                        disabled={!isInEditMode} 
-                        value={(() => {
-                            if(isInEditMode && inputValues?.newHabitName) {
-                                return inputValues?.newHabitName
-                            }else if(isInEditMode) {
-                                return ""
-                            }else return targetName
-                        })()} 
-                        onChange={debouncedCallback}
+                        disabled={!isInEditMode}
+                        defaultValue={targetName}
+                        onChange={value => {
+                            targetNameChange(value)
+                            setInputValues("newTargetName" , value)
+                        }}
                         className={`targetBox__title ${isInEditMode ? "targetBox__title--active" : ""}`} />
                     <div className="targetBox__controllerContainer">
-                        <DeleteBoxHabitOfTarget renderSimple deleteHandler={deleteEntireTarget} />
+                        <DeleteBoxHabitOfTarget changeResponsibleTextInto={inputValues?.newColor && <div onClick={clearDraftChange} className="targetBox__cancelDraftTrigger">Cancel</div>} renderSimple deleteHandler={deleteEntireTarget} />
                         <div onClick={editTargetHandler}>
                             {
                                 (() => {
-                                    if(inputValues?.newColor) return <p onClick={saveChangeHandler}>Save</p>;
+                                    if(inputValues?.newColor || inputValues?.newTargetName) return <p onClick={saveChangeHandler}>Save</p>;
                                     else if(isInEditMode) return <p onClick={clearDraftChange}>Back</p>
                                     else return <p>Edit</p>
                                 })()

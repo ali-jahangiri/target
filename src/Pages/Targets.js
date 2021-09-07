@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Header from "../components/Header"
+import Loading from "../components/Loading";
 import TargetBox from "../components/TargetBox";
 import TargetCreateNewOne from "../components/TargetCreateNewOne";
 import { references } from "../firebase";
@@ -26,20 +27,25 @@ const Targets = () => {
     }
 
 
-
-    if(loading) return 'loading';
     return (
-        <div className="target">
-            <Header>Target we got started with</Header>
-            <div className="target__container">
-                <div>
-                {
-                    allTarget.map((el , i) => <TargetBox key={i} {...el} />)
+        <Loading loading={loading}>
+            {isReady => {
+                    if(isReady) return (
+                        <div className="target">
+                            <Header>Target we got started with</Header>
+                            <div className="target__container">
+                                <div>
+                                {
+                                    allTarget.map((el , i) => <TargetBox key={i} {...el} />)
+                                }
+                                <TargetCreateNewOne /> 
+                                </div>
+                            </div>
+                        </div>
+                    );
                 }
-                <TargetCreateNewOne /> 
-                </div>
-            </div>
-        </div>
+            }
+        </Loading>
     )
 }   
 
