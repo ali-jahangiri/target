@@ -1,4 +1,4 @@
-// .show {
+
 .habitPerDay {
     height: 100vh;
     display: flex;
@@ -8,20 +8,42 @@
     color: white;
     background-color: black;
 
+
+    #FUCK {
+        overflow-y: scroll;
+        max-height: 60vh;
+    }
+
     &__done {
         cursor: pointer;
         user-select: none;
+        font-size: 2rem;
+        color: grey;
+        transition: .3s;
+        
         &:hover {
-            color: $cream;
+            color: white !important;
         }
     }
 
 
     .sideBarHabit {
         height: 10rem;
-        // margin: 1rem 0;
         & > div {
             height: 90%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            span {
+                position: absolute;
+                left: 0;
+                top: -10px;
+                opacity: .3;
+                font-size: 2rem;
+            }
         }
     }
 
@@ -53,6 +75,7 @@
 
             .ss {
                 opacity: 0;
+                transform: translateX(140%);
             }
         }
         
@@ -61,8 +84,10 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            background-color: $cream;
+            background-color: $orange;
             padding: 1rem;
+            height: 60px;
+            margin-bottom: 1rem;
         }
 
         &__item {
@@ -83,11 +108,21 @@
         justify-content: space-between;
         align-items: center;
         font-size: 5rem;
-        p {
-            &:first-child {
-                font-size: 1.6rem;
-                margin-bottom: -1rem;
-                color: grey;
+
+        &__desc {
+            transition: .3s;
+            font-size: 1.6rem;
+            margin-bottom: -1rem;
+            color: grey;
+            max-height: 2rem;
+            overflow: hidden;
+
+        }
+
+
+        &--minified {
+            .habitPerDay__header__desc {
+                    max-height: 0;
             }
         }
     }
@@ -99,28 +134,69 @@
 
         &__addedHabit {
             text-align: center;
-            padding: 1rem 0;
-            background-color: red;
+            z-index: 555;
+            position: relative;
+            height: 10rem;
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            & > div {
+                width: 100%;
+                height: 90%;
+                display: flex;
+                justify-content: space-between;
+                flex-direction: column;
+                padding: 1rem;
+                position: relative;
+                overflow: hidden;
+
+                span {
+                    transition: .3s;
+                    position: absolute;
+                    bottom: -20%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    font-weight: 300;
+                    font-size: .8rem;
+                    cursor: pointer !important;
+                    color: grey;
+                    width: 100%;
+                    padding: 0.6rem;
+
+                    &:hover {
+                        color: white;
+                    }
+                }
+
+                &:hover {
+                    span {
+                        bottom: 0px;
+                    }
+                }
+            }
         }
         
         &__item {
-            width: 100%;
+            width: 8.5rem;
             transition: .3s;
             position: relative;
             min-height: 150px;
 
-            &::after{
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                transition: .8s;
-                width: 5px;
-                height: 100%;
-                background-color: $grey;
-                z-index: -5;
-            }
+            // &::after{
+            //     content: "";
+            //     position: absolute;
+            //     top: 0;
+            //     left: 50%;
+            //     transform: translateX(-50%);
+            //     transition: .8s;
+            //     width: 2px;
+            //     height: 110%;
+            //     background-color: #ededed11;
+            //     z-index: 0;
+            // }
 
             p {
                 transition: $animeDuration;
@@ -128,11 +204,12 @@
 
             &--hoverWithHabitInGrab {
                 &:hover {
+                    .habitPerDay__weekDay__item__innerContainer {
+                        background-color: #fff;
+                    }
                     min-height: 200px;
-                    // p {
-                    //     margin-top: -30px;
-                    // }
-                    background-color: $grey;
+                    // background-color: $grey;
+                    background-color: white;
                 }
             }
 
@@ -140,9 +217,13 @@
                 max-height: 70vh;
                 overflow-y: auto;
                 transition: .3s;
-                background-color: white;
-                padding-top: 10px;
-                width: 90%;
+                // background-color: white;
+                background-color: black;
+                border-bottom: 2px solid white;
+                z-index: 5;
+                position: relative;
+                padding: 1rem 0;
+                width: 100%;
                 margin: 0 auto;
                 text-align: center;
                 color: grey;

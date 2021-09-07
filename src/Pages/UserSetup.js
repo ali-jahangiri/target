@@ -6,7 +6,7 @@ const UserSetup = ({ history }) => {
     const [value, setValue] = useState("");
 
     const setUserHandler = () => {
-        console.log(value);
+
         // db.collection('user').add({ userName : value })
         //     .then(_ => {
         //         history.push('/')

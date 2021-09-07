@@ -18,7 +18,7 @@
         color: $orange;
         cursor: default;
         user-select: none;
-        transition: .3s;
+        transition: .3s .3s cubic-bezier(0.23, 1, 0.320, 1);
         position: absolute;
         left: 50%;
         top: 50%;
@@ -30,13 +30,15 @@
         transition: .3s;
         
         span {
+            left: 0;
+            top: -20px;
             cursor: pointer;
             animation: rotateSymbol 18s forwards infinite linear;
             color: lighten($color: $orange, $amount: 20);
         }
 
         &:hover {
-            height: 10px;
+            height: 5px;
             span {
                 color: $orange;
             }
