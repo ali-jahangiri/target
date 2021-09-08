@@ -1,9 +1,9 @@
-import { useState } from "react";
 import Input from "./Input";
 
-const HabitCreatorItem = ({ index , children , bgColor , changeHandler }) => {
-    const [newValue, setNewValue] = useState(children.name);
+const HabitCreatorItem = ({ index , children , bgColor , changeHandler , removeHandler }) => {
 
+    console.log(children , "**");
+    
     const style = (() => {
         if(bgColor) {
             return {
@@ -12,8 +12,8 @@ const HabitCreatorItem = ({ index , children , bgColor , changeHandler }) => {
         }else return undefined
     })()
 
-    const onChange = () => {
-        changeHandler(index - 1 , newValue)
+    const onChange = newValue => {
+        changeHandler(index - 1 , newValue);
     }   
 
     return (
@@ -23,10 +23,13 @@ const HabitCreatorItem = ({ index , children , bgColor , changeHandler }) => {
                     {index}
                 </div>
                 <Input
-                    onBlur={onChange}
-                    value={newValue}
+                    containerStyle={{ width : "80%" }}
+                    value={children.name}
                     style={{ fontSize : "2.5rem" }}
-                    onChange={value => setNewValue(value)} />
+                    onChange={onChange} />
+                <div onClick={() => removeHandler(children.id)} className="habitCreatorItem__removeTrigger">
+                    <p>Delete</p>
+                </div>
             </div>
         </div>
     )   

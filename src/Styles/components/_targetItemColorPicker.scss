@@ -4,17 +4,44 @@
         align-items: center;
         font-size: 4rem;
         line-height: 30px;
-        height: 3.2rem;
+        height: 6.5rem;
+        flex-wrap: wrap;
         margin-bottom: 2rem;
+        transition: .3s;
+
+        &--shrink {
+            height: 3.2rem;
+        }
+
     }
     
     &__doneTrigger {
-        color: white;
-        font-size: 3rem;
-        cursor: pointer;
         align-self: flex-end;
         display: flex;
         align-items: center;
+        user-select: none;
+
+        p {
+            font-size: 3rem;
+            cursor: pointer;
+            color: grey;
+            transition: .3s;
+            
+            &:hover {
+                color: white;
+            }
+        }
+
+        &--disabled {
+            p {
+                cursor: default;
+                color: rgba(59, 59, 59, 0.548);
+                &:hover {
+                    color: rgba(59, 59, 59, 0.548);
+                }
+            }
+        }
+
     }
 
     &__color {

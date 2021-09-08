@@ -8,6 +8,7 @@ import TargetItemColorPicker from "../components/TargetItemColorPicker";
 
 import { idGenerator } from "../utils";
 import { references } from "../firebase";
+import Loading from "../components/Loading";
 
 const NewTarget = () => {
   const [target, setTarget] = useState({});
@@ -21,7 +22,6 @@ const NewTarget = () => {
     }));
   };
 
-
   const createNewTargetHandler = () => {
     setIsInCreationPend(true);
     const id = idGenerator();
@@ -32,24 +32,32 @@ const NewTarget = () => {
   }
 
   return (
-    <div className="newTarget" >
-      <div className="newTarget__container">
-        <Container>
-          <Input showLabel onChange={(value) => changeHandler("targetName", value)} placeholder="Target Name" />
-          <HabitListCreator
-            haveTargetColor={target?.color}
-            habit={target?.habit || []}
-            onChange={changeHandler}
-          />
-          <TargetItemColorPicker
-            isPend={isInCreationPend}
-            onDone={createNewTargetHandler}
-            selectedColor={target?.color || ""}
-            onChange={(color) => changeHandler("color", color)}
-          />
-        </Container>
+    <Loading renderImmediately>
+      {_ => (
+        <div className="newTarget" >
+        <div className="newTarget__container">
+          <Container>
+            <Input 
+              showLabel 
+              onChange={(value) => changeHandler("targetName", value)} 
+              placeholder="Target Name" />
+            <HabitListCreator
+              haveTargetColor={target?.color}
+              habit={target?.habit || []}
+              onChange={changeHandler}
+            />
+            <TargetItemColorPicker
+              isValidToPass={target?.targetName}
+              isPend={isInCreationPend}
+              onDone={createNewTargetHandler}
+              selectedColor={target?.color || ""}
+              onChange={(color) => changeHandler("color", color)}
+            />
+          </Container>
+        </div>
       </div>
-    </div>
+      )}
+    </Loading>
   );
 };
 

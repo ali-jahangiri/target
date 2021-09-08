@@ -2,15 +2,40 @@
     margin: 10px 0;
     position: relative;
 
+
+    &__removeTrigger {
+        opacity: 0;
+        transition: .3s;
+        cursor: pointer;
+        padding: 0.5rem;
+        color: whitesmoke;
+        user-select: none;
+        &:hover {
+            color: white;
+        }
+    }
+
     &__container {
+        position: relative;
         background: $cream;
         width: 98%;
         margin: 0 auto;
         padding: 30px;
         transition: .3s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+
+        &:hover .habitCreatorItem {
+            &__removeTrigger {
+                opacity: 1;
+            }
+        }
     }
 
     &__index {
+        user-select: none;
         position: absolute;
         left: 15;
         top: -34px;

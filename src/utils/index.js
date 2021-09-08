@@ -24,7 +24,6 @@ const weekDays = [
 ];
 
 export const habitForTodayExtractor = (habits) => {
-  const nameOfToday = weekDays[today - 1];
   // TODO change static name of day
   return habits
     .reduce((acc, res) => {
@@ -88,7 +87,7 @@ export const fixNumbers = function (str) {
 
 export const _date = (targetDate) => dayjs(targetDate).calendar("jalali").locale('fa')
 
-export const colors = ['345B63' , "D4ECDD" , "C36839" , "5F7A61" , "3E2C41" , "C3BA85" , "FFB740" , "C2B8A3" , "402218" , "161616" , "511281" , "91C788" , "D44000" , "536162" , "AC0D0D" , "7868E6", "BFB051" , "F3F4ED"]
+export const colors = ['345B63' , "D4ECDD" , "C36839" , "5F7A61" , "3E2C41" , "C3BA85" , "FFB740" , "C2B8A3" , "402218" , "D44000" , "536162" , "AC0D0D" , "7868E6", "BFB051" , "F3F4ED"]
 
 export {
   requests

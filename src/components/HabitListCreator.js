@@ -10,15 +10,21 @@ const HabitListCreator = ({ onChange , habit , haveTargetColor }) => {
     
     const inputRef = useRef()
     
-    const changeHandler = inputValue => {
+    const inputCreatorChangeHandler = inputValue => {
         setValue(inputValue)
     }
 
-    const submitHandler = () => {
+    const createNewHabitHandler = () => {
         onChange('habit' , [...habit , { id : idGenerator() , name : value }])
         setValue("");
         inputRef.current.focus();
     }
+
+
+    const habitDeleteHandler = habitId => {
+        onChange("habit" , habit.filter(el => el.id !== habitId))
+    }
+
 
     const habitEditHandler = (index , newValue) => {
         const newHabitList = [...habit];
@@ -30,12 +36,8 @@ const HabitListCreator = ({ onChange , habit , haveTargetColor }) => {
     }
     
 
-    const focusOnInputHandler = () => 
-        inputRef.current?.focus();
-
     return (
         <div className="habitListCreator">
-            {/* <p onClick={focusOnInputHandler} className="habitListCreator__title">Which habits help you to achieve target ? </p> */}
             <div className="row habitListCreator__directory">
                 {
                     habit.map((el , i) => (
@@ -43,7 +45,8 @@ const HabitListCreator = ({ onChange , habit , haveTargetColor }) => {
                             key={i}
                             changeHandler={habitEditHandler} 
                             bgColor={haveTargetColor} 
-                            index={i + 1}>
+                            index={i + 1}
+                            removeHandler={habitDeleteHandler} >
                             {el}
                         </HabitCreatorItem>
                     ))
@@ -53,13 +56,13 @@ const HabitListCreator = ({ onChange , habit , haveTargetColor }) => {
                 <Input
                     containerStyle={{ width : "100%" }}
                     reference={inputRef}
-                    onChange={changeHandler}
+                    onChange={inputCreatorChangeHandler}
                     value={value}
-                    placeholder="Which habits help you to achieve target ? "
+                    placeholder="Which habits help you to achieve target ?"
                 />
                 {
                     value && 
-                    <Btn type="submit" style={{ backgroundColor : "white" }} onClick={submitHandler}>
+                    <Btn type="submit" style={{ backgroundColor : "white" }} onClick={createNewHabitHandler}>
                         Add
                     </Btn>
                 }
