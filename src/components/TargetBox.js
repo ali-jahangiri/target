@@ -1,20 +1,23 @@
 import React, { useCallback } from "react";
 import { useState } from "react";
+import { useHistory } from "react-router";
 
 import useKayBaseState from "../Hook/useKeyBaseState";
 
 import Input from './Input';
-
-import { debounce, idGenerator, requests, selfClearTimeout } from "../utils"
 import DeleteBoxHabitOfTarget from "./DeleteBoxHabitOfTarget";
 import ColorSuggest from "./ColorSuggest";
+
+import { debounce, idGenerator, requests, selfClearTimeout } from "../utils"
 
 const TargetBox = ({ targetName , color , habit = [] , id}) => {
     const [inputValues , setInputValues] = useKayBaseState({});
     const [isActive, setIsActive] = useState(false);
     const [isInEditMode, setIsInEditMode] = useState(false);
     const [isInDeletingProcess, setIsInDeletingProcess] = useState(false);
-    
+
+    const history = useHistory();
+
 
     const createNewHabit = e => {
         e.preventDefault();
@@ -32,6 +35,7 @@ const TargetBox = ({ targetName , color , habit = [] , id}) => {
         setIsInDeletingProcess(true);
         selfClearTimeout(() => {
             requests.target.deleteTarget(id)
+                .then(_ => requests.habitPerWeek.deleteEntireSchedule(id))
         } , 2000);
     }
 
@@ -61,21 +65,36 @@ const TargetBox = ({ targetName , color , habit = [] , id}) => {
         requests.target.editTarget(id , { targetName });
     } , 500) , []);
 
-   
+   const internalTargetNameChangeHandler = value => {
+    targetNameChange(value)
+    setInputValues("newTargetName" , value)
+   }
     
+
+   const redirectToTargetSchedule = () => {
+       if(habit.length) {
+            history.push(`/habitPerWeek/${id}`)
+        }
+   }
+
     return (
         <div style={{ backgroundColor : `#${inputValues?.newColor || color}` }} className={`targetBox ${isInDeletingProcess ? "targetBox--deleted" : ""}`}> 
             <div className="targetBox__innerContainer" style={{ width : "100%" }}>
                 <div className="targetBox__header">
-                    <Input
-                        placeholder="Target"
-                        disabled={!isInEditMode}
-                        defaultValue={targetName}
-                        onChange={value => {
-                            targetNameChange(value)
-                            setInputValues("newTargetName" , value)
-                        }}
-                        className={`targetBox__title ${isInEditMode ? "targetBox__title--active" : ""}`} />
+                    <div style={{ position : "relative" }}>
+                        <Input
+                            placeholder="Target"
+                            disabled={!isInEditMode}
+                            defaultValue={targetName}
+                            onChange={internalTargetNameChangeHandler}
+                            className={`targetBox__title ${isInEditMode ? "targetBox__title--active" : ""}`} 
+                        />
+                        {
+                            !isInEditMode && !!habit.length && (<div 
+                            className="targetBox__targetNameClickableOverlay"
+                            onClick={redirectToTargetSchedule}></div>)
+                        }
+                    </div>
                     <div className="targetBox__controllerContainer">
                         <DeleteBoxHabitOfTarget changeResponsibleTextInto={inputValues?.newColor && <div onClick={clearDraftChange} className="targetBox__cancelDraftTrigger">Cancel</div>} renderSimple deleteHandler={deleteEntireTarget} />
                         <div onClick={editTargetHandler}>

@@ -32,8 +32,16 @@ const target = {
     }
 }
 
+
+const habitPerWeek = {
+    deleteEntireSchedule(targetId) {
+        return requestWrapper(resolve => references.habitPerWeek.doc(targetId).delete().then(resolve))
+    },
+}
+
 const requests =  {
     target,
+    habitPerWeek,
 }
 
 

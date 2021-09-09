@@ -1,7 +1,7 @@
 import { colors } from "../utils";
 import LoaderConcept from "./LoaderConcept";
 
-const sentence = "You can pick a appropriate color for your current Target"
+const sentence = "Also you can pick a appropriate color for your current Target"
 const suggestedColor = sentence.split(" ").map((el , i) => ({ color : colors[i], label : el }))
 
 const Color = ({ onSelect , color , label , selectedColor }) => {

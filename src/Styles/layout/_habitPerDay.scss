@@ -50,6 +50,10 @@
     &__schedulePlayground {
         display: flex;
         
+        &--disabled {
+            opacity: 0.2;
+        }
+
         .habitPerDay__weekDay {
             flex: 1;
             user-select: none;

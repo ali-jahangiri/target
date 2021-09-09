@@ -10,12 +10,16 @@ const Loading = ({ children , loading , renderImmediately }) => {
             selfClearTimeout(() => {
                 setIsReadyToRenderChildren(true);
             } , 1000)
+        }else if(renderImmediately) {
+            selfClearTimeout(() => {
+                setIsReadyToRenderChildren(true)
+            } , 100)
         }
     } , [loading , renderImmediately]);
     
     return (
         <>
-            <div className={`loading ${renderImmediately || isReadyToRenderChildren ? "loading--hide" : ""} ${isOverlayOpen ? "loading--overlayOpen" : ""}`}> 
+            <div className={`loading ${isReadyToRenderChildren ? "loading--hide" : ""} ${isOverlayOpen ? "loading--overlayOpen" : ""}`}> 
                 <span onClick={() => setIsOverlayOpen(prev => !prev)}>*</span>
             </div>
             {children(isReadyToRenderChildren)}

@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { HabitPerWeek, Home, Login, NewTarget, NotFound, Playground, Targets, Today, UserSetup } from "../Pages";
+import { HabitPerWeek, Home, Login, NewTarget, NotFound, Playground, Targets, UserSetup } from "../Pages";
 
 import PrivateRoute from "./PrivateRoute";
 
