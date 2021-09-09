@@ -46,10 +46,6 @@ const Stream = ({ date , sideBarEnabled }) => {
 
   useEffect(() => setFirstTime(false) , []);
   
-  console.log(todayHabit , "todayHabit");
-  console.log(habitInStream, 'habitIs');
-
-
   const leanDate = date.split("/").join('')
 
   useEffect(() => {
@@ -61,8 +57,8 @@ const Stream = ({ date , sideBarEnabled }) => {
           .get()
           .then(res => {
             let ss = _date(date).add(1 , 'day').format('dddd')
+            console.log(res.docs.map(el => el.data()) , ss);
             const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
-            console.log(res.docs.map(el => el.data()) , "!@@@@@@@@2" , ss , _s);
             setTodayHabit(_s)
             setLoading(false)
           })
@@ -74,8 +70,7 @@ const Stream = ({ date , sideBarEnabled }) => {
               references.habitPerWeek
                 .get()
                 .then(res => {
-                  let ss = _date(date).add(1 , 'day').format('dddd')
-                  console.log('*********************' , res.docs.map(el => el.data()));
+                  let ss = _date(date).add(1 , 'day').format('dddd');
                   const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
                   setTodayHabit(_s)
                   setLoading(false)

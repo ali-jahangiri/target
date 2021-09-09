@@ -1,19 +1,20 @@
 import { useState } from "react";
 
 import { FiArrowLeft, FiArrowRight, FiRotateCcw } from "react-icons/fi";
+import { _date } from "../utils";
 
-import Persian from "persian-date";
-import Todo from "./Stream/Todo";
 
 const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setIsHoverInNavigationCircle , currentDay , goToday }) => {
     const [isActive, setIsActive] = useState(false);
-    const now = new Persian()
-    const currentMonthName = now.add("month" , currentMonth).format('MMMM');
+    const now = _date();
+    
+    const currentMonthName = now.add(currentMonth - 1 , "M").format("MMMM")
+    const currentDayName = _date(`${now.year()}/${now.month() + 1 + (currentMonth - 1)}/${currentDay + 1}`).format('dddd')
 
+    
     // const isVisible = useSelector(state => state.ui.navigatorVisibilityStatus);
     const isVisible = false
     
-
     const nextMonthAvailable = (12 - (now.month() + currentMonth) ) > 0 ? true : false
 
     const monthSelectHandler = (actionType , event) => {
@@ -48,7 +49,10 @@ const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setI
             onClick={() => setIsActive(prev => !prev)} 
             className={`setting ${isActive ? "setting--active" : ""} ${!isVisible ? "setting--hide" : "" }`}>
             <div style={{ display : "flex" , flexDirection : "column" , alignItems : 'center' }}>
-                <p style={{ fontWeight : 'bold' }}>{currentDay}</p>
+                <div style={{ display : "flex" , alignItems : 'center' }}>
+                    <p style={{ fontWeight : 'bold' , marginRight : 10 }}>{currentDay}</p>
+                    <p>{currentDayName}</p>
+                </div>
                 <p style={{ transform : `rotate(${isActive ? 0 : rotate}deg)` }}>{currentMonthName}</p>
             </div>
             <div className={`controller ${isActive ? 'controller--active' : ""}`}>

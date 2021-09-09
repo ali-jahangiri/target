@@ -7,38 +7,10 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useEffect } from "react";
 import { references } from "../firebase";
 import Loading from "../components/Loading";
+import client from "../client";
 
 
-const namesOfDaysOfWeek = [
-    {
-        name : "جمعه",
-        id : idGenerator()
-    },
-    {
-        name : "پنج‌شنبه",
-        id : idGenerator()
-    },
-    {
-        name : "چهار شنبه",
-        id : idGenerator()
-    },
-    {
-        name : "سه شنبه",
-        id : idGenerator()
-    },
-    {
-        name : "دوشنبه",
-        id : idGenerator()
-    },
-    {
-        name : "یکشنبه",
-        id : idGenerator()
-    },
-    {
-        name : "شنبه",
-        id : idGenerator()
-    },
-];
+const namesOfDaysOfWeek = client.STATIC.DAY_OF_WEEK.map(el => ({ name : el , id : idGenerator() }))
 
 const HabitPerWeek = ({ match : { params } , history }) => {
     
@@ -46,6 +18,8 @@ const HabitPerWeek = ({ match : { params } , history }) => {
     const [loading, setLoading] = useState(true);
     const [schedule, setSchedule] = useState(null)
     const [currentTarget , setCurrentTarget] = useState([]);
+    const [currentHabitBlock, setCurrentHabitBlock] = useState(null);
+
 
     useEffect(() => {
         references.target.doc(params.id)
@@ -66,16 +40,13 @@ const HabitPerWeek = ({ match : { params } , history }) => {
                         setSchedule({...base})
                         const { color , targetName } = shit.data();
                             references.habitPerWeek.doc(params.id).set({ targetName , color  , schedule : base })
-                                .then(_ => {
-                                    setLoading(false)
-                                })
+                                .then(_ => setLoading(false))
                     }
                 })
 
             })
     } , [params])  
 
-    const [currentHabitBlock, setCurrentHabitBlock] = useState(null);
     
 
 
@@ -119,22 +90,16 @@ const HabitPerWeek = ({ match : { params } , history }) => {
     
 
       const removeHabitHandler = (habitInsideDayName , habitId) => {
-          setSchedule(prev => {
-              return {
-                  ...prev ,
-                  [habitInsideDayName] : prev[habitInsideDayName].filter(el => el.id !== habitId)
-              }
-          })
+        setSchedule(prev => ({
+            ...prev ,
+            [habitInsideDayName] : prev[habitInsideDayName].filter(el => el.id !== habitId)
+        }))
       } 
 
 
-      const redirectToHome = () => {
-          history.push('/')
-      }
+      const redirectToHome = () => history.push('/');
 
-      const redirectForCreateHabit = () => {
-          history.push("/target")
-      }
+      const redirectForCreateHabit = () => history.push("/target")
 
       const dragStartHandler = (e) => {
         if (e.source.droppableId === "habitItems") {
@@ -156,113 +121,111 @@ const HabitPerWeek = ({ match : { params } , history }) => {
           <Loading loading={loading}>
             {isReady => {
                 if(isReady) {
-                    console.log(currentTarget , 'ge');
                     const haveAnyHabit = !!currentTarget?.habit?.length;
-                return (
-                    <div className="habitPerDay">
-            <Container>
-            <div className={`habitPerDay__header ${!isSidebarOpen ? "habitPerDay__header--minified" : ""}`}>
-            <div>
-                <p className="habitPerDay__header__desc">Schedule for achieve</p>
-                <p>{currentTarget.targetName}</p>
-            </div>
-            <div>
-                <p onClick={() => haveAnyHabit ? redirectToHome() : redirectForCreateHabit()} className="habitPerDay__done">
-                    {haveAnyHabit ? "Done With it" : "Let's add new Habit"}
-                </p>
-            </div>
-            </div>
-            <DragDropContext onDragStart={dragStartHandler} onDragEnd={dragEndHandler} >
-                <div className={`habitPerDay__schedulePlayground ${!haveAnyHabit ? "habitPerDay__schedulePlayground--disabled" : ""}`}>   
-                <div className="habitPerDay__weekDay">
-                {namesOfDaysOfWeek.map((nameOfDay, i) => (
-                    <Droppable key={i} droppableId={nameOfDay.name}>
-                    {provided => (
-                        <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        key={i}
-                        className={`habitPerDay__weekDay__item ${currentHabitBlock ? "habitPerDay__weekDay__item--hoverWithHabitInGrab" : ""}`} >
-                        <div className="habitPerDay__weekDay__item__innerContainer">
-                            <p>{nameOfDay.name}</p>
-                        </div>
-                        <div id="FUCK">
-                            {(() => {
-                            return schedule[nameOfDay.name]?.map((el, i) => (
-                                <Draggable
-                                    key={el.id}
-                                    draggableId={el.id}
-                                    index={i} >
-                                {(provided) => (
-                                    <div
-                                    ref={provided.innerRef}
-                                    key={i}
-                                    className="habitPerDay__weekDay__addedHabit"
-                                    {...provided.dragHandleProps}
-                                    {...provided.draggableProps}
-                                    >
-                                    <div style={{ backgroundColor : `#${currentTarget.color}` }}>
-                                        <p>{el.name}</p>
-                                        <span onClick={() => removeHabitHandler(nameOfDay.name , el.id)}>Remove</span>
-                                    </div>
-                                    </div>
-                                )}
-                                </Draggable>
-                            ));
-                            })()}
-                            {provided.placeholder}
-                        </div>
-                        </div>
-                    )}
-                    </Droppable>
-                ))}
-                </div>
-                {
-                    haveAnyHabit && (
-                        <div className={`habitPerDay__habitSidebar ${!isSidebarOpen ? "habitPerDay__habitSidebar--active" : ""}`} >
-                            <div
-                                onClick={() => setIsSidebarOpen(prev => !prev)}
-                                className="habitPerDay__habitSidebar__trigger" >
-                                {!isSidebarOpen ? <FiChevronLeft/> : <FiChevronRight />}
-                            </div>
-                            <div className="ss">
-                                <Droppable isDropDisabled droppableId="habitItems">
-                                {(provided) => (
-                                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                                    {
-                                        currentTarget.habit.map((el , i) => (
-                                            <Draggable
+                        return (
+                            <div className="habitPerDay">
+                    <Container>
+                    <div className={`habitPerDay__header ${!isSidebarOpen ? "habitPerDay__header--minified" : ""}`}>
+                    <div>
+                        <p className="habitPerDay__header__desc">Schedule for achieve</p>
+                        <p>{currentTarget.targetName}</p>
+                    </div>
+                    <div>
+                        <p onClick={() => haveAnyHabit ? redirectToHome() : redirectForCreateHabit()} className="habitPerDay__done">
+                            {haveAnyHabit ? "Done With it" : "Let's add new Habit"}
+                        </p>
+                    </div>
+                    </div>
+                    <DragDropContext onDragStart={dragStartHandler} onDragEnd={dragEndHandler} >
+                        <div className={`habitPerDay__schedulePlayground ${!haveAnyHabit ? "habitPerDay__schedulePlayground--disabled" : ""}`}>   
+                        <div className="habitPerDay__weekDay">
+                        {namesOfDaysOfWeek.map((nameOfDay, i) => (
+                            <Droppable key={i} droppableId={nameOfDay.name}>
+                            {provided => (
+                                <div
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                key={i}
+                                className={`habitPerDay__weekDay__item ${currentHabitBlock ? "habitPerDay__weekDay__item--hoverWithHabitInGrab" : ""}`} >
+                                <div className="habitPerDay__weekDay__item__innerContainer">
+                                    <p>{nameOfDay.name}</p>
+                                </div>
+                                <div id="FUCK">
+                                    {(() => {
+                                    return schedule[nameOfDay.name]?.map((el, i) => (
+                                        <Draggable
+                                            key={el.id}
                                             draggableId={el.id}
-                                            key={i}
                                             index={i} >
-                                                {provided => (
-                                                    <div
-                                                    className='sideBarHabit' 
-                                                    ref={provided.innerRef}
-                                                    {...provided.dragHandleProps}
-                                                    {...provided.draggableProps}
-                                                    >
-                                                        <div style={{ backgroundColor : `#${currentTarget.color}`}}>
-                                                            <span>{i + 1 < 10 ? `0${i + 1}` : i}</span>
-                                                            <p>{el.name}</p>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </Draggable>
-                                        ))
-                                    }
+                                        {(provided) => (
+                                            <div
+                                            ref={provided.innerRef}
+                                            key={i}
+                                            className="habitPerDay__weekDay__addedHabit"
+                                            {...provided.dragHandleProps}
+                                            {...provided.draggableProps}
+                                            >
+                                            <div style={{ backgroundColor : `#${currentTarget.color}` }}>
+                                                <p>{el.name}</p>
+                                                <span onClick={() => removeHabitHandler(nameOfDay.name , el.id)}>Remove</span>
+                                            </div>
+                                            </div>
+                                        )}
+                                        </Draggable>
+                                    ));
+                                    })()}
                                     {provided.placeholder}
-                                    </div>
-                                )}
-                                </Droppable>
-                            </div>
+                                </div>
+                                </div>
+                            )}
+                            </Droppable>
+                        ))}
                         </div>
-                    )
-                }
-            </div>
-            </DragDropContext>
-            </Container>
-        </div>)}
+                        {
+                            haveAnyHabit && (
+                                <div className={`habitPerDay__habitSidebar ${!isSidebarOpen ? "habitPerDay__habitSidebar--active" : ""}`} >
+                                    <div
+                                        onClick={() => setIsSidebarOpen(prev => !prev)}
+                                        className="habitPerDay__habitSidebar__trigger" >
+                                        {!isSidebarOpen ? <FiChevronLeft/> : <FiChevronRight />}
+                                    </div>
+                                    <div className="ss">
+                                        <Droppable isDropDisabled droppableId="habitItems">
+                                        {(provided) => (
+                                            <div {...provided.droppableProps} ref={provided.innerRef}>
+                                            {
+                                                currentTarget.habit.map((el , i) => (
+                                                    <Draggable
+                                                    draggableId={el.id}
+                                                    key={i}
+                                                    index={i} >
+                                                        {provided => (
+                                                            <div
+                                                                className='sideBarHabit' 
+                                                                ref={provided.innerRef}
+                                                                {...provided.dragHandleProps}
+                                                                {...provided.draggableProps} >
+                                                                <div style={{ backgroundColor : `#${currentTarget.color}`}}>
+                                                                    <span>{i + 1 < 10 ? `0${i + 1}` : i}</span>
+                                                                    <p>{el.name}</p>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                ))
+                                            }
+                                            {provided.placeholder}
+                                            </div>
+                                        )}
+                                        </Droppable>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </div>
+                    </DragDropContext>
+                    </Container>
+                </div>)}
             }}
         </Loading>   
     )
