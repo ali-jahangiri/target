@@ -57,7 +57,6 @@ const Stream = ({ date , sideBarEnabled }) => {
           .get()
           .then(res => {
             let ss = _date(date).add(1 , 'day').format('dddd')
-            console.log(res.docs.map(el => el.data()) , ss);
             const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
             setTodayHabit(_s)
             setLoading(false)

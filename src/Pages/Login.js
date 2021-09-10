@@ -1,5 +1,3 @@
-
-import { Emoji } from "react-apple-emojis";
 import Input2 from "../components/Input2"
 import useKeyBaseState from "../Hook/useKeyBaseState";
 
@@ -22,14 +20,12 @@ const Login = () => {
         <div className="login">
             <div className="login__intro">
                 <div className="login__introText">
-                        <Emoji name="brain" />
                         <p>Discover user life as a simple stream !</p>
                 </div>
             </div>
             <div className="login__mainSection">
                 <div className="login__form">
                     <div className="login__header">
-                        <Emoji name="waving-hand" />
                         <div>
                             <p>Hi There ! </p>
                             <p>Let's Login</p>

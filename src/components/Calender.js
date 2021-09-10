@@ -1,4 +1,3 @@
-import persian from "persian-date";
 import { useState } from "react";
 
 import { useHistory } from "react-router";
@@ -10,7 +9,7 @@ import client from "../client";
 
 
 const Calender = () => {
-  const now = new persian();
+  const now = {};
   const history = useHistory();
 
   const [currentMonth, setCurrentMonth] = useState(0);

@@ -21,8 +21,8 @@ textarea {
 
 .mainContainer {
     overflow-x: hidden;
-    height: 100vh;
-    background-color: white;
+    // height: 100vh;
+    background-color: black;
 }
 .__dayContainer {
     min-width: 100vw;
@@ -34,7 +34,7 @@ textarea {
 
 .__innerContainer {
     width: 95%;
-    height: 90%;
+    height: 100%;
     display: flex;
     position: relative;
     transition: .2s .7s cubic-bezier(0.55, 0.085, 0.68, 0.53);

@@ -1,4 +1,4 @@
-import PersianDate from "persian-date";
+
 import requests from './requests';
 import dayjs from "dayjs";
 import jalaliday from "jalaliday";
@@ -11,17 +11,6 @@ export const generateColor = (color, fade) => {
 export const idGenerator = () => {
   return Math.random().toString(36).substr(2, 9);
 };
-
-const today = new PersianDate().day();
-const weekDays = [
-  "شنبه",
-  "یکشنبه",
-  "دوشنبه",
-  "سه شنبه",
-  "چهارشنبه",
-  "پنجشنبه",
-  "جمعه",
-];
 
 export const habitForTodayExtractor = (habits) => {
   // TODO change static name of day
