@@ -2,8 +2,6 @@ import Input from "./Input";
 
 const HabitCreatorItem = ({ index , children , bgColor , changeHandler , removeHandler }) => {
 
-    console.log(children , "**");
-    
     const style = (() => {
         if(bgColor) {
             return {

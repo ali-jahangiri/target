@@ -30,7 +30,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
     );
   };
   
-  const StreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index, setIsSidebarOpen, color, habitName, resizeHandler, hoursGoNext, setNthChildHandler, isInDragging, isInResizing, isInDetailsMode, setHabitInStream, habitInStream, }) => {
+  const StreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index, setIsSidebarOpen, color, habitName, resizeHandler, hoursGoNext, setNthChildHandler, isInDragging, isInResizing, isInDetailsMode, setHabitInStream, habitInStream, snapshot , deleteTimeoutRef , setCurrentItemInDeleteProcess , currentItemInDeleteProcess}) => {
 
     const [forcer, setFourcer] = useState(Date.now())
     const [internalH, setInternalH] = useState(0);
@@ -39,6 +39,8 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
     const [detailsActive, setDetailsActive] = useState(false);
 
     const [position, setposition] = useState(0);
+
+    const [isInDeleteProcess, setIsInDeleteProcess] = useState(false);
 
 
     const inputDetailsChangeHandler = (key, value) => {
@@ -117,7 +119,59 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
       }
       
     };
-  
+
+
+    useEffect(() => {
+      if(!snapshot.isDraggingOver && !currentItemInDeleteProcess) {
+        setCurrentItemInDeleteProcess(snapshot.draggingFromThisWith)
+      }
+    }, [snapshot]);
+
+
+    const cancelDeleteProcess = () => {
+      clearTimeout(deleteTimeoutRef.current)
+      setCurrentItemInDeleteProcess(null);
+    }
+
+    const renderChecker = () => {
+      if(currentItemInDeleteProcess === id) {
+        return (
+          <div onClick={cancelDeleteProcess}>Deleting are you sure ? you can cancel it if you wish ?</div>
+        )
+      }else return <>
+      <div className={`streamItem__innerContainer ${isInDetailsMode ? "streamItem__innerContainer--setUp" : ""}`} >
+      <p>{habitName}</p>
+      <div className="streamItem__detailsModeCtaContainer">
+        <div
+          onClick={showDetailsHandler}
+          className={`streamItem__detailsTrigger ${isInDetailsMode? "streamItem__detailsTrigger--rotate": ""}`} >
+          <FiMoreHorizontal />
+        </div>
+        <div onClick={closeHandler} className={`determiner ${isInDetailsMode ? "determiner--active" : ""}`} >
+          <div className={`${_initialWasSettled ? "visible" : ""}`}>
+            <FiCheck />
+          </div>
+          <div className={`${!_initialWasSettled ? "visible" : ""}`}>
+            <CgClose />
+          </div>
+        </div>
+      </div>
+    </div>
+    {isInDetailsMode && (
+      <div style={{ paddingTop: "4rem" }}>
+        <WritableDetails
+          value={habitInStream.find((el) => el.id === id)?._initial}
+          onChange={value => inputDetailsChangeHandler("_initial", value)} />
+      </div>
+    )}
+    {
+      isInDeleteProcess && <div className="streamItem__deleteTrigger">
+          Delete
+      </div>
+    }
+          </>
+    }
+
     return (
       <Draggable isDragDisabled={isInDetailsMode} draggableId={id} index={index}>
         {(provided) => (
@@ -126,13 +180,15 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
             ref={refContainer}
             onResize={internalResizeHandler}
             onResizeStop={resizeEndHandler}
+            width="100%"
             className={`habitMainContainer ${isInDetailsMode ? "habitMainContainer--inDetailsMode" : ""}`}
             enable={{ bottom: !isInDetailsMode && index + hoursGoNext !== 24 ? true : false }}
             minHeight={100}
             maxHeight={!availableNextHours ? hoursGoNext * 100 : availableNextHours * 100 + hoursGoNext * 100}
             grid={[100, 100]}
             defaultSize={{ width: "100%", height: hoursGoNext * 100 }}
-            handleComponent={{bottom: <StreamResizeTrigger isInResizing={isInResizing === id} /> }} >
+            maxWidth="100%"
+            handleComponent={{bottom: currentItemInDeleteProcess !== id && <StreamResizeTrigger isInResizing={isInResizing === id} /> }} >
             {isDetailsOptionMenuOpen && (
               <DetailsOptionsMenu
                 closeHandler={determineHandler}
@@ -140,40 +196,17 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
               />
             )}
             <div
-              onDoubleClick={() => console.log('sdsds')}
+              onDoubleClick={setIsInDeleteProcess}
               id={position}
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               className={`streamItem ${isInDragging ? "streamItem--hideResizeTrigger" : ""} ${detailsActive ? "streamItem--overflowHidden" : ""}`}>
               <div
-                className="streamItem__container"
+                onClick={() => currentItemInDeleteProcess === id && cancelDeleteProcess()}
+                className={`streamItem__container ${currentItemInDeleteProcess === id ? "streamItem__container--delete" : ""}`}
                 style={{ backgroundColor: `#${color || "dcdcdc"}` }}>
-                <div className={`streamItem__innerContainer ${isInDetailsMode ? "streamItem__innerContainer--setUp" : ""}`} >
-                  <p>{habitName}</p>
-                  <div className="streamItem__detailsModeCtaContainer">
-                    <div
-                      onClick={showDetailsHandler}
-                      className={`streamItem__detailsTrigger ${isInDetailsMode? "streamItem__detailsTrigger--rotate": ""}`} >
-                      <FiMoreHorizontal />
-                    </div>
-                    <div onClick={closeHandler} className={`determiner ${isInDetailsMode ? "determiner--active" : ""}`} >
-                      <div className={`${_initialWasSettled ? "visible" : ""}`}>
-                        <FiCheck />
-                      </div>
-                      <div className={`${!_initialWasSettled ? "visible" : ""}`}>
-                        <CgClose />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {isInDetailsMode && (
-                  <div style={{ paddingTop: "4rem" }}>
-                    <WritableDetails
-                      value={habitInStream.find((el) => el.id === id)?._initial}
-                      onChange={value => inputDetailsChangeHandler("_initial", value)} />
-                  </div>
-                )}
+                  {renderChecker()}
               </div>
             </div>
           </Resizable>

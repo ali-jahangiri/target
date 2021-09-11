@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 
 import { EmptyHabitBlock , StreamItem, StreamSidebar} from "../components/Stream";
 
-import { idGenerator, selfClearTimeout, _date } from "../utils";
+import { idGenerator, requests, selfClearTimeout, _date } from "../utils";
 
 
 import TodayHoursRow from "../components/TodayHoursRow";
@@ -20,7 +20,9 @@ const TODAY_ID = "todayHabit";
 
 const Stream = ({ date , sideBarEnabled }) => {
   const [loading, setLoading] = useState(true);
-  
+  const [currentItemInDeleteProcess, setCurrentItemInDeleteProcess] = useState(false);
+
+
   const [habitInStream, setHabitInStream] = useState(null);
 
 
@@ -44,12 +46,16 @@ const Stream = ({ date , sideBarEnabled }) => {
   
   const [firstTime, setFirstTime] = useState(true);
 
+  
   useEffect(() => setFirstTime(false) , []);
   
+
+  const deleteTimeoutRef = useRef(); 
+
+
   const leanDate = date.split("/").join('')
 
   useEffect(() => {
-
     references.stream.doc(leanDate).onSnapshot(snapShot => {
       if(snapShot.exists) {
           setHabitInStream(snapShot.data().item);
@@ -96,7 +102,15 @@ const Stream = ({ date , sideBarEnabled }) => {
     }
 
     if (!destination || destination.index > 23) {
-      Alert.warning("you cannot put your outside of today hours");
+      let needToAssign = true;
+      let timer = setTimeout(() => {
+        setHabitInStream(prev => prev.map(el => el.id === draggableId ? { id : idGenerator() , name : null , hoursGoNext : 1 } : el))
+        deleteTimeoutRef.current = null;
+        setCurrentItemInDeleteProcess(null)
+        needToAssign = false
+        clearTimeout(timer);
+      } , 4000);
+      if(needToAssign) deleteTimeoutRef.current = timer;
       return;
     }
 
@@ -222,6 +236,9 @@ const Stream = ({ date , sideBarEnabled }) => {
   };
 
 
+
+
+
   return loading ? <div>loading</div> : (
     <div className="today">
       <Timeline />
@@ -233,7 +250,7 @@ const Stream = ({ date , sideBarEnabled }) => {
         </div>
       )}
       <DragDropContext onDragStart={dragStartHandler} onDragEnd={dragEndHandler} >
-        <div id="Container2" className={`todayHoursRow__container ${isDraggingStart || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
+        <div style={{ overflowX : "hidden" }} id="Container2" className={`todayHoursRow__container ${isDraggingStart || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
           <div id="Container" style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : 5}}>
             {hours.map((el, i) => (
               <TodayHoursRow
@@ -246,38 +263,44 @@ const Stream = ({ date , sideBarEnabled }) => {
           </div>
 
           <Droppable droppableId={TODAY_ID}>
-            {(provided) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                className="today__droppableContainer">
-                {habitInStream.map((el, i) => {
-                  if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
-                  else
-                    return (
-                      <StreamItem
-                        isInDetailsMode={currentDetailsModeHabit === el.id ? true : false}
-                        detailsShowHandler={detailsShowHandler}
-                        sidebarClosedByUser={sidebarClosedByUser}
-                        isInResizing={isResizeStart}
-                        isInDragging={isDraggingStart}
-                        setNthChildHandler={setIsResizeStart}
-                        setIsSidebarOpen={setIsSidebarOpen}
-                        resizeHandler={resizeHandler}
-                        index={i}
-                        hoursGoNext={el.hoursGoNext}
-                        id={el.id}
-                        color={el?.color}
-                        habitName={el.name}
-                        key={el.id}
-                        habitInStream={habitInStream}
-                        setHabitInStream={setHabitInStream}
-                      />
-                    );
-                })}
-                {provided.placeholder}
-              </div>
-            )}
+            {(provided , snapshot) => {
+              return (
+                  <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="today__droppableContainer">
+                  {habitInStream.map((el, i) => {
+                    if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
+                    else
+                      return (
+                        <StreamItem
+                          deleteTimeoutRef={deleteTimeoutRef}
+                          snapshot={snapshot}
+                          setCurrentItemInDeleteProcess={setCurrentItemInDeleteProcess}
+                          currentItemInDeleteProcess={currentItemInDeleteProcess}
+                          isInDetailsMode={currentDetailsModeHabit === el.id ? true : false}
+                          detailsShowHandler={detailsShowHandler}
+                          sidebarClosedByUser={sidebarClosedByUser}
+                          isInResizing={isResizeStart}
+                          isInDragging={isDraggingStart}
+                          setNthChildHandler={setIsResizeStart}
+                          setIsSidebarOpen={setIsSidebarOpen}
+                          resizeHandler={resizeHandler}
+                          index={i}
+                          hoursGoNext={el.hoursGoNext}
+                          id={el.id}
+                          color={el?.color}
+                          habitName={el.name}
+                          key={el.id}
+                          habitInStream={habitInStream}
+                          setHabitInStream={setHabitInStream}
+                        />
+                      );
+                  })}
+                  {provided.placeholder}
+                </div>
+              )
+            }}
           </Droppable>
         </div>
         {

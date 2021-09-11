@@ -29,9 +29,6 @@ const Home = () => {
         setCountOfStreamChange(0)
     } , countOfStreamChange >= 3 ? 2500 : 2000) , [])
 
-
-    console.log(countOfStreamChange);
-
     const scrollHandler = left => {
       containerRef.current?.scroll({ left , behavior : "smooth"})
       setCurrentDay(left / window.innerWidth);

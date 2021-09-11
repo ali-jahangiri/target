@@ -39,9 +39,17 @@ const habitPerWeek = {
     },
 }
 
+
+const stream = {
+    deleteStream(streamId) {
+        requestWrapper(resolve => references.stream.doc(streamId).delete().then(resolve))
+    }
+}
+
 const requests =  {
     target,
     habitPerWeek,
+    stream
 }
 
 

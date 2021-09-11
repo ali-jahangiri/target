@@ -7,11 +7,32 @@
     }
 }
 
+
+@keyframes getUp {
+    from {
+        height: 0;
+        opacity: 1;
+    }
+    to {
+        height: 100%;
+        opacity: 0;
+    }
+}
+
+@keyframes getCollapse {
+    from {
+        height: 100%;
+    }
+    to {
+        height: 0%;
+    }
+}
+
+
 .habitMainContainer {
     transition: .3s  , margin-bottom .3s .2s;
-    max-width: 100%;
     z-index: 555;
-    width: 100%;
+    min-width: 100% !important;
     
 
     &:hover {
@@ -29,8 +50,12 @@
 .streamItem {
     height: 100%;
     user-select: none;
-    width:389px;
-    animation: growWidth .3s alternate forwards;
+    width: 100%;
+    // animation: growWidth .3s alternate forwards;
+
+
+
+
     &__detailsModeCtaContainer {
         display: flex;
         align-items: center;
@@ -48,6 +73,11 @@
             &:hover {
                 background-color: white !important; 
             }
+        }
+
+
+        &__deleteTrigger {
+            position: absolute;
         }
 
         .determiner {
@@ -156,5 +186,37 @@
         padding: 0 2rem;
         position: relative;
         overflow: hidden;
+        transition: background-color .3s;
+
+        &::after {
+            content: "";
+            width: 100%;
+            height: 0;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            z-index: 55;
+            background: linear-gradient(0deg, white, #fafafa77);
+            transition: .9s;
+        }
+
+        &--delete {
+            animation: getCollapse .2s 3s forwards alternate;
+            cursor: pointer;
+            background-color: $red !important;
+
+            // Text helper style
+            & > div {
+                display: flex;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            &::after {
+                transition: 4.5s;
+                height: 100%;
+            }
+        }
     }
 }
