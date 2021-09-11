@@ -2,16 +2,54 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { Draggable } from "react-beautiful-dnd";
+import TextareaAutosize from "react-textarea-autosize";
 
+import useKeyBaseState from "../../Hook/useKeyBaseState";
+import { selfClearTimeout } from "../../utils"
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
-const Todo = ({ index , value , changeHandler }) => {
+
+const EmotionPlayground = ({ setContent , content }) => {
+    
+
+
+    return (
+        <div className="emotionPlayground">
+            <TextareaAutosize 
+                value={content.feelingText} 
+                minRows={2}
+                onChange={({ target : { value } }) => setContent('feelingText' , value)}
+            />
+            {/* <textarea
+                style={{ height }}
+                ref={textareaRef}
+                className="todoInjector__textarea"
+                placeholder="Try to write about today feeling"
+                autoFocus 
+                cols="5"
+                 /> */}
+            <div className="todoInjector__newRow">
+                <p style={{ fontSize : "1rem" }}>new Things</p>
+            </div>
+        </div>
+    )
+}
+
+const dynamicPlayground = rest => ({
+    emotion : <EmotionPlayground {...rest} />,
+    // note :  ,
+    // reminder : ,
+    // transaction
+})
+
+
+const Todo = ({ index , value , changeHandler , setToFullScreen }) => {
     const inputRef = useRef();
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
 
-    const [contentHolder, setContentHolder] = useState("")
+    const [content, setContent] = useKeyBaseState()
 
     const focusHandler = () => inputRef.current.focus()
 
@@ -48,7 +86,7 @@ const Todo = ({ index , value , changeHandler }) => {
                     changeHandler(newVale)
                     ++currentIndex;
                     if(!leftCharacter[currentIndex]) {
-                        setCompletedHash(true)
+                        setCompletedHash(true);
                         clearInterval(timer)
                     }
                 } , 30)
@@ -62,18 +100,19 @@ const Todo = ({ index , value , changeHandler }) => {
     useEffect(() => {
         if(completedHash) {
             console.log('cc' , value);
+            setToFullScreen(true)
         }
     } , [completedHash])
 
+
     return (
-    <Draggable draggableId="injectedTodo" index={index}>
+    <Draggable isDragDisabled draggableId="injectedTodo" index={index}>
         {provided => (
             <div 
                 className="todoInjector" 
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps} >
-                {/* <p onClick={focusHandler}>have something todo out of schedule ?</p> */}
                 <div  className="todoInjector__container">
                     <form onSubmit={interpolateSubmitHandler}>
                         {
@@ -85,7 +124,10 @@ const Todo = ({ index , value , changeHandler }) => {
                         }
                     </form>
                     {
-                        !!completedHash && <input autoFocus value={contentHolder} onChange={({ target : { value } }) => setContentHolder(value)} />
+                        !!completedHash && dynamicPlayground({
+                            content,
+                            setContent,
+                        })[value.slice(1)]
                     }
                 </div>
             </div>

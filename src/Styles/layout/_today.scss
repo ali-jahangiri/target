@@ -90,6 +90,25 @@
 
         }
 
+        &__habitBlocksContainer {
+            max-height: 25rem;
+            overflow: hidden;
+            transition: .3s .6s;
+        }
+
+        &--full {
+            width: 100vw;
+            height: 100vh;
+            right: 0;
+            top: 0;
+
+            .today__habitSidebar__habitBlocksContainer {
+                max-height: 0;
+                opacity: 0;
+            }
+
+        }
+
         &--close {
             transform: translateX(110%);
             .today__habitSidebar__habitDirectory {
