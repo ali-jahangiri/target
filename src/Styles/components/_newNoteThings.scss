@@ -1,0 +1,45 @@
+.newNoteThing {
+    &__trigger {
+        font-size: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        p {
+            font-size: 1.5rem;
+        }
+
+        div {
+            display: flex;
+            align-items: center;
+            svg {
+                width: 1.5rem;
+                height: 1.5rem;
+                transition: .3s;
+            }
+
+
+            &:hover {
+                svg {
+                    transform: translateX(-3px);
+                }
+            }
+        }
+
+        
+        &__controller {
+            cursor: pointer;
+        }
+
+        &__done {
+            cursor: pointer;
+        }
+    }
+
+    &__toolDirectory {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        
+    }
+}

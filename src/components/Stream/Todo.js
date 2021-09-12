@@ -6,38 +6,29 @@ import TextareaAutosize from "react-textarea-autosize";
 
 import useKeyBaseState from "../../Hook/useKeyBaseState";
 import { selfClearTimeout } from "../../utils"
+import NewNoteThing from "../NewNoteThing";
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
 
-const EmotionPlayground = ({ setContent , content }) => {
-    
-
-
+const NotePlayground = ({ setContent , content }) => {
     return (
-        <div className="emotionPlayground">
-            <TextareaAutosize 
+        <div className="notePlayground">
+            <TextareaAutosize
+                placeholder="Write your today feeling"
                 value={content.feelingText} 
                 minRows={2}
                 onChange={({ target : { value } }) => setContent('feelingText' , value)}
             />
-            {/* <textarea
-                style={{ height }}
-                ref={textareaRef}
-                className="todoInjector__textarea"
-                placeholder="Try to write about today feeling"
-                autoFocus 
-                cols="5"
-                 /> */}
-            <div className="todoInjector__newRow">
-                <p style={{ fontSize : "1rem" }}>new Things</p>
-            </div>
+            <NewNoteThing 
+                setContent={setContent} 
+                content={content} />
         </div>
     )
 }
 
 const dynamicPlayground = rest => ({
-    emotion : <EmotionPlayground {...rest} />,
+    note : <NotePlayground {...rest} />,
     // note :  ,
     // reminder : ,
     // transaction

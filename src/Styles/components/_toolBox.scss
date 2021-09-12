@@ -1,0 +1,80 @@
+@keyframes getSpaceToolBox {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes loseSpaceToolBox {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+
+.toolBox {
+    height: 10rem;
+    opacity: 0;
+    width: 19%;
+    overflow: hidden;
+    cursor: pointer;
+    animation: getSpaceToolBox .5s forwards alternate;
+    position: relative;
+    transition: .3s;
+    padding-top: 3rem;
+
+    * {
+        font-size: 2rem;
+    }
+
+    &__conceptContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        
+        p {
+            opacity: .5;
+        }
+    }
+
+
+    &__title {
+        padding: .2rem .5rem;
+        position: absolute;
+        top: 85%;
+        left: 0;
+        transition: .3s .3s;
+        transform: translateY(-50%);
+    }
+
+
+    &--active {
+        width: 100%;
+        cursor: default;
+
+        .toolBox {
+            &__title {
+                top: 15%;
+                left: 1%;
+            }
+        }
+    }
+
+    &--getHide {
+        opacity: 1;
+        animation: loseSpaceToolBox .3s forwards alternate;
+    }
+
+    &--deActive {
+        width: 0;
+        overflow: hidden;
+        opacity: 0;
+    }
+
+
+}
