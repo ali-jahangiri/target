@@ -46,10 +46,17 @@ const stream = {
     }
 }
 
+const connectionObserver = {
+    connect(callback) {
+        references.connection.onSnapshot(snapshot => callback(makeValidSnapshotData(snapshot)))
+    }
+}
+
 const requests =  {
     target,
     habitPerWeek,
-    stream
+    stream,
+    connectionObserver
 }
 
 

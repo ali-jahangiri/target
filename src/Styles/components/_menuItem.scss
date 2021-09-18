@@ -1,0 +1,14 @@
+.menuItem {
+    font-size: 8rem;
+    display: flex;
+    align-items: center;
+
+    p {
+        cursor: pointer;
+        transition: .3s;
+
+        &:hover {
+            transform: translateX(50px);
+        }
+    }
+}

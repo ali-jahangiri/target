@@ -25,10 +25,20 @@
         transform: translate(-50% , -50%);
     }
 
+
+    &__menu {
+        position: absolute;
+        left: 5%;
+        bottom: 100%;
+        transition: opacity .3s .5s , bottom .3s .1s;
+        opacity: 0;
+    }
+
     &--hide {
         height: 0;
         transition: .3s;
         
+
         span {
             left: 0;
             top: -20px;
@@ -48,6 +58,14 @@
 
     &--overlayOpen {
         height: 100vh;
+
+        .loading {
+            &__menu {
+                transform: translateY(50%);
+                opacity: 1;
+                bottom: 50%;
+            }
+        }
 
         span {
             color: $orange;

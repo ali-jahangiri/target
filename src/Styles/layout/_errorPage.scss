@@ -3,9 +3,15 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    &__container {
 
+    &__brandLogo {
+        font-size: 5rem;
+        color: $grey;
+        font-weight: 500;
+        margin: -5rem;
+        user-select: none;
     }
+
     &__message {
         color: $orange;
         font-weight: 600;
