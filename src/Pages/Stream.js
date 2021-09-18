@@ -4,13 +4,14 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import { EmptyHabitBlock , StreamItem, StreamSidebar} from "../components/Stream";
 
-import { idGenerator, requests, selfClearTimeout, _date } from "../utils";
+import { idGenerator, selfClearTimeout, _date } from "../utils";
 
 
 import TodayHoursRow from "../components/TodayHoursRow";
 import Alert from "../components/Alert";
 import { references } from "../firebase";
 import Timeline from "../components/Timeline";
+import StreamLoading from "../components/Stream/StreamLoading";
 
 
 // Static variables
@@ -18,7 +19,7 @@ const hours = new Array(24).fill().map((_, i) => i + 1);
 
 const TODAY_ID = "todayHabit";
 
-const Stream = ({ date , sideBarEnabled }) => {
+const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   const [loading, setLoading] = useState(true);
   const [currentItemInDeleteProcess, setCurrentItemInDeleteProcess] = useState(false);
 
@@ -26,7 +27,7 @@ const Stream = ({ date , sideBarEnabled }) => {
   const [habitInStream, setHabitInStream] = useState(null);
 
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(sideBarEnabled);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const [todayHabit, setTodayHabit] = useState([]);
   
@@ -55,6 +56,12 @@ const Stream = ({ date , sideBarEnabled }) => {
 
   const leanDate = date.split("/").join('')
 
+
+  const finishLoadingHandler = () => {
+    setIsTargetStreamReadyToRender(true);
+    setLoading(false)
+  }
+
   useEffect(() => {
     references.stream.doc(leanDate).onSnapshot(snapShot => {
       if(snapShot.exists) {
@@ -65,7 +72,7 @@ const Stream = ({ date , sideBarEnabled }) => {
             let ss = _date(date).add(1 , 'day').format('dddd')
             const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
             setTodayHabit(_s)
-            setLoading(false)
+            finishLoadingHandler()
           })
         }else {
           const curr = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }))
@@ -78,7 +85,7 @@ const Stream = ({ date , sideBarEnabled }) => {
                   let ss = _date(date).add(1 , 'day').format('dddd');
                   const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
                   setTodayHabit(_s)
-                  setLoading(false)
+                  finishLoadingHandler()
                 })
             })
         }
@@ -93,6 +100,14 @@ const Stream = ({ date , sideBarEnabled }) => {
   } , [habitInStream])
 
 
+
+  useEffect(() => {
+    if(isSidebarOpen && !loading) {
+      setIsTargetStreamReadyToRender(false);
+    }else if(!loading){
+      setIsTargetStreamReadyToRender(true);
+    }
+  } , [isSidebarOpen])
   
   
   const dragEndHandler = ({ source, destination, draggableId }) => {
@@ -184,12 +199,7 @@ const Stream = ({ date , sideBarEnabled }) => {
     habitClone.splice(destination.index, 0, removed);
     setHabitInStream(habitClone);
   };
-
-
-  // const removeStreamHandler = index => {
-  //   setHabitInStream(prev => prev.map((el , i) => i === index ? { name: null, id: idGenerator(), hoursGoNext: 1 } : el))
-  // }
-
+  
   const resizeHandler = ({ height, index }) => {
     if (habitInStream[index].hoursGoNext + index === 24) {
       Alert.warning("your habit cannot ross over today hours");
@@ -239,8 +249,11 @@ const Stream = ({ date , sideBarEnabled }) => {
 
 
 
-  return loading ? <div>loading</div> : (
-    <div className="today">
+  return <StreamLoading loading={loading}> 
+    {isReady => {
+      if(isReady) {
+        return (
+          <div className="today">
       <Timeline />
       {isDetailsModeActive !== false && (
         <div style={{ top: isDetailsModeActive }} className="helperOverlay">
@@ -315,7 +328,10 @@ const Stream = ({ date , sideBarEnabled }) => {
         }
       </DragDropContext>
     </div>
-  );
+        )
+      }
+    }}
+  </StreamLoading>
 };
 
 export default Stream;

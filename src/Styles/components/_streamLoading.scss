@@ -1,0 +1,26 @@
+.streamLoading {
+    width: 100vw;
+    height: 100vh;
+    background-color: $green;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: 1s;
+    z-index: 999999;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    
+    p {
+        color: $orange;
+        line-height: 20px;
+        cursor: default;
+        user-select: none;
+
+        font-size: 8rem;
+    }
+
+    // &--hide {
+    //     height: 0;
+    // }
+}

@@ -14,6 +14,8 @@ const Home = () => {
     const [countOfStreamChange, setCountOfStreamChange] = useState(0);
     
 
+    const [isTargetStreamReadyToRender, setIsTargetStreamReadyToRender] = useState(false);
+
     const [hoveringOnNavigatorCircle, setHoveringOnNavigatorCircle] = useState(false);
 
     const [currentMonth, setCurrentMonth] = useState(1);
@@ -56,10 +58,8 @@ const Home = () => {
     }
 
     useLayoutEffect(() => {
-        selfClearTimeout(() => {
-            containerRef.current?.scroll({ left : currentLeftPosition.current , behavior : "smooth" })
-        } , 500)
-    } , []);
+        containerRef.current?.scroll({ left : currentLeftPosition.current })
+    } , [isTargetStreamReadyToRender]);
 
     const renderScheduleChecker = index => {
         let min = currentDay - 2
@@ -69,7 +69,8 @@ const Home = () => {
         let passDay = index + 1;
 
         if(index >= min && index <= max) {
-            return <Stream 
+            return <Stream
+                        setIsTargetStreamReadyToRender={setIsTargetStreamReadyToRender}
                         sideBarEnabled={index === currentDay} 
                         date={fixNumbers(`${now.year()}/${passMoth < 10 ? `0${passMoth}` : passMoth}/${passDay < 10 ? `0${passDay}` : passDay}`)} />
         }else return null
@@ -108,6 +109,7 @@ const Home = () => {
             }
             <Portal>
                 <ScheduleSettingCircle
+                    visible={isTargetStreamReadyToRender}
                     goToday={goToday}
                     currentDay={currentDay + 1} 
                     setIsHoverInNavigationCircle={setHoveringOnNavigatorCircle} 

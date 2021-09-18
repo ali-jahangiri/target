@@ -101,7 +101,6 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
       if(detailsActive) {
         setIsDetailsOptionMenuOpen(true);
       }else {
-        // dispatcher(setNavigationCircleStatus(false))
         const validStream = habitInStream.filter(el => el.name);
         const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
         const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
@@ -164,11 +163,6 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
           onChange={value => inputDetailsChangeHandler("_initial", value)} />
       </div>
     )}
-    {
-      isInDeleteProcess && <div className="streamItem__deleteTrigger">
-          Delete
-      </div>
-    }
           </>
     }
 
@@ -196,7 +190,6 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
               />
             )}
             <div
-              onDoubleClick={setIsInDeleteProcess}
               id={position}
               ref={provided.innerRef}
               {...provided.draggableProps}
