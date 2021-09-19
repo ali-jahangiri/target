@@ -21,7 +21,6 @@
     opacity: 0;
     min-height: 10rem;
     width: 19%;
-    overflow: hidden;
     cursor: pointer;
     animation: getSpaceToolBox .5s forwards alternate;
     position: relative;
@@ -32,6 +31,16 @@
         font-size: 2rem;
     }
 
+
+    &__growLine {
+        position: absolute;
+        left: 0%;
+        top: 0;
+        width: 0;
+        height: .5rem;
+        transition: .5s .6s;
+    }
+    
     &__conceptContainer {
         position: absolute;
         top: 0;
@@ -76,8 +85,13 @@
 
         .toolBox {
             &__title {
-                top: 15%;
+                top: 40px;
                 left: 1%;
+                font-size: 1.5rem;
+            }
+
+            &__growLine {
+                width: 100%;
             }
         }
     }

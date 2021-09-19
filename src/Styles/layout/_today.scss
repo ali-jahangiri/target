@@ -27,7 +27,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    background: #000000ef;
+    background: #000000be;
     animation: fadeIn .3s forwards alternate;
     z-index: 50000;
 
@@ -99,7 +99,7 @@
         }
 
         &--full {
-            width: 100vw;
+            width: 75vw;
             height: 100vh;
             right: 0;
             top: 0;

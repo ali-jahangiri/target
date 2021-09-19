@@ -1,8 +1,9 @@
 import { useState } from "react"
 import useFrequentlyState from "../Hook/useFrequentlyState"
 import useKeyBaseState from "../Hook/useKeyBaseState";
-import { colors } from "../utils"
+import { colors, generateColor } from "../utils"
 import { LinkPlayground, TextPlayground } from "./ToolBoxPlayground";
+import DescriptionPlayground from "./ToolBoxPlayground/DescriptionPlayground";
 import ImagePlayground from "./ToolBoxPlayground/ImagePlayground";
 
 
@@ -71,27 +72,19 @@ const renderToolBoxConceptEffect = {
 const renderToolBoxPlayground = rest => ({
     link : <LinkPlayground {...rest} />,
     text : <TextPlayground {...rest} />,
-    image : <ImagePlayground {...rest} />
+    image : <ImagePlayground {...rest} />,
+    description : <DescriptionPlayground {...rest} />
 })
 
-const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox , isInCloseProcess }) => {
-    const [isActiveOnHover, setIsActiveOnHover] = useState(true);
-
-    const [core, setCore] = useKeyBaseState(null);
-
+const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox , isInCloseProcess , core , setCore }) => {
     const isActive = currentToolBox === name;
-
 
     return (
         <div
-            onClick={() => {
-                setCurrentToolBox(name);
-                setIsActiveOnHover(false);
-            }}
-            // onMouseLeave={() => !isActive && setIsActiveOnHover(false)} 
-            // onMouseEnter={() => !isActive && setIsActiveOnHover(true)} 
-            style={{ backgroundColor : isActive ? /*generateColor(`#${bgColor}` , 1) */ 'white' : `#${bgColor}` , animationDelay : `${(isInCloseProcess ? index / 2 : index) * 100}ms` }} 
+            onClick={() => setCurrentToolBox(name)}
+            style={{ background : isActive ? `linear-gradient(180deg, ${generateColor(`#${bgColor}` , 5)}, transparent)` /*'white'*/ : `#${bgColor}` , animationDelay : `${(isInCloseProcess ? index / 2 : index) * 100}ms` }} 
             className={`toolBox ${currentToolBox ? isActive ? "toolBox--active" : "toolBox--deActive" : ""} ${isInCloseProcess ? "toolBox--getHide" : ""}`}>
+            <span style={{ backgroundColor : `#${bgColor}` , transitionDelay : isActive ? ".3s" : "0s" }} className="toolBox__growLine" />
             {
                 !isActive ? <div className="toolBox__directory">{renderToolBoxConceptEffect[name] }</div>: renderToolBoxPlayground({
                     core,

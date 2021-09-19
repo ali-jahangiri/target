@@ -1,0 +1,30 @@
+@keyframes getBoxSize {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.descPlayground {
+
+    &__container {
+        margin: 0 auto;
+        margin-top: 2rem;
+        width: 80%;
+    }
+
+    &__avatarBox {
+        width: 5rem;
+        height: 5rem;
+        transform: scale(0);
+        background-color: #c3693a7a;
+        animation: getBoxSize .5s .8s forwards alternate cubic-bezier(0.785, 0.135, 0.15, 0.86);
+        margin-bottom: 1rem;
+    }
+
+    &__textarea {
+        background-color: transparent;
+    }
+}

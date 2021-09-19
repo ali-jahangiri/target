@@ -49,7 +49,7 @@ const LinkPlayground = ({ core , setCore }) => {
                 onChange={setValue} 
                 placeholder="Enter your Link or reference to a day or a web link"
                 autoFocus
-                className={`${detectedMode ? `linkPlayground__input--${detectedMode}` : ""}`}
+                className={`linkPlayground__input ${detectedMode ? `linkPlayground__input--${detectedMode}` : ""}`}
             />
             <div className={`linkPlayground__prefix ${detectedMode ? `linkPlayground__prefix--inMode` : ""}`}>
                 { modeIcon[detectedMode] }

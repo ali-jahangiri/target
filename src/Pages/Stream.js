@@ -42,6 +42,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   const [timelineHeight, setTimelineHeight] = useState(0);
   const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
 
+  const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
   
   const [injectedTodo, setInjectedTodo] = useState("")
   
@@ -246,15 +247,12 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   };
 
 
-
-
-
-  return <StreamLoading loading={loading}> 
-    {isReady => {
-      if(isReady) {
-        return (
-          <div className="today">
+  return loading ? "loading" : (
+    <div className="today">
       <Timeline />
+      {
+        shouldOverlayGetVisible && <div className="helperOverlay" />
+      }
       {isDetailsModeActive !== false && (
         <div style={{ top: isDetailsModeActive }} className="helperOverlay">
           <span style={{ height: timelineHeight }} className="helperOverlay__timeline">
@@ -318,7 +316,8 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         </div>
         {
           sideBarEnabled ?
-            <StreamSidebar 
+            <StreamSidebar
+              setShouldOverlayGetVisible={setShouldOverlayGetVisible}
               currentDetailsModeHabit={currentDetailsModeHabit}
               injectedTodo={injectedTodo}
               isSidebarOpen={isSidebarOpen}
@@ -328,10 +327,16 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         }
       </DragDropContext>
     </div>
-        )
-      }
-    }}
-  </StreamLoading>
+  )
+  // return <StreamLoading loading={loading}> 
+  //   {isReady => {
+  //     if(isReady) {
+  //       return (
+          
+  //       )
+  //     }
+  //   }}
+  // </StreamLoading>
 };
 
 export default Stream;

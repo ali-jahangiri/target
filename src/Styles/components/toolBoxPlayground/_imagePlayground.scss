@@ -1,10 +1,122 @@
+
 .imagePlayground {
     padding: 1rem;   
 
+
     &__image {
-        margin: 0 auto;
-        // transition: .1s;
+        display: flex;
+        align-items: flex-end;
+        padding: 0;
+        background-color: $grey;
+        transition: .3s cubic-bezier(0.23, 1, 0.320, 1);
         background-size: cover;
         background-repeat: no-repeat;
+        margin-left: 50%;
+        margin-right: 50%;
+        transform: translateX(-50%);
+        min-height: 0;
+
+        div[class *= "imagePlayground"]{
+            position: absolute;
+            cursor: pointer;
+            top: 50%;
+            
+            svg {
+                fill: $grey;
+                transition: .3s;
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+
+            &:hover {
+                svg {
+                    fill: grey;
+                }
+            }
+        }
+
+
+        &--right {
+            margin-right: 0% !important;
+            margin-left: 100% !important;
+            transform: translateX(-100%) !important;
+        }
+
+        &--left {
+            margin-right: 100% !important;
+            transform: translateX(0) !important;
+            margin-left: 0% !important;
+        }
+
+
+        &--visible {
+            min-height: 250px !important;
+            padding: 1rem;
+            transition: .1s !important;
+        }
+
+        &--invalidImagePath {
+            background-color: $red;
+        }
+
+        &--resize {
+            transition: 0 !important;
+        }
+
+        &:hover {
+            .imagePlayground__input {
+                transform: translateY(0%);
+            }
+        }
+    }
+
+    &__leftAlign {
+        left: -25px;
+        transform: translate(-50% , -50%) rotate(-90deg);
+
+        &--hide {
+            opacity: 0;
+            cursor: default !important;
+        }
+    }
+
+    &__rightAlign {
+        right: -45px;
+        transform: translate(-50% , -50%) rotate(-90deg);
+
+        &--hide {
+            opacity: 0;
+        }
+    }
+
+    &__centerAlign {
+        transform: rotate(180deg);
+        top: 100% !important;
+        left: 50%;
+    }
+
+
+
+    &__input {
+        transition: .3s .3s;
+        transform: translateY(100%);
+        &:focus {
+            opacity: 1;
+            transform: translateY(0) !important;
+        }
+
+
+        &--fade {
+            opacity: 0.3;
+        }
+
+        &--withoutImagePath {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        &--inResize {
+            transform: translateY(100%) !important;
+        }
     }
 }

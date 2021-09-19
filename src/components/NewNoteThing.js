@@ -4,12 +4,16 @@ import ToolBox from "./ToolBox";
 import { FiArrowLeft } from "react-icons/fi";
 
 import { selfClearTimeout } from "../utils";
+import useKeyBaseState from "../Hook/useKeyBaseState";
 
 const NewNoteThing = () => {
     const [isToolsActive, setIsToolsActive] = useState(false);
     const [currentToolBox, setCurrentToolBox] = useState(null);
-
     const [isInCloseProcess, setIsInCloseProcess] = useState(false);
+    const [isValidToTriggerDone, setIsValidToTriggerDone] = useState(false);
+
+
+    const [core, setCore] = useKeyBaseState(null);
 
     const triggerHandler = () => {
         if(isToolsActive && currentToolBox) {
@@ -22,9 +26,7 @@ const NewNoteThing = () => {
                     setIsToolsActive(prev => !prev)
                     setIsInCloseProcess(false);
                 } , 400);
-            }else {
-                setIsToolsActive(prev => !prev);
-            }
+            }else setIsToolsActive(prev => !prev);
         };
     }
 
@@ -40,7 +42,7 @@ const NewNoteThing = () => {
                     {currentToolBox ? <div><FiArrowLeft /> <p>Back</p></div> : <p>{isToolsActive ? "Never mind!" : "Add new Thing"}</p>}
                 </div>
                 <div className="newNoteThing__trigger__done">
-                    {/* <p onClick={createNewThingHandler}>Done</p> */}
+                    <p onClick={createNewThingHandler}>Done</p>
                 </div>
             </div>
             <div className="newNoteThing__toolDirectory">

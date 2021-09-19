@@ -5,13 +5,13 @@
     }
     40% {
         opacity: .5;
-        transform: scale(15);
+        transform: scale(25);
     }
 
 
     100% {
         opacity: 0;
-        transform: scale(15);
+        transform: scale(25);
     }
 }
 .todoInjector {
@@ -22,6 +22,34 @@
     &__container {
         width: 100%;
         margin: .2rem;
+        form {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            div {
+                flex: 1;
+            }
+        }
+    }
+
+    &__closeTrigger {
+        flex: 0 !important;
+        text-align: right;
+        transition: .3s .2s;
+        transform: translateX(100%);
+        opacity: 0;
+
+        p {
+            margin-right: 1rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        &--active {
+            flex: 1 !important;
+            transform: translateX(0%);
+            opacity: 1;
+        }
     }
 
     &__flash {
@@ -32,7 +60,7 @@
         height: 50px;
         background: rgba(250, 189, 57, 0.39);
         // animation: grow 2s forwards infinite;
-        animation: grow 2s forwards alternate;
+        animation: grow .8s forwards alternate;
         border-radius: 50%;
     }
 
@@ -46,6 +74,7 @@
         transition: .3s;
         background-color: transparent;
         font-size: 1.2rem;
+
         &--interpolate {
             color:  rgb(250, 189, 57);
         }
@@ -63,4 +92,16 @@
         z-index: -5;
     }
 
+
+    &--inFullMode {
+        .todoInjector {
+            &__input {
+                font-size: 2.6rem;
+            }
+
+            &__helperPlayground {
+                font-size: 2.6rem;
+            }
+        }
+    }
 }

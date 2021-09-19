@@ -1,26 +1,19 @@
 import { useEffect, useState } from "react";
-import TextareaAutosize from "react-textarea-autosize";
 import { selfClearTimeout } from "../../utils";
+
+import PlaygroundTextArea from "./PlaygroundTextArea"
 
 const TextPlayground = ({ core , setCore }) => {
     const [value, setValue] = useState("");
-    const [textareaH, setTextareaH] = useState(70);
 
-    useEffect(() => {
-        selfClearTimeout(() => {
-            setTextareaH('auto');
-        } , 2500);
-    } , [])
 
     return (
         <div className="textPlayground">
-            <TextareaAutosize 
-                value={value}
-                minRows={2}
-                height={20}
-                style={{ height : textareaH }}
-                placeholder="Write your Text here"
-                onChange={({ target : { value } }) => setValue(value)}
+            <PlaygroundTextArea 
+                value={value} 
+                onChange={setValue} 
+                placeholder="Start Write your Text from here"
+                className="textPlayground__textarea"
             />
         </div>
     )

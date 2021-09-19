@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { useRef } from "react";
+import { useState , useEffect} from "react";
 import { Draggable } from "react-beautiful-dnd";
 import TextareaAutosize from "react-textarea-autosize";
 
@@ -12,10 +10,11 @@ const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
 
 const NotePlayground = ({ setContent , content }) => {
+    
     return (
         <div className="notePlayground">
             <TextareaAutosize
-                placeholder="Write your today feeling"
+                placeholder="Give note a Title ..."
                 value={content.feelingText} 
                 minRows={2}
                 onChange={({ target : { value } }) => setContent('feelingText' , value)}
@@ -35,44 +34,44 @@ const dynamicPlayground = rest => ({
 })
 
 
-const Todo = ({ index , value , changeHandler , setToFullScreen }) => {
-    const inputRef = useRef();
+const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
-
+    const [inputValue, setInputValue] = useState("")
     const [content, setContent] = useKeyBaseState()
-
+    
 
     const onChange = ({ target : { value = "" } }) => {
-        changeHandler(value);
+        setInputValue(value);
         setCompletedHash(false)
-        if(value.startsWith("#")) {
-            setHashtagInterpolate(true)
-            const timer = setTimeout(() => {
-                // setHashtagInterpolate(false);
-                clearTimeout(timer);
-            } , 5000) 
-        }
-        else {
-            setHashtagInterpolate(false)
-        }
+        if(value.startsWith("#")) setHashtagInterpolate(true)
+        else setHashtagInterpolate(false)
+
+        if(!value && isInFullScreen) setToFullScreen(false)
     }
 
-    const haveInterpolateValue = !!value.slice(1) 
+    const closeHandler = () => {
+        setToFullScreen(false);
+        setInputValue("");
+        setHashtagInterpolate("");
+        setCompletedHash(false);
+    }
+
+    const haveInterpolateValue = !!inputValue.slice(1) 
     
 
     const interpolateSubmitHandler = (e) => {
         e.preventDefault();
-        if(value && value?.slice(1) && !completedHash){
-            const haveHelperInterpolateCommand = command.find(el => el.includes(value.slice(1)));
-            if(haveHelperInterpolateCommand) {
-                const leftCharacter = haveHelperInterpolateCommand.split("").filter((_ , i) => i + 1 >= value.length)
+        if(inputValue && inputValue?.slice(1) && !completedHash){
+            const haveHelperInterpolateCommand = command.find(el => el.includes(inputValue.slice(1)));
+            if(haveHelperInterpolateCommand && inputValue?.slice(1) !== haveHelperInterpolateCommand) {
+                const leftCharacter = haveHelperInterpolateCommand.split("").filter((_ , i) => i + 1 >= inputValue.length)
                 let currentIndex = 0;
-                let newVale = value
+                let newVale = inputValue
                 
                 let timer = setInterval(() => {
                     newVale += leftCharacter[currentIndex]
-                    changeHandler(newVale)
+                    setInputValue(newVale)
                     ++currentIndex;
                     if(!leftCharacter[currentIndex]) {
                         setCompletedHash(true);
@@ -80,16 +79,17 @@ const Todo = ({ index , value , changeHandler , setToFullScreen }) => {
                     }
                 } , 30)
                 
-            }else {
-                console.log('dont hace');
+            }else if(inputValue?.slice(1) === haveHelperInterpolateCommand) {
+                setCompletedHash(true);
             }
         }
     }
 
     useEffect(() => {
         if(completedHash) {
-            console.log('cc' , value);
-            setToFullScreen(true)
+            const currentInterpolatorName = inputValue.slice(1);
+            if(currentInterpolatorName === "note") setToFullScreen(100)
+            else setToFullScreen(50)
         }
     } , [completedHash])
 
@@ -98,25 +98,30 @@ const Todo = ({ index , value , changeHandler , setToFullScreen }) => {
     <Draggable isDragDisabled draggableId="injectedTodo" index={index}>
         {provided => (
             <div 
-                className="todoInjector" 
+                className={`todoInjector ${isInFullScreen ? "todoInjector--inFullMode" : ""}`} 
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps} >
                 <div  className="todoInjector__container">
                     <form onSubmit={interpolateSubmitHandler}>
-                        {
-                            hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!value.slice(1) ?  command.find(el => el.includes(value.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < value.length ? "white" : "grey" }}>{el}</span>) : 'Write commend here...'}</p>
-                        }
-                        <TodoInput value={value} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
-                        {
-                            hashtagInterpolate && <span className="todoInjector__flash"></span>
-                        }
+                        <div>
+                            {
+                                hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!inputValue.slice(1) ?  command.find(el => el.includes(inputValue.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < inputValue.length ? "white" : "grey" }}>{el}</span>) : 'Write commend here...'}</p>
+                            }
+                            <TodoInput value={inputValue} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
+                            {
+                                hashtagInterpolate && <span className="todoInjector__flash"></span>
+                            }
+                        </div>
+                        <div className={`todoInjector__closeTrigger ${completedHash ? "todoInjector__closeTrigger--active" : ""}`}>
+                            <p onClick={closeHandler}>Close</p>
+                        </div>
                     </form>
                     {
                         !!completedHash && dynamicPlayground({
                             content,
                             setContent,
-                        })[value.slice(1)]
+                        })[inputValue.slice(1)]
                     }
                 </div>
             </div>

@@ -1,0 +1,15 @@
+@keyframes textAreaFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.playgroundTextArea {
+    background-color: transparent;
+    font-size: 1.2rem !important; 
+    animation: textAreaFadeIn 1s .8s forwards alternate;
+    opacity: 0;
+}

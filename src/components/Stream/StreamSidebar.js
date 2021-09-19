@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { FiChevronLeft, FiLock } from "react-icons/fi";
 import Todo from "./Todo";
@@ -6,12 +6,17 @@ import Todo from "./Todo";
 const HABIT_LIST_ID = "fromHabitList";
 
 
-const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , injectedTodo , setInjectedTodo }) => {
+const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , setShouldOverlayGetVisible}) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
 
+  useLayoutEffect(() => {
+  if(isInFullScreen) {
+      setShouldOverlayGetVisible(true)
+    }else setShouldOverlayGetVisible(false)
+  } , [isInFullScreen])
 
   return (
-        <div className={`today__habitSidebar ${isInFullScreen ? "today__habitSidebar--full" : ""} today__habitSidebar--${isSidebarOpen ? "open" : "close"} ${currentDetailsModeHabit ? "today__habitSidebar--lock" : ""}`}>
+        <div style={{ width : isInFullScreen ? `${isInFullScreen}vw` : "30vw" }} className={`today__habitSidebar ${isInFullScreen ? "today__habitSidebar--full" : ""} today__habitSidebar--${isSidebarOpen ? "open" : "close"} ${currentDetailsModeHabit ? "today__habitSidebar--lock" : ""}`}>
             <div
             onClick={() => !currentDetailsModeHabit && sideBarHandler()}
             className={`today__habitSidebar__closeTrigger ${isSidebarOpen ? "today__habitSidebar__closeTrigger--flipped" : ""}`}>
@@ -42,9 +47,8 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
                     ))}
                   </div> 
                   <Todo
+                    isInFullScreen={isInFullScreen}
                     setToFullScreen={setIsInFullScreen}
-                    value={injectedTodo} 
-                    changeHandler={setInjectedTodo} 
                     index={todayHabit.length} />
                   {provided.placeholder}
                 </div>
