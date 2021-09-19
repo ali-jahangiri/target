@@ -1,0 +1,12 @@
+
+
+.textPlayground {
+    position: relative;
+    textarea {
+        width: 0;
+        animation: formGetWidth 1s .6s forwards alternate;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}

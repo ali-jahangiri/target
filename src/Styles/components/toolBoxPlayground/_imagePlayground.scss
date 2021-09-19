@@ -1,0 +1,10 @@
+.imagePlayground {
+    padding: 1rem;   
+
+    &__image {
+        margin: 0 auto;
+        // transition: .1s;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FiLink } from "react-icons/fi";
 import { BiCalendarAlt } from "react-icons/bi";
 
+import PlaygroundInput from "./PlaygroundInput";
 
 const modeIcon = {
     webLink : <FiLink color="#5F939A" />,
@@ -27,7 +28,9 @@ const LinkPlayground = ({ core , setCore }) => {
             if(splittedString.length === 3) {
                 const [year , month , day] = splittedString;
                 if(year.length === 4 && month.length === 2 && day.length === 2) {
-                    setDetectedMode("date");
+                    if([+year, +month , +day].every(el => !Number.isNaN(el))) {
+                        if(month <= 12 && day <= 31) setDetectedMode("date");
+                    }
                 }
             }
         }
@@ -41,15 +44,16 @@ const LinkPlayground = ({ core , setCore }) => {
 
     return (
         <div className="linkPlayground">
-            <div className={`linkPlayground__prefix ${detectedMode ? `linkPlayground__prefix--${detectedMode}` : ""}`}>
+            <PlaygroundInput 
+                value={value} 
+                onChange={setValue} 
+                placeholder="Enter your Link or reference to a day or a web link"
+                autoFocus
+                className={`${detectedMode ? `linkPlayground__input--${detectedMode}` : ""}`}
+            />
+            <div className={`linkPlayground__prefix ${detectedMode ? `linkPlayground__prefix--inMode` : ""}`}>
                 { modeIcon[detectedMode] }
             </div>
-            <input
-                className={`linkPlayground__input ${detectedMode ? `linkPlayground__input--${detectedMode}` : ""}`}
-                value={value} 
-                onChange={({ target : { value } }) => setValue(value)} 
-                autoFocus 
-                placeholder="Enter your Link or reference to a day or a web link " />
         </div>
     )
 }

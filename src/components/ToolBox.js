@@ -3,6 +3,7 @@ import useFrequentlyState from "../Hook/useFrequentlyState"
 import useKeyBaseState from "../Hook/useKeyBaseState";
 import { colors } from "../utils"
 import { LinkPlayground, TextPlayground } from "./ToolBoxPlayground";
+import ImagePlayground from "./ToolBoxPlayground/ImagePlayground";
 
 
 
@@ -69,11 +70,12 @@ const renderToolBoxConceptEffect = {
 
 const renderToolBoxPlayground = rest => ({
     link : <LinkPlayground {...rest} />,
-    text : <TextPlayground {...rest} />
+    text : <TextPlayground {...rest} />,
+    image : <ImagePlayground {...rest} />
 })
 
 const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox , isInCloseProcess }) => {
-    const [isActiveOnHover, setIsActiveOnHover] = useState(false);
+    const [isActiveOnHover, setIsActiveOnHover] = useState(true);
 
     const [core, setCore] = useKeyBaseState(null);
 
@@ -86,12 +88,12 @@ const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox ,
                 setCurrentToolBox(name);
                 setIsActiveOnHover(false);
             }}
-            onMouseLeave={() => !isActive && setIsActiveOnHover(false)} 
-            onMouseEnter={() => !isActive && setIsActiveOnHover(true)} 
+            // onMouseLeave={() => !isActive && setIsActiveOnHover(false)} 
+            // onMouseEnter={() => !isActive && setIsActiveOnHover(true)} 
             style={{ backgroundColor : isActive ? /*generateColor(`#${bgColor}` , 1) */ 'white' : `#${bgColor}` , animationDelay : `${(isInCloseProcess ? index / 2 : index) * 100}ms` }} 
             className={`toolBox ${currentToolBox ? isActive ? "toolBox--active" : "toolBox--deActive" : ""} ${isInCloseProcess ? "toolBox--getHide" : ""}`}>
             {
-                !isActive ? isActiveOnHover && renderToolBoxConceptEffect[name] : renderToolBoxPlayground({
+                !isActive ? <div className="toolBox__directory">{renderToolBoxConceptEffect[name] }</div>: renderToolBoxPlayground({
                     core,
                     setCore
                 })[name]

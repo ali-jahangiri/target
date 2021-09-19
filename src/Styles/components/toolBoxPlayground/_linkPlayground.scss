@@ -1,11 +1,4 @@
-@keyframes formGetWidth {
-    from {
-        width: 0;
-    }
-    to {
-        width: 100%;
-    }
-}
+
 .linkPlayground {
     width: 100%;
     padding: 1rem;
@@ -13,15 +6,21 @@
     align-items: center;
     
     
+    input {
+        &:focus {
+            & + div {
+                transform: rotate(-45deg);
+            }
+        }
+    }
     &__input {
-        outline: none;
-        border: none;
-        // flex: 1;
-        background: transparent;
-        width: 0;
-        animation: formGetWidth .9s .5s alternate forwards;
-
         &--webLink {
+            text-decoration: underline;
+            color: $blue;
+        }
+
+        &--date {
+            color: $orange;
             text-decoration: underline;
         }
     }
@@ -35,24 +34,10 @@
         align-items: center;
         justify-content: center;
 
-        &--webLink {
+        
+        &--inMode {
             min-width: 1rem;
             margin-right: 1rem;
-            & + input {
-                color: $blue;
-            }
-            &:hover {
-                transform: rotate(-45deg);
-            }
-        }
-
-        &--date {
-            min-width: 1rem;
-            margin-right: 1rem;
-            & + input {
-                color: $orange;
-                text-decoration: underline;
-            }
         }
     }
 

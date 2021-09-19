@@ -64,8 +64,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
     let availableNextHours = (24 - (index + hoursGoNext)) - position;
     const _initialWasSettled = !!habitInStream.find((el) => el.id === id)?._initial;
     
-    const refContainer = useRef();
-  
+    
     useEffect(() => {
       setFourcer(Date.now())
     } , [hoursGoNext])
@@ -177,7 +176,6 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
         {(provided) => (
           <Resizable
             key={forcer}
-            ref={refContainer}
             onResize={internalResizeHandler}
             onResizeStop={resizeEndHandler}
             width="100%"

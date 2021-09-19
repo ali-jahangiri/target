@@ -1,0 +1,16 @@
+@keyframes formGetWidth {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.playgroundInput {
+    outline: none;
+    border: none;
+    background: transparent;
+    width: 0;
+    animation: formGetWidth .9s .5s alternate forwards;
+}
