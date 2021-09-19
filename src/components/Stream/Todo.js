@@ -10,7 +10,7 @@ const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
 
 const NotePlayground = ({ setContent , content }) => {
-    
+
     return (
         <div className="notePlayground">
             <TextareaAutosize
@@ -19,7 +19,7 @@ const NotePlayground = ({ setContent , content }) => {
                 minRows={2}
                 onChange={({ target : { value } }) => setContent('feelingText' , value)}
             />
-            <NewNoteThing 
+            <NewNoteThing
                 setContent={setContent} 
                 content={content} />
         </div>
@@ -38,7 +38,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
     const [inputValue, setInputValue] = useState("")
-    const [content, setContent] = useKeyBaseState()
+    const [content, setContent] = useKeyBaseState({});
     
 
     const onChange = ({ target : { value = "" } }) => {

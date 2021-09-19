@@ -13,7 +13,7 @@ const NewNoteThing = () => {
     const [isValidToTriggerDone, setIsValidToTriggerDone] = useState(false);
 
 
-    const [core, setCore] = useKeyBaseState(null);
+    const [core, setCore] = useKeyBaseState({});
 
     const triggerHandler = () => {
         if(isToolsActive && currentToolBox) {
@@ -49,6 +49,8 @@ const NewNoteThing = () => {
                 {
                         isToolsActive && ["image" , "text" , "description" , "link" , "voice"].map((el , i) => (
                         <ToolBox
+                            core={core}
+                            setCore={setCore}
                             isInCloseProcess={isInCloseProcess}
                             setCurrentToolBox={setCurrentToolBox} 
                             currentToolBox={currentToolBox} 

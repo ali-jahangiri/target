@@ -1,6 +1,4 @@
-import { useState } from "react"
 import useFrequentlyState from "../Hook/useFrequentlyState"
-import useKeyBaseState from "../Hook/useKeyBaseState";
 import { colors, generateColor } from "../utils"
 import { LinkPlayground, TextPlayground } from "./ToolBoxPlayground";
 import DescriptionPlayground from "./ToolBoxPlayground/DescriptionPlayground";
@@ -69,20 +67,20 @@ const renderToolBoxConceptEffect = {
     voice : <Voice />
 }
 
-const renderToolBoxPlayground = rest => ({
+const renderToolBoxPlayground = ({ core , setCore , ...rest }) => ({
     link : <LinkPlayground {...rest} />,
-    text : <TextPlayground {...rest} />,
+    text : <TextPlayground value={core?.text} onChange={value => setCore("text", value)} {...rest} />,
     image : <ImagePlayground {...rest} />,
     description : <DescriptionPlayground {...rest} />
 })
 
 const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox , isInCloseProcess , core , setCore }) => {
     const isActive = currentToolBox === name;
-
+    
     return (
         <div
             onClick={() => setCurrentToolBox(name)}
-            style={{ background : isActive ? `linear-gradient(180deg, ${generateColor(`#${bgColor}` , 5)}, transparent)` /*'white'*/ : `#${bgColor}` , animationDelay : `${(isInCloseProcess ? index / 2 : index) * 100}ms` }} 
+            style={{ background : isActive ? `linear-gradient(180deg, ${generateColor(`#${bgColor}` , 5)}, transparent)` : `#${bgColor}` , animationDelay : `${(isInCloseProcess ? index / 2 : index) * 100}ms` }} 
             className={`toolBox ${currentToolBox ? isActive ? "toolBox--active" : "toolBox--deActive" : ""} ${isInCloseProcess ? "toolBox--getHide" : ""}`}>
             <span style={{ backgroundColor : `#${bgColor}` , transitionDelay : isActive ? ".3s" : "0s" }} className="toolBox__growLine" />
             {

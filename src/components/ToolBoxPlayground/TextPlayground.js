@@ -1,17 +1,12 @@
-import { useEffect, useState } from "react";
-import { selfClearTimeout } from "../../utils";
-
 import PlaygroundTextArea from "./PlaygroundTextArea"
 
-const TextPlayground = ({ core , setCore }) => {
-    const [value, setValue] = useState("");
-
+const TextPlayground = ({ value , onChange }) => {
 
     return (
         <div className="textPlayground">
             <PlaygroundTextArea 
                 value={value} 
-                onChange={setValue} 
+                onChange={onChange} 
                 placeholder="Start Write your Text from here"
                 className="textPlayground__textarea"
             />
