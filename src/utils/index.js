@@ -57,6 +57,15 @@ export const selfClearTimeout = (callback , timeout) => {
   } , timeout)
 }
 
+export const selfClearInterval = (callback , timeout) => {
+  let timer = setInterval(() => {
+    callback();
+  } , timeout)
+
+  return function unsubscribe() {
+    clearInterval(timer);
+  }
+}
 
 export const fetchLooper = snapshot => 
   snapshot.docs.map((el) => ({ ...el.data() }))

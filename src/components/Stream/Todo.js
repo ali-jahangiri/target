@@ -5,8 +5,8 @@ import { Draggable } from "react-beautiful-dnd";
 import TextareaAutosize from "react-textarea-autosize";
 
 import useKeyBaseState from "../../Hook/useKeyBaseState";
-import { selfClearTimeout } from "../../utils"
 import NewNoteThing from "../NewNoteThing";
+import TodoInput from "./TodoInput";
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
@@ -42,8 +42,6 @@ const Todo = ({ index , value , changeHandler , setToFullScreen }) => {
 
     const [content, setContent] = useKeyBaseState()
 
-    const focusHandler = () => inputRef.current.focus()
-
 
     const onChange = ({ target : { value = "" } }) => {
         changeHandler(value);
@@ -65,7 +63,7 @@ const Todo = ({ index , value , changeHandler , setToFullScreen }) => {
 
     const interpolateSubmitHandler = (e) => {
         e.preventDefault();
-        if(value && value?.slice(1)){
+        if(value && value?.slice(1) && !completedHash){
             const haveHelperInterpolateCommand = command.find(el => el.includes(value.slice(1)));
             if(haveHelperInterpolateCommand) {
                 const leftCharacter = haveHelperInterpolateCommand.split("").filter((_ , i) => i + 1 >= value.length)
@@ -107,9 +105,9 @@ const Todo = ({ index , value , changeHandler , setToFullScreen }) => {
                 <div  className="todoInjector__container">
                     <form onSubmit={interpolateSubmitHandler}>
                         {
-                            hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!value.slice(1) ?  command.find(el => el.includes(value.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < value.length ? "white" : "grey" }}>{el}</span>) : 'Write here...'}</p>
+                            hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!value.slice(1) ?  command.find(el => el.includes(value.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < value.length ? "white" : "grey" }}>{el}</span>) : 'Write commend here...'}</p>
                         }
-                        <input className={`todoInjector__input ${hashtagInterpolate ? "todoInjector__input--interpolate" : ""}`} placeholder="Write something..." value={value} onChange={onChange} />
+                        <TodoInput value={value} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
                         {
                             hashtagInterpolate && <span className="todoInjector__flash"></span>
                         }

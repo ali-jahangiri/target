@@ -72,9 +72,7 @@ const TargetBox = ({ targetName , color , habit = [] , id}) => {
     
 
    const redirectToTargetSchedule = () => {
-       if(habit.length) {
-            history.push(`/habitPerWeek/${id}`)
-        }
+       if(habit.length) history.push(`/habitPerWeek/${id}` , { comeFromTargetList : true })
    }
 
     return (

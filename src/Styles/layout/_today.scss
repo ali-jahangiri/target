@@ -94,6 +94,8 @@
             max-height: 25rem;
             overflow: hidden;
             transition: .3s .6s;
+            position: relative;
+            z-index: 75;
         }
 
         &--full {

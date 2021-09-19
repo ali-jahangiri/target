@@ -3,18 +3,23 @@
     height: 150px;
     border-radius: 50%;
     position: fixed;
-    bottom: 5%;
+    bottom: -25%;
     align-items: center;
     display: flex;
     background: black;
     right: 5%;
     z-index: 999999;
     justify-content: center;
-    transition: .3s cubic-bezier(1, 0, 0, 1);
+    // transition: ;
     color: white;
     cursor: pointer;
     user-select: none;
     overflow: hidden !important;
+
+
+    &--visible {
+        bottom : 5%;
+    }
 
     p {
         transition: .3s;

@@ -12,7 +12,7 @@ import client from "../client";
 
 const namesOfDaysOfWeek = client.STATIC.DAY_OF_WEEK.map(el => ({ name : el , id : idGenerator() }))
 
-const HabitPerWeek = ({ match : { params } , history }) => {
+const HabitPerWeek = ({ match , history }) => {
     
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [loading, setLoading] = useState(true);
@@ -21,14 +21,17 @@ const HabitPerWeek = ({ match : { params } , history }) => {
     const [currentHabitBlock, setCurrentHabitBlock] = useState(null);
 
 
+    const currentTargetId = match.params.id
+    const comeFromTargetList = history.location.state?.comeFromTargetList;
+
     useEffect(() => {
-        references.target.doc(params.id)
+        references.target.doc(currentTargetId)
             .get()
             .then(response => {
                 setCurrentTarget(response.data());
                 return response
             }).then(shit => {
-                references.habitPerWeek.doc(params.id)
+                references.habitPerWeek.doc(currentTargetId)
                 .get()
                 .then(data => {
                     if(data.exists) {
@@ -39,13 +42,13 @@ const HabitPerWeek = ({ match : { params } , history }) => {
                         namesOfDaysOfWeek.map(el => base[el.name] = [])
                         setSchedule({...base})
                         const { color , targetName } = shit.data();
-                            references.habitPerWeek.doc(params.id).set({ targetName , color  , schedule : base })
+                            references.habitPerWeek.doc(currentTargetId).set({ targetName , color  , schedule : base })
                                 .then(_ => setLoading(false))
                     }
                 })
 
             })
-    } , [params])  
+    } , [currentTargetId])  
 
     
 
@@ -97,7 +100,10 @@ const HabitPerWeek = ({ match : { params } , history }) => {
       } 
 
 
-      const redirectToHome = () => history.push('/');
+      const redirectToHome = () => {
+          if(comeFromTargetList) history.goBack()
+          else history.push('/');
+      }
 
       const redirectForCreateHabit = () => history.push("/target")
 
@@ -110,7 +116,7 @@ const HabitPerWeek = ({ match : { params } , history }) => {
 
       useEffect(() => {
         if(!loading) {
-            references.habitPerWeek.doc(params.id).update({ targetName : currentTarget.targetName , color : currentTarget.color , schedule })
+            references.habitPerWeek.doc(currentTargetId).update({ targetName : currentTarget.targetName , color : currentTarget.color , schedule })
         }
       } , [schedule])
 
@@ -132,7 +138,7 @@ const HabitPerWeek = ({ match : { params } , history }) => {
                     </div>
                     <div>
                         <p onClick={() => haveAnyHabit ? redirectToHome() : redirectForCreateHabit()} className="habitPerDay__done">
-                            {haveAnyHabit ? "Done With it" : "Let's add new Habit"}
+                            {comeFromTargetList ? "Go back to Targets" :  (haveAnyHabit ? "Done With it" : "Let's add new Habit")}
                         </p>
                     </div>
                     </div>

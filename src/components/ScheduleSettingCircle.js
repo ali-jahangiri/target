@@ -1,19 +1,16 @@
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { FiArrowLeft, FiArrowRight, FiRotateCcw } from "react-icons/fi";
 import { _date } from "../utils";
 
 
-const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setIsHoverInNavigationCircle , currentDay , goToday }) => {
+const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setIsHoverInNavigationCircle , currentDay , goToday , visible }) => {
     const [isActive, setIsActive] = useState(false);
+    const [transitionDelay, setTransitionDelay] = useState(1)
     const now = _date();
     
     const currentMonthName = now.add(currentMonth - 1 , "M").format("MMMM")
     const currentDayName = _date(`${now.year()}/${now.month() + 1 + (currentMonth - 1)}/${currentDay + 1}`).format('dddd')
-
-    
-    // const isVisible = useSelector(state => state.ui.navigatorVisibilityStatus);
-    const isVisible = false
     
     const nextMonthAvailable = (12 - (now.month() + currentMonth) ) > 0 ? true : false
 
@@ -26,28 +23,19 @@ const ScheduleSettingCircle = ({ rotate ,  currentMonth , setCurrentMonth , setI
         }
     }
 
+    useLayoutEffect(() => {
+        if(visible) setTransitionDelay(0)
+    } , [visible])
 
-    // useEffect(() => {
-    //     window.addEventListener("keydown" , e => {
-    //         // e.preventDefault()
-    //         const pressedKey = e.key;
-    //         console.log(pressedKey);
-    //         if(pressedKey === "ArrowRight") {
-    //             monthSelectHandler("next")
-    //             window.removeEventListener("keydown" , e => console.log('clear'))
-    //         }else if(pressedKey === "ArrowLeft") {
-    //             monthSelectHandler('prev')
-    //             window.removeEventListener("keydown" , e => console.log('clear'))
-    //         }
-    //     })
-    //     return window.removeEventListener("keydown" , () => {})
-    // } , [])
     return (
         <div 
             onMouseEnter={() => setIsHoverInNavigationCircle(true)} 
             onMouseLeave={() => setIsHoverInNavigationCircle(false)} 
-            onClick={() => setIsActive(prev => !prev)} 
-            className={`setting ${isActive ? "setting--active" : ""} ${!isVisible ? "setting--hide" : "" }`}>
+            onClick={() => setIsActive(prev => !prev)}
+            style={{ 
+                transition: `all .3s cubic-bezier(1, 0, 0, 1) , bottom .3s ${transitionDelay}s`
+             }}
+            className={`setting ${visible ? "setting--visible" : ""} ${isActive ? "setting--active" : ""}`}>
             <div style={{ display : "flex" , flexDirection : "column" , alignItems : 'center' }}>
                 <div style={{ display : "flex" , alignItems : 'center' }}>
                     <p style={{ fontWeight : 'bold' , marginRight : 10 }}>{currentDay}</p>

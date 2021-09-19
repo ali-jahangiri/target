@@ -1,10 +1,13 @@
 import { AlertContainer } from "./components/Alert";
+import RequestProvider from "./Providers/RequestProvider/RequestProvider";
 import AppRouter from "./Router/AppRouter";
 
 const App = () => (
   <>
         <AlertContainer/>
-        <AppRouter />        
+        <RequestProvider>
+          <AppRouter />
+        </RequestProvider>
   </>
 )
 
