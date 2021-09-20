@@ -1,0 +1,20 @@
+.imageBlock {
+    width: 100%;
+    &__image {
+        background-size: cover;
+        background-repeat: no-repeat;
+
+
+        &--left {
+            margin-right: auto;
+        }
+
+        &--center {
+            margin: 0 auto;
+        }
+
+        &--right {
+            margin-left: auto;
+        }
+    }
+}

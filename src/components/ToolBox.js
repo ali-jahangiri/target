@@ -70,11 +70,11 @@ const renderToolBoxConceptEffect = {
 const renderToolBoxPlayground = ({ core , setCore , ...rest }) => ({
     link : <LinkPlayground {...rest} />,
     text : <TextPlayground value={core?.text} onChange={value => setCore("text", value)} {...rest} />,
-    image : <ImagePlayground {...rest} />,
+    image : <ImagePlayground value={core?.image || { path : "" , size : { width : 900 , height : 0 }}} onChange={value => setCore("image" , value)} {...rest} />,
     description : <DescriptionPlayground {...rest} />
 })
 
-const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox , isInCloseProcess , core , setCore }) => {
+const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox , isInCloseProcess , core , setCore , setIsValidToTriggerDone , isValidToTriggerDone , isInCreateProcess }) => {
     const isActive = currentToolBox === name;
     
     return (
@@ -82,11 +82,13 @@ const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox ,
             onClick={() => setCurrentToolBox(name)}
             style={{ background : isActive ? `linear-gradient(180deg, ${generateColor(`#${bgColor}` , 5)}, transparent)` : `#${bgColor}` , animationDelay : `${(isInCloseProcess ? index / 2 : index) * 100}ms` }} 
             className={`toolBox ${currentToolBox ? isActive ? "toolBox--active" : "toolBox--deActive" : ""} ${isInCloseProcess ? "toolBox--getHide" : ""}`}>
-            <span style={{ backgroundColor : `#${bgColor}` , transitionDelay : isActive ? ".3s" : "0s" }} className="toolBox__growLine" />
+                <span style={{ backgroundColor : `#${bgColor}` , transitionDelay : isActive ? ".3s" : "0s" }} className="toolBox__growLine" />
             {
                 !isActive ? <div className="toolBox__directory">{renderToolBoxConceptEffect[name] }</div>: renderToolBoxPlayground({
                     core,
-                    setCore
+                    setCore,
+                    setIsValidToTriggerDone,
+                    isValidToTriggerDone
                 })[name]
             }
             <p style={{ color: isActive ? `#${bgColor}` : "black" , transitionDelay : currentToolBox ? ".3s" : "0s"}} className="toolBox__title">{name} {isActive && ":"}</p>

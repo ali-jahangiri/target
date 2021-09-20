@@ -1,11 +1,16 @@
 .newNoteThing {
+
+
     &__trigger {
         font-size: 1rem;
         display: flex;
+        margin-top: 2rem;
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        
+        transition: .3s;
+        max-height: 500px;
+
         p {
             font-size: 1.5rem;
         }
@@ -34,13 +39,79 @@
 
         &__done {
             cursor: pointer;
+            transition: .3s;
+
+            &--getHide {
+                opacity: 0;
+            }
         }
+
+        &::after {
+            content: "";
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 0;
+            transition: .3s;
+            background-color: white;
+            position: absolute;
+
+        }
+
+        &--close {
+            overflow: hidden;
+            margin-bottom: -44px;
+            position: relative;
+            margin-top: 0;
+
+            &::after {
+                height: 100px;
+            }
+            & + div {
+                
+                
+                .newNoteThing {
+                    
+                    &__toolDirectory {
+                        margin-top: 0;
+                    }
+                }
+
+
+                .toolBox--active {
+                    transition: .3s;
+                    background: white !important;
+                    padding-top: 0;
+                    overflow: hidden;
+
+                    // div[class*="Playground"] {
+                    //     transition: .3s;
+                    //     margin: 0 !important;
+                    // }
+
+                    .toolBox__growLine {
+                        width: 0;
+                        // top: -20px;
+                    }
+
+                    & > p {
+                        top: -80px !important;
+                        transition: .1s !important;
+                        transition-delay: 0 !important;
+                    }
+                }
+            }
+
+        }
+
     }
 
     &__toolDirectory {
+        transition: .3s;
         margin-top: 1rem;
         display: flex;
         justify-content: space-between;
         
     }
 }
+

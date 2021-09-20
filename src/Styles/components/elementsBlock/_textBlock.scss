@@ -1,0 +1,11 @@
+@keyframes textBlockGetSpace {
+    from {
+        margin: 0rem 0;
+    }
+    to {
+        margin: 1rem 0;
+    }
+}
+.textBlock {
+    animation: textBlockGetSpace .5s 1s forwards alternate;
+}

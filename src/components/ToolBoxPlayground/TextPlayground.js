@@ -1,14 +1,19 @@
+import { useEffect } from "react";
 import PlaygroundTextArea from "./PlaygroundTextArea"
 
-const TextPlayground = ({ value , onChange }) => {
+const TextPlayground = ({ value , onChange , setIsValidToTriggerDone }) => {
+
+    useEffect(() => {
+        if(value) setIsValidToTriggerDone(true)
+        else setIsValidToTriggerDone(false)
+    } , [value]);
 
     return (
         <div className="textPlayground">
-            <PlaygroundTextArea 
+            <PlaygroundTextArea
                 value={value} 
                 onChange={onChange} 
                 placeholder="Start Write your Text from here"
-                className="textPlayground__textarea"
             />
         </div>
     )

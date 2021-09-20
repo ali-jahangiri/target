@@ -1,13 +1,13 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Resizable } from "re-resizable";
 import PlaygroundInput from "./PlaygroundInput";
 import { debounce, selfClearTimeout } from "../../utils";
 
 import { MdVerticalAlignBottom , MdVerticalAlignTop , } from "react-icons/md"
 
-const ImagePlayground = ({  }) => {
-    const [value, setValue] = useState("");
-    const [imageSize, setImageSize] = useState({})
+const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTriggerDone }) => {
+    const [inputValue, setInputValue] = useState("");
+    const [imageSize, setImageSize] = useState({ height : 250 , width : 556 })
 
     const [isVisible, setIsVisible] = useState(false);
     const [alignment, setAlignment] = useState("")
@@ -27,7 +27,7 @@ const ImagePlayground = ({  }) => {
 
 
     const inputValueChangeHandler = (value = "") => {
-        setValue(value)
+        setInputValue(value)
         if(value && (!value.startsWith("http") || !value.startsWith("https"))) {
             setWasInvalidImage(true)
         }else if(wasInvalidImage)  {
@@ -35,6 +35,22 @@ const ImagePlayground = ({  }) => {
         }
     }
     
+
+    useEffect(() => {
+        if(!wasInvalidImage && inputValue) {
+            if(!isValidToTriggerDone) setIsValidToTriggerDone(true);
+        }
+        else setIsValidToTriggerDone(false);
+
+
+        onChange({
+            path : inputValue , 
+            size : imageSize,
+            alignment : alignment || "center"
+        })
+
+    } , [inputValue , imageSize , alignment])
+
     return (
         <div className="imagePlayground">
             <Resizable
@@ -43,12 +59,12 @@ const ImagePlayground = ({  }) => {
                 defaultSize={{ width : 900 , height : 0 }}
                 onResizeStop={onResize}
                 className={`imagePlayground__image ${alignment ? `imagePlayground__image--${alignment}` : ""} ${isVisible ? "imagePlayground__image--visible" : ""} ${wasInvalidImage ? "imagePlayground__image--invalidImagePath" : ""} ${isInResizeProcess ? "imagePlayground__image--resize" : ""}`}
-                style={{ backgroundImage : `url(${value})` }}
+                style={{ backgroundImage : `url(${inputValue})` }}
                 maxWidth="100%"
                 minWidth={240}
                 maxHeight={700}>
                         {
-                            value && isVisible && !wasInvalidImage && <>
+                            inputValue && isVisible && !wasInvalidImage && <>
                                 <div onClick={() => setAlignment('left')} className={`imagePlayground__leftAlign ${alignment === "left" ? "imagePlayground__leftAlign--hide" : ""}`}>
                                     <MdVerticalAlignTop />
                                 </div>
@@ -65,9 +81,9 @@ const ImagePlayground = ({  }) => {
                         {
                             isVisible && <div style={{ overflow : "hidden" , width : "100%" }}>
                                 <PlaygroundInput
-                                    className={`imagePlayground__input ${isVisible ? "imagePlayground__input--fade" : ""} ${!value ? "imagePlayground__input--withoutImagePath" : ""} ${isInResizeProcess ? "imagePlayground__input--inResize" : ""}`}
+                                    className={`imagePlayground__input ${isVisible ? "imagePlayground__input--fade" : ""} ${!inputValue ? "imagePlayground__input--withoutImagePath" : ""} ${isInResizeProcess ? "imagePlayground__input--inResize" : ""}`}
                                     placeholder="Past image path "
-                                    value={value} 
+                                    value={inputValue} 
                                     onChange={inputValueChangeHandler} />
                             </div>
                         }

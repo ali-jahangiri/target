@@ -5,6 +5,7 @@ const useKeyBaseState = (defaultState = {} ) => {
 
     const changeHandler = (key , value) => {
         if(typeof key === "object") return setValueStore(defaultState);
+        else if(typeof key === "function") return setValueStore(key)
         setValueStore(prev => ({
             ...prev,
             [key] : value

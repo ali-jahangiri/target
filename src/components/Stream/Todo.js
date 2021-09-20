@@ -6,22 +6,48 @@ import useKeyBaseState from "../../Hook/useKeyBaseState";
 import NewNoteThing from "../NewNoteThing";
 import TodoInput from "./TodoInput";
 
+import { ImageBlock, TextBlock } from "../ElementBlock"
+
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
 
-const NotePlayground = ({ setContent , content }) => {
+
+const blocksClone = ({ key , ...rest }) => ({
+    text : <TextBlock {...rest} key={key} />,
+    image : <ImageBlock {...rest} key={key} />
+})
+
+const NotePlayground = () => {
+    const [content , setContent] = useKeyBaseState({title : "" , thingList : []})
+
+    const addThingToNoteTreeHandler = (thingType , thingValue) =>{
+        setContent(prev => ({
+            ...prev,
+            thingList : [
+                ...prev?.thingList,
+                {
+                    name : thingType,
+                    value : thingValue
+                }
+            ]
+        }))
+    }
+
+
+    console.log(content , "CONTENT");
 
     return (
         <div className="notePlayground">
             <TextareaAutosize
                 placeholder="Give note a Title ..."
-                value={content.feelingText} 
+                value={content.noteTitle} 
                 minRows={2}
-                onChange={({ target : { value } }) => setContent('feelingText' , value)}
+                onChange={({ target : { value } }) => setContent("title",value)}
             />
-            <NewNoteThing
-                setContent={setContent} 
-                content={content} />
+            {
+                content.thingList.map((el , i) => blocksClone({ key : i , ...el })[el.name])
+            }
+            <NewNoteThing addThingToNoteTreeHandler={addThingToNoteTreeHandler} />
         </div>
     )
 }
@@ -37,7 +63,8 @@ const dynamicPlayground = rest => ({
 const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
-    const [inputValue, setInputValue] = useState("")
+    const [inputValue, setInputValue] = useState("");
+
     const [content, setContent] = useKeyBaseState({});
     
 
@@ -85,6 +112,10 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
         }
     }
 
+    const addThingToNoteTreeHandler = () => {
+
+    }
+    
     useEffect(() => {
         if(completedHash) {
             const currentInterpolatorName = inputValue.slice(1);
@@ -119,8 +150,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
                     </form>
                     {
                         !!completedHash && dynamicPlayground({
-                            content,
-                            setContent,
+                            addThingToNoteTreeHandler,
                         })[inputValue.slice(1)]
                     }
                 </div>
