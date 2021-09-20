@@ -1,0 +1,19 @@
+.descBlock {
+    width: 100%;
+
+    &__container {
+        width: 80%;
+        margin: 0 auto;
+        margin-top: 2rem;
+    }
+
+    &__avatarBox {
+        width: 5rem;
+        height: 5rem;
+        background-color: #c3693a7a;
+        margin-bottom: 1rem;
+    }
+    textarea {
+        background-color: transparent;
+    }
+}

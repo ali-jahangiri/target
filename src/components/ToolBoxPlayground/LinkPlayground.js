@@ -9,22 +9,21 @@ const modeIcon = {
     date : <BiCalendarAlt color="#C84B31" />
 }
 
-const LinkPlayground = ({ core , setCore }) => {
-    const [value, setValue] = useState("");
+const LinkPlayground = ({ setIsValidToTriggerDone , value = { type : "" , linkPath : "" } , onChange }) => {
     const [detectedMode, setDetectedMode] = useState(null);
+
+    const { linkPath , type } = value
 
 
     const webLinkChecker = () => {
-        if(value.startsWith("https://") || value.startsWith("http://")) {
+        if(linkPath.startsWith("https://") || linkPath.startsWith("http://")) {
             setDetectedMode('webLink')
-        }else if(false) {
-
-        }else setDetectedMode(null)
+        } else setDetectedMode(null)
     }
 
     const dateChecker = () => {
-        if(value) {
-            const splittedString = value.split("/");
+        if(linkPath) {
+            const splittedString = linkPath.split("/");
             if(splittedString.length === 3) {
                 const [year , month , day] = splittedString;
                 if(year.length === 4 && month.length === 2 && day.length === 2) {
@@ -39,14 +38,32 @@ const LinkPlayground = ({ core , setCore }) => {
     useEffect(() => {
         webLinkChecker();
         dateChecker()
-    } , [value])
+    } , [linkPath])
 
+
+    useEffect(() => {
+        if(detectedMode) setIsValidToTriggerDone(true);
+        else setIsValidToTriggerDone(false);
+
+        onChange({
+            linkPath,
+            type : detectedMode
+        })
+    } , [detectedMode])
+
+
+    const onInputChangeHandler = inputValue => {
+        onChange({
+            type : detectedMode,
+            linkPath : inputValue
+        })
+    }
 
     return (
         <div className="linkPlayground">
             <PlaygroundInput 
-                value={value} 
-                onChange={setValue} 
+                value={linkPath} 
+                onChange={onInputChangeHandler} 
                 placeholder="Enter your Link or reference to a day or a web link"
                 autoFocus
                 className={`linkPlayground__input ${detectedMode ? `linkPlayground__input--${detectedMode}` : ""}`}

@@ -1,10 +1,9 @@
 .imageBlock {
     width: 100%;
     &__image {
-        background-size: cover;
-        background-repeat: no-repeat;
-
-
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        
         &--left {
             margin-right: auto;
         }

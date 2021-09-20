@@ -84,6 +84,25 @@
                     padding-top: 0;
                     overflow: hidden;
 
+                    .textPlayground {
+                        transition: .3s !important;
+                        margin: 0 !important;
+                    }
+
+                    .imagePlayground {
+                        transition: .3s;
+                        padding: 0;
+                    }
+
+                    .linkPlayground {
+                        transition: .3s;
+                        padding: 0;
+
+                        input {
+                            transition: .3s;
+                            margin: 0 !important;
+                        }
+                    }
                     // div[class*="Playground"] {
                     //     transition: .3s;
                     //     margin: 0 !important;
@@ -114,4 +133,5 @@
         
     }
 }
+
 

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { colors } from "../utils";
 import ToolBox from "./ToolBox";
 import { FiArrowLeft } from "react-icons/fi";
@@ -15,6 +15,8 @@ const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
     const [isInCreateProcess, setIsInCreateProcess] = useState(false);
 
     const [innerStore, setInnerStore] = useKeyBaseState({});
+
+    const newNoteThingContainerRef = useRef();
 
     const triggerHandler = () => {
         if(isToolsActive && currentToolBox) {
@@ -53,7 +55,10 @@ const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
         setIsInCreateProcess(true);
         selfClearTimeout(() => {
             addThingToNoteTreeHandler(currentToolBox , innerStore[currentToolBox]);
-            resetStatesHandler()
+            resetStatesHandler();
+            selfClearTimeout(() => {
+                newNoteThingContainerRef.current?.scrollIntoView({ behavior : "smooth" })
+            } , 500);
         } , 1500)
     }
 
@@ -61,7 +66,7 @@ const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
     console.log(innerStore , "inner");
 
     return (
-        <div className="newNoteThing">
+        <div ref={newNoteThingContainerRef} className="newNoteThing">
             <div className={`newNoteThing__trigger ${isInCreateProcess ? "newNoteThing__trigger--close" : ""}`}>
                 <div className="newNoteThing__trigger__controller" onClick={triggerHandler}>
                     {currentToolBox ? <div><FiArrowLeft /> <p>Back</p></div> : <p>{isToolsActive ? "Never mind!" : "Add new Thing"}</p>}

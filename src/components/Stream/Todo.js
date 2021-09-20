@@ -1,4 +1,4 @@
-import { useState , useEffect} from "react";
+import { useState , useEffect } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import TextareaAutosize from "react-textarea-autosize";
 
@@ -6,7 +6,7 @@ import useKeyBaseState from "../../Hook/useKeyBaseState";
 import NewNoteThing from "../NewNoteThing";
 import TodoInput from "./TodoInput";
 
-import { ImageBlock, TextBlock } from "../ElementBlock"
+import { DescBlock, ImageBlock, LinkBlock, TextBlock } from "../ElementBlock"
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
@@ -14,7 +14,9 @@ const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
 const blocksClone = ({ key , ...rest }) => ({
     text : <TextBlock {...rest} key={key} />,
-    image : <ImageBlock {...rest} key={key} />
+    image : <ImageBlock {...rest} key={key} />,
+    description : <DescBlock {...rest} key={key} />,
+    link : <LinkBlock {...rest} key={key} />
 })
 
 const NotePlayground = () => {
@@ -112,10 +114,6 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
         }
     }
 
-    const addThingToNoteTreeHandler = () => {
-
-    }
-    
     useEffect(() => {
         if(completedHash) {
             const currentInterpolatorName = inputValue.slice(1);
@@ -149,9 +147,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
                         </div>
                     </form>
                     {
-                        !!completedHash && dynamicPlayground({
-                            addThingToNoteTreeHandler,
-                        })[inputValue.slice(1)]
+                        !!completedHash && dynamicPlayground({})[inputValue.slice(1)]
                     }
                 </div>
             </div>

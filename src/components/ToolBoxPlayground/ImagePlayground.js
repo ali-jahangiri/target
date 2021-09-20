@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Resizable } from "re-resizable";
 import PlaygroundInput from "./PlaygroundInput";
 import { debounce, selfClearTimeout } from "../../utils";
@@ -36,6 +36,17 @@ const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTrigger
     }
     
 
+    const resizableRef = useRef();
+
+    useEffect(() => {
+        const { width , height } = resizableRef.current?.resizable?.getClientRects()?.[0]
+        setImageSize({
+            width ,
+            height
+        })
+    } , [inputValue])
+
+
     useEffect(() => {
         if(!wasInvalidImage && inputValue) {
             if(!isValidToTriggerDone) setIsValidToTriggerDone(true);
@@ -54,6 +65,7 @@ const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTrigger
     return (
         <div className="imagePlayground">
             <Resizable
+                ref={resizableRef}
                 enable={wasInvalidImage || undefined}
                 onResizeStart={setIsInResizeProcess}
                 defaultSize={{ width : 900 , height : 0 }}
