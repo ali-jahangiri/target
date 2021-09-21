@@ -74,7 +74,7 @@ const renderToolBoxPlayground = ({ core , setCore , ...rest }) => ({
     description : <DescriptionPlayground value={core?.description} onChange={value => setCore("description" , value)} {...rest} />
 })
 
-const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox , isInCloseProcess , core , setCore , setIsValidToTriggerDone , isValidToTriggerDone , isInCreateProcess }) => {
+const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox , isInCloseProcess , core , setCore , setIsValidToTriggerDone , isValidToTriggerDone , createOnFormSubmission }) => {
     const isActive = currentToolBox === name;
     
     return (
@@ -88,7 +88,8 @@ const ToolBox = ({ name , bgColor , index , setCurrentToolBox , currentToolBox ,
                     core,
                     setCore,
                     setIsValidToTriggerDone,
-                    isValidToTriggerDone
+                    isValidToTriggerDone,
+                    createOnFormSubmission,
                 })[name]
             }
             <p style={{ color: isActive ? `#${bgColor}` : "black" , transitionDelay : currentToolBox ? ".3s" : "0s"}} className="toolBox__title">{name} {isActive && ":"}</p>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect , useRef , useState } from "react";
 
-import { debounce, fixNumbers, selfClearTimeout, _date } from "../utils";
+import { debounce, fixNumbers, _date } from "../utils";
 
 import ScheduleSettingCircle from "../components/ScheduleSettingCircle";
 import Stream from "./Stream";
@@ -93,6 +93,15 @@ const Home = () => {
             setStreamShowUpDelay(.7)
         }
     } , [countOfStreamChange])
+
+
+    // useEffect(() => {
+    //     const searchParams = new URLSearchParams(window.location.href);
+    //     for (const [key, value] of searchParams.entries()) {
+    //         console.log(key , value)
+    //         console.log(searchParams.has('specific'));
+    //     }
+    // } , [window.location.href])
 
     return (
         <div onWheel={onWheelHandler} ref={containerRef} style={{ display : "flex" }} className="mainContainer">

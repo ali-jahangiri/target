@@ -1,5 +1,15 @@
+@keyframes linkBlockGetSpace {
+    from {
+        margin: 0rem 0;
+    }
+    to {
+        margin: 1rem 0;
+    }
+}
+
 .linkBlock {
-    // background-color: red;
+    animation: linkBlockGetSpace .5s 1s forwards alternate;   
+
     a {
         font-size: 2rem !important;
         border: none;

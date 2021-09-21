@@ -67,9 +67,6 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
     const [completedHash, setCompletedHash] = useState(false);
     const [inputValue, setInputValue] = useState("");
 
-    const [content, setContent] = useKeyBaseState({});
-    
-
     const onChange = ({ target : { value = "" } }) => {
         setInputValue(value);
         setCompletedHash(false)
@@ -137,7 +134,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
                             {
                                 hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!inputValue.slice(1) ?  command.find(el => el.includes(inputValue.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < inputValue.length ? "white" : "grey" }}>{el}</span>) : 'Write commend here...'}</p>
                             }
-                            <TodoInput value={inputValue} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
+                                <TodoInput value={inputValue} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
                             {
                                 hashtagInterpolate && <span className="todoInjector__flash"></span>
                             }

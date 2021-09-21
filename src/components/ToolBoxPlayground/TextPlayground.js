@@ -11,10 +11,10 @@ const TextPlayground = ({ value , onChange , setIsValidToTriggerDone }) => {
     return (
         <div className="textPlayground">
             <PlaygroundTextArea
-                value={value} 
-                onChange={onChange} 
-                placeholder="Start Write your Text from here"
-            />
+                    value={value} 
+                    onChange={onChange} 
+                    placeholder="Start Write your Text from here"
+                />
         </div>
     )
 }

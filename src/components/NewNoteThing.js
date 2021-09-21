@@ -17,6 +17,8 @@ const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
     const [innerStore, setInnerStore] = useKeyBaseState({});
 
     const newNoteThingContainerRef = useRef();
+    const toolBoxContainerRef = useRef();
+
 
     const triggerHandler = () => {
         if(isToolsActive && currentToolBox) {
@@ -25,12 +27,16 @@ const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
             setInnerStore({});
         }else {
             if(isToolsActive) {
+                // NOTE this is callback for when user want to close entire editor (newThing creator);
                 setIsInCloseProcess(true);
                 selfClearTimeout(() => {
-                    setIsToolsActive(prev => !prev)
+                    setIsToolsActive(false)
                     setIsInCloseProcess(false);
-                } , 400);
-            }else setIsToolsActive(prev => !prev);
+                } , 800);
+            }else {
+                selfClearTimeout(() => toolBoxContainerRef.current.scrollIntoView({ behavior : "smooth" }) , 0);
+                setIsToolsActive(true);
+            }
         };
     }
 
@@ -59,7 +65,14 @@ const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
             selfClearTimeout(() => {
                 newNoteThingContainerRef.current?.scrollIntoView({ behavior : "smooth" })
             } , 500);
-        } , 1500)
+        } , 1500);
+    }
+
+    const createOnFormSubmission = e => {
+        if(e) e?.preventDefault()
+        if(isValidToTriggerDone) {
+            doneWithEditorHandler()
+        }
     }
 
 
@@ -77,10 +90,11 @@ const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
                     </div>
                 }
             </div>
-            <div className="newNoteThing__toolDirectory">
+            <div ref={toolBoxContainerRef} className={`newNoteThing__toolDirectory ${isInCloseProcess ? "newNoteThing__toolDirectory--hide" : ""}`}>
                 {
                         isToolsActive && ["image" , "text" , "description" , "link" , "voice"].map((el , i) => (
                         <ToolBox
+                            createOnFormSubmission={createOnFormSubmission}
                             setIsValidToTriggerDone={setIsValidToTriggerDone}
                             isValidToTriggerDone={isValidToTriggerDone}
                             core={innerStore}

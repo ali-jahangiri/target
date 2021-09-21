@@ -10,7 +10,6 @@ const AppRouter = () => (
           <Route path="/playground" component={Playground} />
           {/* <PrivateRoute> */}
             <Route path="/" component={Home} exact />
-            <Route path="/:id" exact component={Home}/>
             <Route path="/target" component={Targets} />
             <Route path="/newTarget" component={NewTarget} />
             <Route path="/habitPerWeek/:id" component={HabitPerWeek} />

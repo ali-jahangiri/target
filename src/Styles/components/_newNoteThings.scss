@@ -1,12 +1,11 @@
 .newNoteThing {
-
-
+    
     &__trigger {
         font-size: 1rem;
         display: flex;
         margin-top: 2rem;
         justify-content: space-between;
-        align-items: center;
+        background: linear-gradient(180deg, white, transparent);
         width: 100%;
         transition: .3s;
         max-height: 500px;
@@ -63,7 +62,6 @@
             margin-bottom: -44px;
             position: relative;
             margin-top: 0;
-
             &::after {
                 height: 100px;
             }
@@ -92,6 +90,7 @@
                     .imagePlayground {
                         transition: .3s;
                         padding: 0;
+                        margin-top: -2px;
                     }
 
                     .linkPlayground {
@@ -103,14 +102,16 @@
                             margin: 0 !important;
                         }
                     }
-                    // div[class*="Playground"] {
-                    //     transition: .3s;
-                    //     margin: 0 !important;
-                    // }
 
+                    .descPlayground {
+                        .descPlayground__container {
+                            transition: .3s;
+                            margin-top: 0;
+                        }
+                    }
+                    
                     .toolBox__growLine {
                         width: 0;
-                        // top: -20px;
                     }
 
                     & > p {
@@ -126,12 +127,15 @@
     }
 
     &__toolDirectory {
-        transition: .3s;
+        transition: .5s;
         margin-top: 1rem;
         display: flex;
         justify-content: space-between;
-        
+        max-height: 1000px;
+        overflow: hidden;
+
+        &--hide {
+            max-height: 0px;
+        }
     }
 }
-
-

@@ -9,11 +9,10 @@ const modeIcon = {
     date : <BiCalendarAlt color="#C84B31" />
 }
 
-const LinkPlayground = ({ setIsValidToTriggerDone , value = { type : "" , linkPath : "" } , onChange }) => {
+const LinkPlayground = ({ setIsValidToTriggerDone , value = { type : "" , linkPath : "" } , onChange , createOnFormSubmission }) => {
     const [detectedMode, setDetectedMode] = useState(null);
 
-    const { linkPath , type } = value
-
+    const { linkPath } = value;
 
     const webLinkChecker = () => {
         if(linkPath.startsWith("https://") || linkPath.startsWith("http://")) {
@@ -60,18 +59,20 @@ const LinkPlayground = ({ setIsValidToTriggerDone , value = { type : "" , linkPa
     }
 
     return (
-        <div className="linkPlayground">
-            <PlaygroundInput 
-                value={linkPath} 
-                onChange={onInputChangeHandler} 
-                placeholder="Enter your Link or reference to a day or a web link"
-                autoFocus
-                className={`linkPlayground__input ${detectedMode ? `linkPlayground__input--${detectedMode}` : ""}`}
-            />
-            <div className={`linkPlayground__prefix ${detectedMode ? `linkPlayground__prefix--inMode` : ""}`}>
-                { modeIcon[detectedMode] }
+        <form onSubmit={createOnFormSubmission}>
+            <div className="linkPlayground">
+                    <PlaygroundInput 
+                        value={linkPath} 
+                        onChange={onInputChangeHandler} 
+                        placeholder="Enter your Link or reference to a day or a web link"
+                        autoFocus
+                        className={`linkPlayground__input ${detectedMode ? `linkPlayground__input--${detectedMode}` : ""}`}
+                    />
+                    <div className={`linkPlayground__prefix ${detectedMode ? `linkPlayground__prefix--inMode` : ""}`}>
+                        { modeIcon[detectedMode] }
+                    </div>
             </div>
-        </div>
+        </form>
     )
 }
 

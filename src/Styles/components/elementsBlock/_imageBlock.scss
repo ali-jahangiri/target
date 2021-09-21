@@ -1,5 +1,15 @@
+@keyframes imageBlockGetSpace {
+    from {
+        margin-top: 0;
+    }
+    to {
+        margin-top: 1rem;
+    }
+}
 .imageBlock {
     width: 100%;
+
+    animation: imageBlockGetSpace .5s 1s forwards alternate;
     &__image {
         background-size: cover !important;
         background-repeat: no-repeat !important;

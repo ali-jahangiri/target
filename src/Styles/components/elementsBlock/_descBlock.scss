@@ -1,10 +1,19 @@
+@keyframes descBlockGetSpace {
+    from {
+        margin-top: 0;
+    }
+    to {
+        margin-top: 2rem;
+    }
+}
+
 .descBlock {
     width: 100%;
 
     &__container {
         width: 80%;
         margin: 0 auto;
-        margin-top: 2rem;
+        animation: descBlockGetSpace .5s 1s forwards alternate;
     }
 
     &__avatarBox {
