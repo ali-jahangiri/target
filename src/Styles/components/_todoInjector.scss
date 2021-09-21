@@ -26,9 +26,23 @@
             display: flex;
             align-items: center;
             margin-bottom: 2.5rem;
-            div {
-                flex: 1;
-            }
+        }
+    }
+
+
+    &__controller {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-left: auto;
+        margin-right: 1rem;
+    }
+
+    &__helperController {
+        p {
+            text-align: right;
+            padding: 1rem;
+            cursor: pointer;
         }
     }
 
@@ -40,7 +54,6 @@
         opacity: 0;
 
         p {
-            margin-right: 1rem;
             cursor: pointer;
             padding: 0.5rem;
         }
@@ -59,7 +72,6 @@
         width: 50px;
         height: 50px;
         background: rgba(250, 189, 57, 0.39);
-        // animation: grow 2s forwards infinite;
         animation: grow .8s forwards alternate;
         border-radius: 50%;
     }

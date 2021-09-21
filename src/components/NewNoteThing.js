@@ -6,7 +6,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import { selfClearTimeout } from "../utils";
 import useKeyBaseState from "../Hook/useKeyBaseState";
 
-const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
+const NewNoteThing = ({ addThingToNoteTreeHandler , hideBaseOnEditMode }) => {
     const [isToolsActive, setIsToolsActive] = useState(false);
     const [currentToolBox, setCurrentToolBox] = useState(null);
     const [isInCloseProcess, setIsInCloseProcess] = useState(false);
@@ -20,26 +20,36 @@ const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
     const toolBoxContainerRef = useRef();
 
 
-    const triggerHandler = () => {
-        if(isToolsActive && currentToolBox) {
-            setCurrentToolBox(null);
-            if(isInCloseProcess) setIsInCloseProcess(false);
-            setInnerStore({});
-        }else {
-            if(isToolsActive) {
-                // NOTE this is callback for when user want to close entire editor (newThing creator);
-                setIsInCloseProcess(true);
-                selfClearTimeout(() => {
-                    setIsToolsActive(false)
-                    setIsInCloseProcess(false);
-                } , 800);
-            }else {
-                selfClearTimeout(() => toolBoxContainerRef.current.scrollIntoView({ behavior : "smooth" }) , 0);
-                setIsToolsActive(true);
-            }
-        };
+    const closeEntireEditor = () => {
+        setIsInCloseProcess(true);
+        selfClearTimeout(() => {
+            setIsToolsActive(false)
+            setIsInCloseProcess(false);
+        } , 800);
     }
 
+    const triggerHandler = () => {
+        if(!hideBaseOnEditMode) {
+            if(isToolsActive && currentToolBox) {
+                setCurrentToolBox(null);
+                if(isInCloseProcess) setIsInCloseProcess(false);
+                setInnerStore({});
+            }else {
+                if(isToolsActive) {
+                    // NOTE this is callback for when user want to close entire editor (newThing creator);
+                    closeEntireEditor();
+                }else {
+                    selfClearTimeout(() => toolBoxContainerRef.current.scrollIntoView({ behavior : "smooth" }) , 0);
+                    setIsToolsActive(true);
+                }
+            };
+        }
+    }
+
+
+    useLayoutEffect(() => {
+        if(hideBaseOnEditMode) closeEntireEditor()
+    } , [hideBaseOnEditMode])
 
     useLayoutEffect(() => {
         if(!isValidToTriggerDone) {
@@ -76,12 +86,10 @@ const NewNoteThing = ({ addThingToNoteTreeHandler }) => {
     }
 
 
-    console.log(innerStore , "inner");
-
     return (
         <div ref={newNoteThingContainerRef} className="newNoteThing">
             <div className={`newNoteThing__trigger ${isInCreateProcess ? "newNoteThing__trigger--close" : ""}`}>
-                <div className="newNoteThing__trigger__controller" onClick={triggerHandler}>
+                <div className={`newNoteThing__trigger__controller ${hideBaseOnEditMode ? "newNoteThing__trigger__controller--disable" : ""}`} onClick={triggerHandler}>
                     {currentToolBox ? <div><FiArrowLeft /> <p>Back</p></div> : <p>{isToolsActive ? "Never mind!" : "Add new Thing"}</p>}
                 </div>
                 {

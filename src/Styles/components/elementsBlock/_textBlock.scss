@@ -7,5 +7,36 @@
     }
 }
 .textBlock {
+    position: relative;
     animation: textBlockGetSpace .5s .5s forwards alternate;
+
+    &__container {
+        position: relative;
+        background: white;
+        z-index: 20;
+    }
+
+
+    &__removeTrigger {
+        position: absolute;
+        left: 0%;
+        top: 0;
+        transition: .3s;
+        opacity: 0;
+        color: $grey;
+
+        p {
+            cursor: pointer;
+            transition: .3s;
+
+            &:hover {
+                color: grey;
+            }
+        }
+
+        &--show {
+            left: -10%;
+            opacity: 1;
+        }
+    }
 }
