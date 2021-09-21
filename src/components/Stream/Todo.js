@@ -54,6 +54,7 @@ const NotePlayground = ({ setInnerPlaygroundController }) => {
     }
 
     const removeThingTreeHandler = index => {
+        setHaveAnyChangeInEditMode(true);
         setTempContent(prev => ({
             ...prev,
             thingList : prev.thingList.filter((_ , i) => i !== index)
@@ -78,7 +79,11 @@ const NotePlayground = ({ setInnerPlaygroundController }) => {
         }))
     };
 
-    const attachEditTriggerToControllerChecker = () => {
+    useEffect(function syncTempContentHandler() {
+        setTempContent(content)
+    } , [content]);
+
+    useEffect(function attachEditTriggerToControllerChecker() {
         if(content.thingList.length) {
             setInnerPlaygroundController({
                 callback : () => {
@@ -87,26 +92,15 @@ const NotePlayground = ({ setInnerPlaygroundController }) => {
                 },
                 label : haveAnyChangeInEditMode ? "Save Change" : (isInEditMode ? "Back" : "Edit content"),
                 overwriteCloseTriggerCallback : resetEditMode,
-                closeTriggerConvertedTextTo : tempContent.wasEdited && isInEditMode ?  "Cancel" : "Close"
+                closeTriggerConvertedTextTo : haveAnyChangeInEditMode && isInEditMode ?  "Cancel" : "Close"
             })
         }else {
             setInnerPlaygroundController({callback : () => {}});
         }
-    }
-
-    useEffect(function syncTempContentHandler() {
-        setTempContent(content)
-    } , [content]);
-
-    useEffect(() => {
-        attachEditTriggerToControllerChecker();
     } , [content , isInEditMode , haveAnyChangeInEditMode, tempContent])
 
 
     const dynamicThingList = (() => isInEditMode ? tempContent.thingList : content.thingList)();
-
-
-    console.log(dynamicThingList , "dynamicThingList" , isInEditMode );
 
     return (
         <div className="notePlayground">

@@ -5,12 +5,12 @@ import { debounce, selfClearTimeout } from "../../utils";
 
 import { MdVerticalAlignBottom , MdVerticalAlignTop , } from "react-icons/md"
 
-const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTriggerDone }) => {
-    const [inputValue, setInputValue] = useState("");
-    const [imageSize, setImageSize] = useState({ height : 250 , width : 556 })
+const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTriggerDone , defaultInputValue = "" , defaultSize = { height : 250 , width : 556 } , defaultAlignment = ""}) => {
+    const [inputValue, setInputValue] = useState(defaultInputValue);
+    const [imageSize, setImageSize] = useState(defaultSize)
 
     const [isVisible, setIsVisible] = useState(false);
-    const [alignment, setAlignment] = useState("")
+    const [alignment, setAlignment] = useState(defaultAlignment)
     const [isInResizeProcess, setIsInResizeProcess] = useState(false);
     const [wasInvalidImage, setWasInvalidImage] = useState(false);
 

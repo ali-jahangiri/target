@@ -1,0 +1,24 @@
+.blockController {
+    position: absolute;
+    left: 0%;
+    top: 0;
+    transition: .3s;
+    opacity: 0;
+    color: $darkGrey;
+    
+    &__removeTrigger {
+        p {
+            cursor: pointer;
+            transition: .3s;
+            &:hover {
+                color: $red;
+            }
+        }
+
+    }
+    
+    &--visible {
+        left: -10%;
+        opacity: 1;
+    }
+}

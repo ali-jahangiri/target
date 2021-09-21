@@ -8,8 +8,9 @@
 }
 .imageBlock {
     width: 100%;
-
+    position: relative;
     animation: imageBlockGetSpace .5s 1s forwards alternate;
+
     &__image {
         background-size: cover !important;
         background-repeat: no-repeat !important;
@@ -25,5 +26,15 @@
         &--right {
             margin-left: auto;
         }
+    }
+
+    &--remove {
+        margin: 0 !important;
+        & > div {
+            transition: .3s;
+            height: 0 !important;
+            opacity: 0;
+        }
+
     }
 }
