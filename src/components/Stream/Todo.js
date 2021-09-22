@@ -8,6 +8,7 @@ import TodoInput from "./TodoInput";
 
 import { DescBlock, ImageBlock, LinkBlock, TextBlock } from "../ElementBlock"
 import { selfClearTimeout } from "../../utils";
+import ReminderPlayground from "../Reminder/ReminderPlayground";
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
@@ -122,7 +123,7 @@ const NotePlayground = ({ setInnerPlaygroundController }) => {
 const dynamicPlayground = rest => ({
     note : <NotePlayground {...rest} />,
     // note :  ,
-    // reminder : ,
+    reminder : <ReminderPlayground {...rest} />,
     // transaction
 })
 

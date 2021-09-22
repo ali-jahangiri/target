@@ -21,6 +21,12 @@
             }
         }
         &--dark {
+            p {
+                color: $grey;
+                span {
+                    color: grey;
+                }
+            }
             input {
                 color: black;
                 &:placeholder-shown {

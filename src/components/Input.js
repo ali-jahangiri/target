@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Input = ({ placeholder , value , onChange , showLabel , reference , style , onBlur  , mode , containerStyle , ...rest }) => {
+const Input = ({ placeholder , value , onChange , showLabel , reference , style , onBlur  , mode , containerStyle , labelStyle , ...rest }) => {
     const [haveValue, setHaveValue] = useState(false);
 
     const changeHandler = value => {
@@ -20,7 +20,7 @@ const Input = ({ placeholder , value , onChange , showLabel , reference , style 
                 {...rest}
                 />
                 {
-                    haveValue && showLabel && <p>as <span>{placeholder}</span></p>
+                    haveValue && showLabel && <p style={labelStyle}>as <span style={labelStyle}>{placeholder}</span></p>
                 }
         </div>
     )

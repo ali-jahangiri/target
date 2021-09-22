@@ -1,0 +1,47 @@
+.reminderTimePicker {
+    margin-top: 2rem;
+
+    &__title {
+        font-size: 2rem;
+        color: grey;
+    }
+    &__numberContainer {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        font-size: 6rem;
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+
+    &__inputFrame {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 46%;
+        border: 3px solid $orange;
+        transition: .2s;
+
+        &--minute {
+            left: 55%;
+        }
+
+        &--null {
+            opacity: 0;
+        }
+    }
+
+    input {
+        font-size: 6rem;
+        border: none;
+        outline: none;
+        width: 100%;
+        text-align: center;
+        position: relative;
+        z-index: 5;
+        background-color: transparent;
+    }
+
+}
