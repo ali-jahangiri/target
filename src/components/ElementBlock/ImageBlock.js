@@ -1,4 +1,3 @@
-import { Resizable } from "re-resizable";
 import { useState } from "react";
 import { selfClearTimeout } from "../../utils";
 import ImagePlayground from "../ToolBoxPlayground/ImagePlayground";
@@ -18,12 +17,7 @@ const ImageBlock = ({ value : { size , path , alignment }  , isInEditMode , edit
 
     return (
         <div className={`imageBlock ${isInRemovingProcess ? "imageBlock--remove" : ""}`}>
-            {
-                isInEditMode && <ImagePlayground defaultAlignment={alignment} defaultInputValue={path} defaultSize={size}  />
-            }
-            {/* <Resizable
-
-            /> */}
+            <ImagePlayground isInEditMode={isInEditMode} onChange={editContentHandler} inBlock defaultAlignment={alignment} defaultInputValue={path} defaultSize={size}  />
             {/* <div className={`imageBlock__image imageBlock__image--${alignment}`} style={{ width : size.width , height : size.height , background : `url(${path})` }} /> */}
             <BlockController removeHandler={internalRemoveHandler} visible={isInEditMode} />
         </div>

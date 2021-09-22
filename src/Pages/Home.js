@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect , useRef , useState } from "react";
 
-import { debounce, fixNumbers, _date } from "../utils";
+import { debounce,  _date } from "../utils";
 
 import ScheduleSettingCircle from "../components/ScheduleSettingCircle";
 import Stream from "./Stream";
@@ -22,11 +22,11 @@ const Home = () => {
     const [currentDay, setCurrentDay] = useState(currentLeftPosition.current / window.innerWidth);
     
     const [streamShowUpDelay, setStreamShowUpDelay] = useState(.7)
-
-    const allMonthDay = new Array(now.clone().add(currentDay, "M").daysInMonth()).fill(1);
-
-    // const isInDragging = useSelector(state => state.ui.isInDragging);
     
+    const allMonthDay = new Array(now.clone().daysInMonth()).fill(1);
+
+    
+
     const clearScrollCountHandler = useCallback(debounce(() => {
         setCountOfStreamChange(0)
     } , countOfStreamChange >= 3 ? 2500 : 2000) , [])
@@ -45,13 +45,22 @@ const Home = () => {
 
     const onWheelHandler = e => {
         if(hoveringOnNavigatorCircle) {
-            setCountOfStreamChange(prev => prev + 1)
-            circleRotateHandler(currentLeftPosition.current)
+            
             if(e.deltaY > 0 && currentLeftPosition.current < window.innerWidth * allMonthDay.length) {  
-                currentLeftPosition.current += window.innerWidth
-                scrollHandler(currentLeftPosition.current)
+                // Checking for being in end of the month
+                if((currentDay + 1) !== allMonthDay.length) {
+                    currentLeftPosition.current += window.innerWidth;
+                    scrollHandler(currentLeftPosition.current);
+                    setCountOfStreamChange(prev => prev + 1);
+                    circleRotateHandler(currentLeftPosition.current)
+                }else {
+                    // Show some alert that you are in end of the month and cannot scroll more then this
+                }
+
             }else if(currentLeftPosition.current > 0) {
-                currentLeftPosition.current -= window.innerWidth
+                setCountOfStreamChange(prev => prev + 1);
+                circleRotateHandler(currentLeftPosition.current);
+                currentLeftPosition.current -= window.innerWidth;
                 scrollHandler(currentLeftPosition.current)
             }
         }
@@ -68,11 +77,13 @@ const Home = () => {
         let passMoth = now.month() +  currentMonth
         let passDay = index + 1;
 
+        const dateForPassingIntoStream = `${now.year()}/${passMoth < 10 ? `0${passMoth}` : passMoth}/${passDay < 10 ? `0${passDay}` : passDay}`
+        
         if(index >= min && index <= max) {
             return <Stream
                         setIsTargetStreamReadyToRender={setIsTargetStreamReadyToRender}
                         sideBarEnabled={index === currentDay} 
-                        date={fixNumbers(`${now.year()}/${passMoth < 10 ? `0${passMoth}` : passMoth}/${passDay < 10 ? `0${passDay}` : passDay}`)} />
+                        date={dateForPassingIntoStream} />
         }else return null
 
     }
@@ -92,8 +103,7 @@ const Home = () => {
         }else {
             setStreamShowUpDelay(.7)
         }
-    } , [countOfStreamChange])
-
+    } , [countOfStreamChange]);
 
     // useEffect(() => {
     //     const searchParams = new URLSearchParams(window.location.href);
@@ -110,6 +120,7 @@ const Home = () => {
                     <div key={i} className={`__dayContainer ${i === currentDay && false ? "__dayContainer--scrollDisabled" : ""}`}>
                         <div
                             style={{ transitionDelay : `${streamShowUpDelay}s` }} 
+                            data-id={i}
                             className={`__innerContainer ${i === currentDay  ? "__innerContainer--active" : "__innerContainer--deActive"}`}>
                             {renderScheduleChecker(i)}
                         </div>

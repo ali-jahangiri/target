@@ -5,7 +5,16 @@ import { debounce, selfClearTimeout } from "../../utils";
 
 import { MdVerticalAlignBottom , MdVerticalAlignTop , } from "react-icons/md"
 
-const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTriggerDone , defaultInputValue = "" , defaultSize = { height : 250 , width : 556 } , defaultAlignment = ""}) => {
+const ImagePlayground = ({
+        isInEditMode,
+        onChange , 
+        setIsValidToTriggerDone ,
+        inBlock,
+        isValidToTriggerDone , 
+        defaultInputValue = "" , 
+        defaultSize = { height : 250 , width : 556 } , 
+        defaultAlignment = ""
+}) => {
     const [inputValue, setInputValue] = useState(defaultInputValue);
     const [imageSize, setImageSize] = useState(defaultSize)
 
@@ -30,7 +39,7 @@ const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTrigger
         setInputValue(value)
         if(value && (!value.startsWith("http") || !value.startsWith("https"))) {
             setWasInvalidImage(true)
-        }else if(wasInvalidImage)  {
+        }else if(wasInvalidImage) {
             setWasInvalidImage(false)
         }
     }
@@ -48,17 +57,18 @@ const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTrigger
 
 
     useEffect(() => {
-        if(!wasInvalidImage && inputValue) {
-            if(!isValidToTriggerDone) setIsValidToTriggerDone(true);
+        if(!inBlock) {
+            if(!wasInvalidImage && inputValue) {
+                if(!isValidToTriggerDone) setIsValidToTriggerDone(true);
+            }
+            else setIsValidToTriggerDone(false);
         }
-        else setIsValidToTriggerDone(false);
-
 
         onChange({
             path : inputValue , 
             size : imageSize,
             alignment : alignment || "center"
-        })
+        });
 
     } , [inputValue , imageSize , alignment])
 
@@ -66,7 +76,7 @@ const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTrigger
         <div className="imagePlayground">
             <Resizable
                 ref={resizableRef}
-                enable={wasInvalidImage || undefined}
+                enable={(wasInvalidImage || isInEditMode) || undefined}
                 onResizeStart={setIsInResizeProcess}
                 defaultSize={{ width : 900 , height : 0 }}
                 onResizeStop={onResize}
@@ -76,7 +86,7 @@ const ImagePlayground = ({ onChange , setIsValidToTriggerDone , isValidToTrigger
                 minWidth={240}
                 maxHeight={700}>
                         {
-                            inputValue && isVisible && !wasInvalidImage && <>
+                            inputValue && isVisible && !wasInvalidImage && isInEditMode && <>
                                 <div onClick={() => setAlignment('left')} className={`imagePlayground__leftAlign ${alignment === "left" ? "imagePlayground__leftAlign--hide" : ""}`}>
                                     <MdVerticalAlignTop />
                                 </div>
