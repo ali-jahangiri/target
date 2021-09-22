@@ -7,6 +7,7 @@ import NewNoteThing from "../NewNoteThing";
 import TodoInput from "./TodoInput";
 
 import { DescBlock, ImageBlock, LinkBlock, TextBlock } from "../ElementBlock"
+import { selfClearTimeout } from "../../utils";
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
@@ -99,11 +100,6 @@ const NotePlayground = ({ setInnerPlaygroundController }) => {
         }
     } , [content , isInEditMode , haveAnyChangeInEditMode, tempContent])
 
-
-    console.log('====================================');
-    console.log(haveAnyChangeInEditMode , "haveNN");
-    console.log('====================================');
-
     const dynamicThingList = (() => isInEditMode ? tempContent.thingList : content.thingList)();
 
     return (
@@ -132,18 +128,29 @@ const dynamicPlayground = rest => ({
 })
 
 
-const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
+const Todo = ({ index , setToFullScreen , isInFullScreen , containerScroll }) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
     const [inputValue, setInputValue] = useState("");
+    const [flashDestroy, setFlashDestroy] = useState(false);
 
     const [innerPlaygroundController, setInnerPlaygroundController] = useState({ callback : () => {} , label : "", closeTriggerConvertedTextTo : "Close" , overwriteCloseTriggerCallback : () => {} });
+
+    console.log(containerScroll , "containerD");
 
     const onChange = ({ target : { value = "" } }) => {
         setInputValue(value);
         setCompletedHash(false)
-        if(value.startsWith("#")) setHashtagInterpolate(true)
-        else setHashtagInterpolate(false)
+        if(value.startsWith("#")) {
+            setHashtagInterpolate(true)
+            selfClearTimeout(() => {
+                setFlashDestroy(true);
+            } , 800)
+        }
+        else {
+            setHashtagInterpolate(false)
+            setFlashDestroy(false)
+        }
 
         if(!value && isInFullScreen) setToFullScreen(false)
     }
@@ -212,7 +219,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
                             }
                                 <TodoInput value={inputValue} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
                             {
-                                hashtagInterpolate && <span className="todoInjector__flash"></span>
+                                (!flashDestroy && hashtagInterpolate) && <span className="todoInjector__flash"></span>
                             }
                         </div>
                         <div className="todoInjector__controller">

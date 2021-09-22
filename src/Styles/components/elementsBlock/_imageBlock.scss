@@ -7,10 +7,6 @@
     }
 }
 .imageBlock {
-    width: 100%;
-    position: relative;
-    animation: imageBlockGetSpace .5s 1s forwards alternate;
-
     &__image {
         background-size: cover !important;
         background-repeat: no-repeat !important;
@@ -28,12 +24,12 @@
         }
     }
 
-    &--remove {
-        margin: 0 !important;
-        & > div {
-            height: 0 !important;
-            opacity: 0;
-        }
+    // &--remove {
+    //     margin: 0 !important;
+    //     & > div {
+    //         height: 0 !important;
+    //         opacity: 0;
+    //     }
 
-    }
+    // }
 }

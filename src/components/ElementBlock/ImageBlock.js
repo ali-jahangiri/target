@@ -14,10 +14,10 @@ const ImageBlock = ({ value : { size , path , alignment }  , isInEditMode , edit
         } , 700);
     }
 
-
+    
     return (
         <div className={`imageBlock ${isInRemovingProcess ? "imageBlock--remove" : ""}`}>
-            <ImagePlayground 
+            <ImagePlayground
                 liftValuesForFirstTime={false} 
                 isInEditMode={isInEditMode} 
                 onChange={editContentHandler} 
@@ -33,3 +33,32 @@ const ImageBlock = ({ value : { size , path , alignment }  , isInEditMode , edit
 
 
 export default ImageBlock;
+
+
+
+
+// import ImagePlayground from "../ToolBoxPlayground/ImagePlayground";
+// import BlockWrapper from "./BlockWrapper";
+
+// const ImageBlock = ({ value : { size , path , alignment }  , isInEditMode , editContentHandler , removeContentHandler}) => {
+    
+
+//     return (
+//         <BlockWrapper controllerVisible={isInEditMode} removeHandler={removeContentHandler}>
+//             <div className={`imageBlock ${false ? "imageBlock--remove" : ""}`}>
+//                 <ImagePlayground
+//                     liftValuesForFirstTime={false} 
+//                     isInEditMode={isInEditMode} 
+//                     onChange={editContentHandler}
+//                     inBlock 
+//                     defaultAlignment={alignment}
+//                     defaultInputValue={path} 
+//                     defaultSize={size}  />
+//             </div>
+//         </BlockWrapper>
+//     )
+// }
+
+
+
+// export default ImageBlock;
