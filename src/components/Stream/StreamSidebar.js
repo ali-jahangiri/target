@@ -17,7 +17,7 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
     }else setShouldOverlayGetVisible(false)
   } , [isInFullScreen])
 
-  const onContainerScrollHandler = debounce(e => setContainerScroll(e.target.scrollTop) , 25);
+  // const onContainerScrollHandler = debounce(e => setContainerScroll(e.target.scrollTop) , 25);
 
   return (
         <div style={{ width : isInFullScreen ? `${isInFullScreen}vw` : "30vw" }} className={`today__habitSidebar ${isInFullScreen ? "today__habitSidebar--full" : ""} today__habitSidebar--${isSidebarOpen ? "open" : "close"} ${currentDetailsModeHabit ? "today__habitSidebar--lock" : ""}`}>
@@ -26,7 +26,9 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
             className={`today__habitSidebar__closeTrigger ${isSidebarOpen ? "today__habitSidebar__closeTrigger--flipped" : ""}`}>
             {currentDetailsModeHabit ? <FiLock color="rgb(82, 82, 82)" /> : <FiChevronLeft color="rgb(82, 82, 82)" />}
           </div>
-          <div onScroll={onContainerScrollHandler} className="today__habitSidebar__habitDirectory">
+          <div 
+            // onScroll={onContainerScrollHandler} 
+            className="today__habitSidebar__habitDirectory">
             <Droppable isDropDisabled droppableId={HABIT_LIST_ID}>
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>

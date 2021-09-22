@@ -25,8 +25,7 @@ const NotePlayground = ({ setInnerPlaygroundController }) => {
     const [isInEditMode, setIsInEditMode] = useState(false);
     const [haveAnyChangeInEditMode, setHaveAnyChangeInEditMode] = useState(false);
     const [tempContent, setTempContent] = useState(null);
-
-
+    
     const addThingToNoteTreeHandler = (thingType , thingValue) => {
         setContent(prev => ({
             ...prev,
@@ -98,7 +97,7 @@ const NotePlayground = ({ setInnerPlaygroundController }) => {
         }else {
             setInnerPlaygroundController({callback : () => {}});
         }
-    } , [content , isInEditMode , haveAnyChangeInEditMode, tempContent])
+    } , [content , isInEditMode , haveAnyChangeInEditMode, tempContent]);
 
     const dynamicThingList = (() => isInEditMode ? tempContent.thingList : content.thingList)();
 
@@ -128,16 +127,14 @@ const dynamicPlayground = rest => ({
 })
 
 
-const Todo = ({ index , setToFullScreen , isInFullScreen , containerScroll }) => {
+const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
     const [inputValue, setInputValue] = useState("");
     const [flashDestroy, setFlashDestroy] = useState(false);
 
     const [innerPlaygroundController, setInnerPlaygroundController] = useState({ callback : () => {} , label : "", closeTriggerConvertedTextTo : "Close" , overwriteCloseTriggerCallback : () => {} });
-
-    console.log(containerScroll , "containerD");
-
+    
     const onChange = ({ target : { value = "" } }) => {
         setInputValue(value);
         setCompletedHash(false)

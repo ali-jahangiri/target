@@ -85,7 +85,6 @@ const NewNoteThing = ({ addThingToNoteTreeHandler , hideBaseOnEditMode }) => {
         }
     }
 
-
     return (
         <div ref={newNoteThingContainerRef} className="newNoteThing">
             <div className={`newNoteThing__trigger ${isInCreateProcess ? "newNoteThing__trigger--close" : ""}`}>

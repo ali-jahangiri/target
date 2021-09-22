@@ -19,9 +19,9 @@ const BlockWrapper = ({ children , controllerVisible , removeHandler }) => {
 
 
     useLayoutEffect(() => {
-        selfClearTimeout(() => {
-            setFullyGetPlace(true);
-        } , 500);
+        // selfClearTimeout(() => {
+        //     setFullyGetPlace(true);
+        // } , 500);
     } , []);
 
     return (

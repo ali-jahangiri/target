@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Resizable } from "re-resizable";
 import PlaygroundInput from "./PlaygroundInput";
-import { debounce, selfClearTimeout } from "../../utils";
+import { selfClearTimeout } from "../../utils";
 
 import { MdVerticalAlignBottom , MdVerticalAlignTop , } from "react-icons/md"
 
@@ -12,7 +12,7 @@ const ImagePlayground = ({
         inBlock = false,
         isValidToTriggerDone ,
         defaultInputValue = "" ,
-        defaultSize = { height : 250 , width : 556 },
+        defaultSize = { height : 0 , width : 900 },
         defaultAlignment = "",
         liftValuesForFirstTime = true
 }) => {
@@ -31,12 +31,12 @@ const ImagePlayground = ({
         setSomeThingWasTouchForFirstTime(true);
     }
 
-    const onResize = debounce((e, dir, ref) => {
+    const onResize = (e, dir, ref) => {
         const { width , height } = ref.getClientRects()[0];
         setImageSize({width , height});
         setIsInResizeProcess(false);
-        setSomeThingWasTouchForFirstTime(true)
-    } , 0);
+        setSomeThingWasTouchForFirstTime(true);
+    };
 
     useLayoutEffect(() => {
         selfClearTimeout(() => setIsVisible(true) , 800);
@@ -94,10 +94,11 @@ const ImagePlayground = ({
     return (
         <div className="imagePlayground">
             <Resizable
+
                 ref={resizableRef}
                 enable={enableResizingChecker()}
                 onResizeStart={setIsInResizeProcess}
-                defaultSize={{ width : 900 , height : 0 }}
+                defaultSize={imageSize}
                 onResizeStop={onResize}
                 className={`imagePlayground__image ${alignment ? `imagePlayground__image--${alignment}` : ""} ${isVisible ? "imagePlayground__image--visible" : ""} ${wasInvalidImage ? "imagePlayground__image--invalidImagePath" : ""} ${isInResizeProcess ? "imagePlayground__image--resize" : ""}`}
                 style={{ backgroundImage : `url(${inputValue})` }}

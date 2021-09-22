@@ -1,16 +1,15 @@
 import DescriptionPlayground from "../ToolBoxPlayground/DescriptionPlayground";
-import BlockController from "./BlockController";
+import BlockWrapper from "./BlockWrapper";
 
 const DescBlock = ({ value , isInEditMode , editContentHandler , removeContentHandler }) => {
     return (
-        <div className="descBlock">
-            <DescriptionPlayground 
+        <BlockWrapper controllerVisible={isInEditMode} removeHandler={removeContentHandler}>
+            <DescriptionPlayground
                 isInEditMode={isInEditMode} 
                 onChange={editContentHandler} 
                 value={value}
                 inBlock />
-            <BlockController removeHandler={removeContentHandler} visible={isInEditMode}  />
-        </div>
+        </BlockWrapper>
     )
 }
 

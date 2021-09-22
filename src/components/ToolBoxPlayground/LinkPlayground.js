@@ -71,8 +71,14 @@ const LinkPlayground = ({
         })
     }
 
+
+    const internalSubmission = e => {
+        e.preventDefault();
+        createOnFormSubmission()
+    }
+
     return (
-        <form style={{ marginBottom : inBlock ? 16 : 0 }} onSubmit={createOnFormSubmission}>
+        <form style={{ marginBottom : inBlock ? 16 : 0 }} onSubmit={internalSubmission}>
             <div className={`linkPlayground ${inBlock ? "linkPlayground--inBlock" : ""}`}>
                     <PlaygroundInput
                         inBlock={inBlock}
