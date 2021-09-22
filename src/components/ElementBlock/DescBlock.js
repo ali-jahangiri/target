@@ -1,15 +1,15 @@
-import TextareaAutosize from "react-textarea-autosize";
+import DescriptionPlayground from "../ToolBoxPlayground/DescriptionPlayground";
+import BlockController from "./BlockController";
 
-const DescBlock = ({ value }) => {
+const DescBlock = ({ value , isInEditMode , editContentHandler , removeContentHandler }) => {
     return (
         <div className="descBlock">
-            <div className="descBlock__container">
-                <div className="descBlock__avatarBox" />
-                <TextareaAutosize
-                    readOnly
-                    style={{ fontSize : "1.2rem" }} 
-                    value={value} />
-            </div>
+            <DescriptionPlayground 
+                isInEditMode={isInEditMode} 
+                onChange={editContentHandler} 
+                value={value}
+                inBlock />
+            <BlockController removeHandler={removeContentHandler} visible={isInEditMode}  />
         </div>
     )
 }

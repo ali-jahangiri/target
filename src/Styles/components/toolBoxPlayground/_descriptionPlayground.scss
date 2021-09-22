@@ -27,4 +27,18 @@
     &__textarea {
         background-color: transparent;
     }
+
+    &--inBlock {
+        .descPlayground {
+            
+            &__avatarBox {
+                animation: none;
+                transform: scale(1);
+            }
+
+            &__container {
+                margin-top: 0;
+            }
+        }
+    }
 }

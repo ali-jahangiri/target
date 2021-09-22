@@ -100,6 +100,10 @@ const NotePlayground = ({ setInnerPlaygroundController }) => {
     } , [content , isInEditMode , haveAnyChangeInEditMode, tempContent])
 
 
+    console.log('====================================');
+    console.log(haveAnyChangeInEditMode , "haveNN");
+    console.log('====================================');
+
     const dynamicThingList = (() => isInEditMode ? tempContent.thingList : content.thingList)();
 
     return (

@@ -31,7 +31,6 @@
     &--remove {
         margin: 0 !important;
         & > div {
-            transition: .3s;
             height: 0 !important;
             opacity: 0;
         }

@@ -9,15 +9,23 @@ const modeIcon = {
     date : <BiCalendarAlt color="#C84B31" />
 }
 
-const LinkPlayground = ({ setIsValidToTriggerDone , value = { type : "" , linkPath : "" } , onChange , createOnFormSubmission }) => {
+const LinkPlayground = ({ 
+    setIsValidToTriggerDone , 
+    value = { type : "" , linkPath : "" } , 
+    onChange , 
+    createOnFormSubmission,
+    inBlock,
+    liftValuesForFirstTime = true
+ }) => {
     const [detectedMode, setDetectedMode] = useState(null);
+    const [someThingWasTouchForFirstTime, setSomeThingWasTouchForFirstTime] = useState(liftValuesForFirstTime);
 
     const { linkPath } = value;
 
     const webLinkChecker = () => {
         if(linkPath.startsWith("https://") || linkPath.startsWith("http://")) {
             setDetectedMode('webLink')
-        } else setDetectedMode(null)
+        } else setDetectedMode(null);
     }
 
     const dateChecker = () => {
@@ -36,22 +44,27 @@ const LinkPlayground = ({ setIsValidToTriggerDone , value = { type : "" , linkPa
 
     useEffect(() => {
         webLinkChecker();
-        dateChecker()
+        dateChecker();
     } , [linkPath])
 
 
     useEffect(() => {
-        if(detectedMode) setIsValidToTriggerDone(true);
-        else setIsValidToTriggerDone(false);
+        if(!inBlock) {
+            if(detectedMode) setIsValidToTriggerDone(true);
+            else setIsValidToTriggerDone(false);
+        }
+        if(someThingWasTouchForFirstTime) {
+            onChange({
+                linkPath,
+                type : detectedMode
+            })
+        }
 
-        onChange({
-            linkPath,
-            type : detectedMode
-        })
     } , [detectedMode])
 
 
     const onInputChangeHandler = inputValue => {
+        setSomeThingWasTouchForFirstTime(true);
         onChange({
             type : detectedMode,
             linkPath : inputValue
@@ -59,9 +72,10 @@ const LinkPlayground = ({ setIsValidToTriggerDone , value = { type : "" , linkPa
     }
 
     return (
-        <form onSubmit={createOnFormSubmission}>
-            <div className="linkPlayground">
-                    <PlaygroundInput 
+        <form style={{ marginBottom : inBlock ? 16 : 0 }} onSubmit={createOnFormSubmission}>
+            <div className={`linkPlayground ${inBlock ? "linkPlayground--inBlock" : ""}`}>
+                    <PlaygroundInput
+                        inBlock={inBlock}
                         value={linkPath} 
                         onChange={onInputChangeHandler} 
                         placeholder="Enter your Link or reference to a day or a web link"

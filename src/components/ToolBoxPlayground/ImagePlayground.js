@@ -9,25 +9,33 @@ const ImagePlayground = ({
         isInEditMode,
         onChange , 
         setIsValidToTriggerDone ,
-        inBlock,
-        isValidToTriggerDone , 
-        defaultInputValue = "" , 
-        defaultSize = { height : 250 , width : 556 } , 
-        defaultAlignment = ""
+        inBlock = false,
+        isValidToTriggerDone ,
+        defaultInputValue = "" ,
+        defaultSize = { height : 250 , width : 556 },
+        defaultAlignment = "",
+        liftValuesForFirstTime = true
 }) => {
     const [inputValue, setInputValue] = useState(defaultInputValue);
     const [imageSize, setImageSize] = useState(defaultSize)
 
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(inBlock);
     const [alignment, setAlignment] = useState(defaultAlignment)
     const [isInResizeProcess, setIsInResizeProcess] = useState(false);
     const [wasInvalidImage, setWasInvalidImage] = useState(false);
 
+    const [someThingWasTouchForFirstTime, setSomeThingWasTouchForFirstTime] = useState(liftValuesForFirstTime);
+    
+    const setAlignmentHandler = align => {
+        setAlignment(align);
+        setSomeThingWasTouchForFirstTime(true);
+    }
 
     const onResize = debounce((e, dir, ref) => {
         const { width , height } = ref.getClientRects()[0];
         setImageSize({width , height});
         setIsInResizeProcess(false);
+        setSomeThingWasTouchForFirstTime(true)
     } , 0);
 
     useLayoutEffect(() => {
@@ -36,7 +44,8 @@ const ImagePlayground = ({
 
 
     const inputValueChangeHandler = (value = "") => {
-        setInputValue(value)
+        setInputValue(value);
+        setSomeThingWasTouchForFirstTime(true)
         if(value && (!value.startsWith("http") || !value.startsWith("https"))) {
             setWasInvalidImage(true)
         }else if(wasInvalidImage) {
@@ -57,6 +66,7 @@ const ImagePlayground = ({
 
 
     useEffect(() => {
+        
         if(!inBlock) {
             if(!wasInvalidImage && inputValue) {
                 if(!isValidToTriggerDone) setIsValidToTriggerDone(true);
@@ -64,19 +74,28 @@ const ImagePlayground = ({
             else setIsValidToTriggerDone(false);
         }
 
-        onChange({
-            path : inputValue , 
-            size : imageSize,
-            alignment : alignment || "center"
-        });
+        if(someThingWasTouchForFirstTime) {
+            onChange({
+                path : inputValue , 
+                size : imageSize,
+                alignment : alignment || "center"
+            });
+        }
 
-    } , [inputValue , imageSize , alignment])
+    } , [inputValue , imageSize , alignment]);
+
+
+    const enableResizingChecker = () => {
+        if(wasInvalidImage || !isInEditMode) return false
+        // Undefined mean render all side resize controller
+        else return undefined
+    }
 
     return (
         <div className="imagePlayground">
             <Resizable
                 ref={resizableRef}
-                enable={(wasInvalidImage || isInEditMode) || undefined}
+                enable={enableResizingChecker()}
                 onResizeStart={setIsInResizeProcess}
                 defaultSize={{ width : 900 , height : 0 }}
                 onResizeStop={onResize}
@@ -87,21 +106,21 @@ const ImagePlayground = ({
                 maxHeight={700}>
                         {
                             inputValue && isVisible && !wasInvalidImage && isInEditMode && <>
-                                <div onClick={() => setAlignment('left')} className={`imagePlayground__leftAlign ${alignment === "left" ? "imagePlayground__leftAlign--hide" : ""}`}>
+                                <div onClick={() => setAlignmentHandler('left')} className={`imagePlayground__leftAlign ${alignment === "left" ? "imagePlayground__leftAlign--hide" : ""}`}>
                                     <MdVerticalAlignTop />
                                 </div>
-                                <div onClick={() => setAlignment("right")} className={`imagePlayground__rightAlign ${alignment ===  "right" ? "imagePlayground__rightAlign--hide" : ""}`}>
+                                <div onClick={() => setAlignmentHandler("right")} className={`imagePlayground__rightAlign ${alignment ===  "right" ? "imagePlayground__rightAlign--hide" : ""}`}>
                                     <MdVerticalAlignBottom />
                                 </div>
                                 {
-                                    alignment && <div onClick={() => setAlignment(null)} className="imagePlayground__centerAlign">
+                                    alignment && <div onClick={() => setAlignmentHandler(null)} className="imagePlayground__centerAlign">
                                         <MdVerticalAlignTop />
                                     </div>
                                 }
                             </>
                         }
                         {
-                            isVisible && <div style={{ overflow : "hidden" , width : "100%" }}>
+                            (isVisible && isInEditMode) && <div style={{ overflow : "hidden" , width : "100%" }}>
                                 <PlaygroundInput
                                     className={`imagePlayground__input ${isVisible ? "imagePlayground__input--fade" : ""} ${!inputValue ? "imagePlayground__input--withoutImagePath" : ""} ${isInResizeProcess ? "imagePlayground__input--inResize" : ""}`}
                                     placeholder="Past image path "

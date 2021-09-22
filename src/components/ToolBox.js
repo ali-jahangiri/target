@@ -70,7 +70,7 @@ const renderToolBoxConceptEffect = {
 const renderToolBoxPlayground = ({ core , setCore , ...rest }) => ({
     link : <LinkPlayground value={core?.link} onChange={value => setCore('link', value)} {...rest} />,
     text : <TextPlayground value={core?.text} onChange={value => setCore("text", value)} {...rest} />,
-    image : <ImagePlayground value={core?.image || { path : "" , size : { width : 900 , height : 0 }}} onChange={value => setCore("image" , value)} {...rest} />,
+    image : <ImagePlayground isInEditMode value={core?.image || { path : "" , size : { width : 900 , height : 0 }}} onChange={value => setCore("image" , value)} {...rest} />,
     description : <DescriptionPlayground value={core?.description} onChange={value => setCore("description" , value)} {...rest} />
 })
 

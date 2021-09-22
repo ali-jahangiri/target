@@ -12,4 +12,9 @@
     font-size: 1.2rem !important; 
     animation: textAreaFadeIn 1s .8s forwards alternate;
     opacity: 0;
+
+    &--inBlock {
+        animation: none;
+        opacity: 1;
+    }
 }

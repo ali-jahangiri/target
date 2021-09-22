@@ -43,8 +43,13 @@
         }
     }
 
+    &--inBlock {
+        padding: 0;
+        margin: 0;
+        .linkPlayground {
+            &__input {
+                margin: 0 !important;
+            }
+        }
+    }
 }
-
-
-
-

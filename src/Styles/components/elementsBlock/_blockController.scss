@@ -8,17 +8,23 @@
     
     &__removeTrigger {
         p {
-            cursor: pointer;
             transition: .3s;
             &:hover {
                 color: $red;
             }
         }
-
+        
     }
     
     &--visible {
         left: -10%;
         opacity: 1;
+        
+        
+        .blockController {
+            &__removeTrigger {
+                cursor: pointer;
+            }
+        }
     }
 }

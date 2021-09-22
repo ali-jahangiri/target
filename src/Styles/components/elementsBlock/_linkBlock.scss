@@ -8,6 +8,7 @@
 }
 
 .linkBlock {
+    position: relative;
     animation: linkBlockGetSpace .5s 1s forwards alternate;   
 
     a {

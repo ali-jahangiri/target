@@ -24,9 +24,6 @@ const TextBlock = ({ value , isInEditMode , editContentHandler , removeContentHa
                     style={{ fontSize : "1.2rem" }} 
                     value={value} />
             </div>
-            {/* <div className={`textBlock__removeTrigger ${isInEditMode ? "textBlock__removeTrigger--show" : ""}`}>
-                <p onClick={internalRemoveHandler}>Remove</p>
-            </div> */}
             <BlockController visible={isInEditMode} removeHandler={internalRemoveHandler} />
         </div>
     )

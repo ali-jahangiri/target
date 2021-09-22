@@ -17,8 +17,14 @@ const ImageBlock = ({ value : { size , path , alignment }  , isInEditMode , edit
 
     return (
         <div className={`imageBlock ${isInRemovingProcess ? "imageBlock--remove" : ""}`}>
-            <ImagePlayground isInEditMode={isInEditMode} onChange={editContentHandler} inBlock defaultAlignment={alignment} defaultInputValue={path} defaultSize={size}  />
-            {/* <div className={`imageBlock__image imageBlock__image--${alignment}`} style={{ width : size.width , height : size.height , background : `url(${path})` }} /> */}
+            <ImagePlayground 
+                liftValuesForFirstTime={false} 
+                isInEditMode={isInEditMode} 
+                onChange={editContentHandler} 
+                inBlock 
+                defaultAlignment={alignment} 
+                defaultInputValue={path} 
+                defaultSize={size}  />
             <BlockController removeHandler={internalRemoveHandler} visible={isInEditMode} />
         </div>
     )

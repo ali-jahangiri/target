@@ -52,7 +52,6 @@
         &--visible {
             min-height: 250px !important;
             padding: 1rem;
-            transition: .1s !important;
         }
 
         &--invalidImagePath {
@@ -60,7 +59,7 @@
         }
 
         &--resize {
-            transition: 0 !important;
+            transition: 0s !important;
         }
 
         &:hover {

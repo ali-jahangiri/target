@@ -1,6 +1,6 @@
 import TextareaAutosize from "react-textarea-autosize";
 
-const PlaygroundTextArea = ({ placeholder , value , onChange , className , ...rest }) => {
+const PlaygroundTextArea = ({ placeholder , value , onChange , className , inBlock , ...rest }) => {
     return (
         <TextareaAutosize
                 autoFocus
@@ -8,7 +8,7 @@ const PlaygroundTextArea = ({ placeholder , value , onChange , className , ...re
                 value={value}
                 placeholder={placeholder}
                 onChange={({ target : { value } }) => onChange(value)}
-                className={`playgroundTextArea ${className}`}
+                className={`playgroundTextArea ${inBlock ? "playgroundTextArea--inBlock" : ""} ${className}`}
                 {...rest} />
     )
 }
