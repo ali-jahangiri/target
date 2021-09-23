@@ -1,16 +1,27 @@
-import { useState } from "react";
 import useKeyBaseState from "../../Hook/useKeyBaseState";
 import { debounce } from "../../utils";
 import Input from "../Input";
+import ReminderDesc from "./ReminderDesc";
 import ReminderTimePicker from "./ReminderTimePicker";
 
-const ReminderPlayground = ({  }) => {
-    const [data , setData] = useKeyBaseState({ title : "" ,  })
+const ReminderPlayground = ({ createHandler }) => {
+    const [data , setData] = useKeyBaseState({ title : "" ,  });
 
     const titleInputChange = debounce(value => {
-        setData("title" , value)
-    } , 300)
+        setData("title" , value);
+    } , 300);
 
+
+    const createReminderHandler = () => {
+        console.log(data , "daa");
+    }
+
+    const reminderDisableCheder = () =>{
+        const { title , time ,desc } = data;
+        if(title && time && desc) {
+            return true   
+        }else return false;
+    }
 
     return (
         <div className="reminderPlayground">
@@ -25,6 +36,11 @@ const ReminderPlayground = ({  }) => {
             <ReminderTimePicker
                 value={data.time} 
                 onChange={value => setData("time" , value)} />
+            <ReminderDesc value={data?.desc} onChange={value => setData("desc" , value)} />
+
+            <button disabled={reminderDisableCheder()} className="reminderPlayground__createTrigger">
+                <p onClick={createReminderHandler}>Create Reminder</p>
+            </button>
         </div>
     )
 }

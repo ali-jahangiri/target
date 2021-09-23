@@ -5,6 +5,10 @@
         font-size: 2rem;
         color: grey;
     }
+
+
+
+
     &__numberContainer {
         position: relative;
         display: flex;
@@ -21,7 +25,7 @@
         top: 0;
         height: 100%;
         width: 46%;
-        border: 3px solid $orange;
+        border: 3px solid $green;
         transition: .2s;
 
         &--minute {
@@ -33,6 +37,11 @@
         }
     }
 
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
     input {
         font-size: 6rem;
         border: none;
@@ -42,6 +51,15 @@
         position: relative;
         z-index: 5;
         background-color: transparent;
+        transition: .3s;
+        caret-color: rgba(0,0,0,0);
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+          }
+    }
+
+    &--fadeInput {
+        opacity: .6;
     }
 
 }

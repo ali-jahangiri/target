@@ -1,0 +1,13 @@
+.reminderDesc {
+    margin-top: 2rem;
+    textarea {
+        background-color: transparent;
+        font-size: 1.8rem !important; 
+        color: $darkGrey;
+        border: none;
+        width: 100%;
+        outline: none;
+        resize: none;
+    }
+}
+
