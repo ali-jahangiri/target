@@ -13,7 +13,8 @@
         padding: 1rem;
         cursor: pointer;
         transition: .3s;
-        
+        color: white;
+
         &:disabled {
             opacity: .5;
         }

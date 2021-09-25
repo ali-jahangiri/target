@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useKeyBaseState from "../../Hook/useKeyBaseState";
 
 const hrValidateHandler = value => {
@@ -26,6 +26,7 @@ const ReminderTimePicker = ({ onChange ,  }) => {
         }
     }
 
+    useEffect(() => onChange(time) , [time]);
     
     return (
         <div className="reminderTimePicker">

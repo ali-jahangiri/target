@@ -52,11 +52,39 @@ const connectionObserver = {
     }
 }
 
+
+const commends = {
+    reminder : {
+        setReminder(streamId , newReminder) {
+            requestWrapper(resolve => references.stream.doc(streamId).update({ 
+                reminder : firebase.firestore.FieldValue.arrayUnion(newReminder)
+            }).then(resolve))
+        },
+        removeReminder(streamId , targetReminder) {
+            requestWrapper(resolve => references.stream.doc(streamId).update({
+                reminder : firebase.firestore.FieldValue.arrayRemove(targetReminder)
+            }).then(resolve))
+        },
+        clearReminder(streamId) {
+            requestWrapper(resolve => references.stream.doc(streamId).update({
+                reminder : []
+            }).then(resolve))
+        }
+    },
+    note : {
+
+    },
+    event : {
+
+    },
+}
+
 const requests =  {
     target,
     habitPerWeek,
     stream,
-    connectionObserver
+    connectionObserver,
+    commends,
 }
 
 
