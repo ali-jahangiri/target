@@ -213,8 +213,9 @@
                 align-items: center;
             }
             
+            // Red Overlay
             &::after {
-                transition: 4.5s;
+                transition: 4.5s linear;
                 height: 100%;
             }
         }

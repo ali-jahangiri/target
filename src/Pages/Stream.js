@@ -11,8 +11,7 @@ import TodayHoursRow from "../components/TodayHoursRow";
 import Alert from "../components/Alert";
 import { references } from "../firebase";
 import Timeline from "../components/Timeline";
-import StreamLoading from "../components/Stream/StreamLoading";
-
+import useKeyBaseState from "../Hook/useKeyBaseState";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -39,7 +38,10 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
 
   const [isDetailsModeActive, setIsDetailsModeActive] = useState(false);
   const [detailsTimeline, setDetailsTimeline] = useState([]);
-  const [timelineHeight, setTimelineHeight] = useState(0);
+  // const [timelineHeight, setTimelineHeight] = useState(0);
+
+  const [timelineDetails , setTimelineDetails] = useKeyBaseState({})
+
   const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
 
   const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
@@ -52,7 +54,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   useEffect(() => setFirstTime(false) , []);
   
 
-  const deleteTimeoutRef = useRef(); 
+  const deleteTimeoutRef = useRef();
 
 
   const leanDate = date.split("/").join('')
@@ -90,7 +92,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
             })
         }
     })
-  } , [])
+  } , [date])
 
   useEffect(() => {
     if(!firstTime) {
@@ -218,27 +220,26 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   };
 
 
-  const detailsShowHandler = (id, possibleStep) => {
+  const detailsShowHandler = (id, possibleStep , elementRef) => {
     const streamContainer = document.getElementsByClassName("mainContainer")[0].style;
-
-
 
     if (!isDetailsModeActive) {
       setCurrentDetailsModeHabit(id);
-      
       selfClearTimeout(() => {
         streamContainer.overflow = "hidden";
         setDetailsTimeline(possibleStep);
         const scroll = document.getElementsByClassName('mainContainer')[0].scrollTop;
         setIsDetailsModeActive(scroll);
-      }, 250);
-
+      }, 500);
       selfClearTimeout(() => {
-        setTimelineHeight(possibleStep.length * 100);
-      } , 350)
+        setTimelineDetails("height" , possibleStep.length * 100)
+        const haveTopDistance = elementRef.getClientRects()[0].top;
+        if(haveTopDistance) setTimelineDetails("topPosition" , haveTopDistance);
+        
+      } , 600);
     } else {
       setIsDetailsModeActive(false);
-      setTimelineHeight(0);
+      setTimelineDetails({});
       setDetailsTimeline([]);
       setCurrentDetailsModeHabit(null);
       streamContainer.overflow = "auto";
@@ -253,8 +254,8 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         shouldOverlayGetVisible && <div className="helperOverlay" />
       }
       {isDetailsModeActive !== false && (
-        <div style={{ top: isDetailsModeActive }} className="helperOverlay">
-          <span style={{ height: timelineHeight }} className="helperOverlay__timeline">
+        <div onClick={() => console.log()} style={{ top: isDetailsModeActive }} className="helperOverlay">
+          <span style={{ height: timelineDetails.height , top : timelineDetails.topPosition }} className={`helperOverlay__timeline ${timelineDetails.topPosition ? "helperOverlay__timeline--haveTopDistance" : ""}`}>
             <span></span>
           </span>
         </div>
@@ -328,15 +329,6 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
       </DragDropContext>
     </div>
   )
-  // return <StreamLoading loading={loading}> 
-  //   {isReady => {
-  //     if(isReady) {
-  //       return (
-          
-  //       )
-  //     }
-  //   }}
-  // </StreamLoading>
 };
 
 export default Stream;

@@ -14,7 +14,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
     const inputRef = useRef();
   
     useEffect(() => {
-      selfClearTimeout(() => {  
+      selfClearTimeout(() => { 
         inputRef.current?.focus();
       }, 3000);
     }, [inputRef]);
@@ -40,9 +40,8 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
 
     const [position, setposition] = useState(0);
 
-    const [isInDeleteProcess, setIsInDeleteProcess] = useState(false);
-
-
+    const mainContainerRef = useRef();
+    
     const inputDetailsChangeHandler = (key, value) => {
       setHabitInStream((prev) => {
         return prev.map((el, i) => (el.id === id ? { ...el, [key]: value } : el));
@@ -70,9 +69,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
     } , [hoursGoNext])
 
 
-    const determineHandler = () => {
-      setIsDetailsOptionMenuOpen(false)
-    }
+    const determineHandler = () => setIsDetailsOptionMenuOpen(false)
 
     useEffect(() => {
       const validStream = habitInStream.filter(el => el.name);
@@ -112,7 +109,8 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
         const end = start + hoursGoNext;
         
         const possibleStep = new Array(end - start).fill("").map((_) => ++start);
-        detailsShowHandler(id , possibleStep);
+
+        detailsShowHandler(id , possibleStep , mainContainerRef.current.resizable);
         setDetailsActive(true)
       }
       
@@ -173,6 +171,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
             onResize={internalResizeHandler}
             onResizeStop={resizeEndHandler}
             width="100%"
+            ref={mainContainerRef}
             className={`habitMainContainer ${isInDetailsMode ? "habitMainContainer--inDetailsMode" : ""}`}
             enable={{ bottom: !isInDetailsMode && index + hoursGoNext !== 24 ? true : false }}
             minHeight={100}

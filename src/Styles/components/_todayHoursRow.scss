@@ -30,13 +30,13 @@
         font-size: 4.5rem;
         font-weight: 600;
         color: rgb(82, 82, 82);
-        transition: .3s;
+        transition: .1s;
     }
 
 
     &--timelineSelected {
         position: relative;
-
+        
         p {
             color: white !important;
         }

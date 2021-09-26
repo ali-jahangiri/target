@@ -10,7 +10,6 @@ const Home = () => {
     const now = _date();
     const containerRef = useRef()
     const currentLeftPosition = useRef((now.date() - 1) * window.innerWidth)
-    const [rotate, setRotate] = useState(0);
     const [countOfStreamChange, setCountOfStreamChange] = useState(0);
     
 
@@ -37,10 +36,7 @@ const Home = () => {
       clearScrollCountHandler()
     }
 
-    const circleRotateHandler = e => {
-        if(!e) return setRotate(0)
-        setRotate(prev => prev < e ? prev - 90 : prev + 90);
-    }
+   
 
 
     const onWheelHandler = e => {
@@ -52,14 +48,13 @@ const Home = () => {
                     currentLeftPosition.current += window.innerWidth;
                     scrollHandler(currentLeftPosition.current);
                     setCountOfStreamChange(prev => prev + 1);
-                    circleRotateHandler(currentLeftPosition.current)
+                    
                 }else {
                     // Show some alert that you are in end of the month and cannot scroll more then this
                 }
 
             }else if(currentLeftPosition.current > 0) {
                 setCountOfStreamChange(prev => prev + 1);
-                circleRotateHandler(currentLeftPosition.current);
                 currentLeftPosition.current -= window.innerWidth;
                 scrollHandler(currentLeftPosition.current)
             }
@@ -105,14 +100,6 @@ const Home = () => {
         }
     } , [countOfStreamChange]);
 
-    // useEffect(() => {
-    //     const searchParams = new URLSearchParams(window.location.href);
-    //     for (const [key, value] of searchParams.entries()) {
-    //         console.log(key , value)
-    //         console.log(searchParams.has('specific'));
-    //     }
-    // } , [window.location.href])
-
     return (
         <div onWheel={onWheelHandler} ref={containerRef} style={{ display : "flex" }} className="mainContainer">
             {
@@ -134,8 +121,7 @@ const Home = () => {
                     currentDay={currentDay + 1} 
                     setIsHoverInNavigationCircle={setHoveringOnNavigatorCircle} 
                     setCurrentMonth={setCurrentMonth} 
-                    currentMonth={currentMonth} 
-                    rotate={rotate} />
+                    currentMonth={currentMonth} />
             </Portal>
         </div>
     )

@@ -1,146 +1,19 @@
-import { useState , useEffect, useCallback } from "react";
+import { useState , useEffect } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import TextareaAutosize from "react-textarea-autosize";
-
-import useKeyBaseState from "../../Hook/useKeyBaseState";
-import NewNoteThing from "../NewNoteThing";
 import TodoInput from "./TodoInput";
 
-import { DescBlock, ImageBlock, LinkBlock, TextBlock } from "../ElementBlock"
-import { debounce, idGenerator, requests, selfClearTimeout } from "../../utils";
+import { selfClearTimeout } from "../../utils";
 import ReminderPlayground from "../Reminder/ReminderPlayground";
+import NotePlayground from "../NotePlayground";
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
 
 
-const blocksClone = ({ key , ...rest }) => ({
-    text : <TextBlock {...rest} key={key} />,
-    image : <ImageBlock {...rest} key={key} />,
-    description : <DescBlock {...rest} key={key} />,
-    link : <LinkBlock {...rest} key={key} />
-})
-
-const NotePlayground = ({ setInnerPlaygroundController , leanDate }) => {
-    const [content , setContent] = useKeyBaseState({title : "" , thingList : []})
-    const [isInEditMode, setIsInEditMode] = useState(false);
-    const [haveAnyChangeInEditMode, setHaveAnyChangeInEditMode] = useState(false);
-    const [tempContent, setTempContent] = useState(null);
-    
-    const [_noteId] = useState(() => idGenerator());
-
-    const addThingToNoteTreeHandler = (thingType , thingValue) => {
-        setContent(prev => ({
-            ...prev,
-            thingList : [
-                ...prev?.thingList,
-                {
-                    name : thingType,
-                    value : thingValue
-                }
-            ]
-        }));
-    }
-
-
-    const resetEditMode = () => {
-        setIsInEditMode(false);
-        setHaveAnyChangeInEditMode(false);
-        setTempContent(content);
-    }
-
-
-    const stageTempContentHandler = () => {
-        setContent("thingList" , tempContent.thingList)
-        setIsInEditMode(false);
-        setHaveAnyChangeInEditMode(false);
-    }
-
-    const removeThingTreeHandler = index => {
-        setHaveAnyChangeInEditMode(true);
-        setTempContent(prev => ({
-            ...prev,
-            thingList : prev.thingList.filter((_ , i) => i !== index)
-        }))
-    };
-
-    const editThingHandler = (index , value) => {
-        setHaveAnyChangeInEditMode(true);
-        setTempContent(prev => ({
-            ...prev,
-            wasEdited : true,
-            thingList : prev.thingList.map((el , i) => {
-                if(i === index) {
-                    if(!value) {
-                        // TODO show a alert to user that you delete thing in background
-                        console.log('remove');
-                        // return removeThingTreeHandler(index)
-                    }
-                    else return { name : el.name , value }
-                }else return el
-            })
-        }))
-    };
-
-    useEffect(function syncTempContentHandler() {
-        setTempContent(content)
-    } , [content]);
-
-    useEffect(function attachEditTriggerToControllerChecker() {
-        if(content.thingList.length) {
-            setInnerPlaygroundController({
-                callback : () => {
-                    if(!isInEditMode) setIsInEditMode(prev => !prev)
-                    else stageTempContentHandler();
-                },
-                label : haveAnyChangeInEditMode ? "Save Change" : (isInEditMode ? "Back" : "Edit content"),
-                overwriteCloseTriggerCallback : resetEditMode,
-                closeTriggerConvertedTextTo : haveAnyChangeInEditMode && isInEditMode ?  "Cancel" : "Close"
-            })
-        }else {
-            setInnerPlaygroundController({callback : () => {}});
-        }
-    } , [content , isInEditMode , haveAnyChangeInEditMode, tempContent]);
-
-    
-    const debouncedSynced = useCallback(debounce(passedSyncedContent => {
-        if(passedSyncedContent.thingList.length && passedSyncedContent.title.trim()) {
-            // Synced
-            requests.commends.note.setNote(leanDate , {...passedSyncedContent , id : _noteId});
-        }else {
-            // Delete stored Note
-            requests.commends.note.removeNote(leanDate , _noteId);
-        }
-    } , 500) , [])
-
-
-    useEffect(() => debouncedSynced(content) , [content])
-
-    const dynamicThingList = (() => isInEditMode ? tempContent.thingList : content.thingList)();
-
-    return (
-        <div className="notePlayground">
-            <TextareaAutosize
-                placeholder="Give note a Title ..."
-                value={content.noteTitle} 
-                minRows={2}
-                onChange={({ target : { value } }) => setContent("title" ,value)}
-            />
-            {
-                dynamicThingList.map((el , i) => blocksClone({ key : i , isInEditMode , editContentHandler : value => editThingHandler(i , value) , removeContentHandler : () => removeThingTreeHandler(i) ,  ...el })[el.name])
-            }
-            <NewNoteThing 
-                hideBaseOnEditMode={isInEditMode} 
-                addThingToNoteTreeHandler={addThingToNoteTreeHandler} />
-        </div>
-    )
-}
 
 const dynamicPlayground = rest => ({
     note : <NotePlayground {...rest} />,
-    // note :  ,
     reminder : <ReminderPlayground {...rest} />,
-    // transaction
 })
 
 
@@ -219,7 +92,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate }) => {
 
     return (
     <Draggable 
-        // isDragDisabled={!completedHash} 
+        isDragDisabled={!haveInterpolateValue}
         draggableId="injectedTodo" 
         index={index}>
         {provided => (
@@ -232,7 +105,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate }) => {
                     <form onSubmit={interpolateSubmitHandler}>
                         <div>
                             {
-                                hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!inputValue.slice(1) ?  command.find(el => el.includes(inputValue.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < inputValue.length ? "white" : "grey" }}>{el}</span>) : 'Write commend here...'}</p>
+                                hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!inputValue.slice(1) ?  command.find(el => el.includes(inputValue.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < inputValue.length ? "white" : "grey" }}>{el}</span>) : 'Write your commend ...'}</p>
                             }
                                 <TodoInput value={inputValue} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
                             {

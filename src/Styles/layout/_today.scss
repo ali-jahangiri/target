@@ -9,7 +9,7 @@
 }
 
 
-@keyframes growWidth {
+@keyframes growWidthTimeLine {
     from {
         width: 0;
     }
@@ -23,19 +23,19 @@
 
 .helperOverlay {
     width: 100%;
-    height: 150vh;
+    height: 100vh;
     position: absolute;
     left: 0;
     top: 0;
     background: #000000be;
     animation: fadeIn .3s forwards alternate;
-    z-index: 50000;
+    z-index: 999;
 
     &__timeline {
         content: "";
         width: 10px;
         height: 0px;
-        background-color: #ffffff0f;
+        background-color: #757575;
         display: block;
         position: absolute;
         left: 4.8%;
@@ -43,11 +43,26 @@
 
         span {
             height: 10px;
-            background-color: #383838;
+            background-color: #757575;
             position: absolute;
             bottom: 0;
             right: 0%;
-            animation: growWidth .3s forwards alternate 1.4s;
+            animation: growWidthTimeLine .4s forwards alternate 1.4s;
+        }
+
+
+        &--haveTopDistance {
+            transition-delay: 0s !important;
+            &::before {
+                content: "";
+                top: 0;
+                left: -100px;
+                height: 10px;
+                background: #757575;
+                position: absolute;
+                width: 100px;
+                animation: growWidthTimeLine .2s forwards alternate;
+            }
         }
     }
 
@@ -80,6 +95,7 @@
         width: 30vw;
         transition: 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
         background-color: white;
+        border: 2px solid white;
 
         &__habitDirectory {
             transition: .3s;
