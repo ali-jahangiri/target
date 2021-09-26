@@ -13,7 +13,7 @@ const minValidateHandler = value => {
     else return value
 }
 
-const ReminderTimePicker = ({ onChange ,  }) => {
+const ReminderTimePicker = ({ onChange }) => {
     const [currentFocusedInput, setCurrentFocusedInput] = useState("hours");
     const [time , setTime] = useKeyBaseState({ min : 0 , hr : 12 })
 
@@ -25,9 +25,9 @@ const ReminderTimePicker = ({ onChange ,  }) => {
             hourInputRef.current?.focus();
         }
     }
-
-    useEffect(() => onChange(time) , [time]);
     
+    useEffect(() => onChange(time) , [time]);
+        
     return (
         <div className="reminderTimePicker">
             <div className="reminderTimePicker__title">

@@ -7,7 +7,7 @@ import Todo from "./Todo";
 const HABIT_LIST_ID = "fromHabitList";
 
 
-const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , setShouldOverlayGetVisible}) => {
+const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , setShouldOverlayGetVisible , leanDate }) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
   const [containerScroll, setContainerScroll] = useState(0);
 
@@ -53,6 +53,7 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
                     ))}
                   </div> 
                   <Todo
+                    leanDate={leanDate}
                     containerScroll={containerScroll}
                     isInFullScreen={isInFullScreen}
                     setToFullScreen={setIsInFullScreen}

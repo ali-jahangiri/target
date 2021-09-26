@@ -1,4 +1,4 @@
-import { useState , useEffect } from "react";
+import { useState , useEffect, useCallback } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import TextareaAutosize from "react-textarea-autosize";
 
@@ -7,7 +7,7 @@ import NewNoteThing from "../NewNoteThing";
 import TodoInput from "./TodoInput";
 
 import { DescBlock, ImageBlock, LinkBlock, TextBlock } from "../ElementBlock"
-import { selfClearTimeout } from "../../utils";
+import { debounce, idGenerator, requests, selfClearTimeout } from "../../utils";
 import ReminderPlayground from "../Reminder/ReminderPlayground";
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
@@ -21,12 +21,14 @@ const blocksClone = ({ key , ...rest }) => ({
     link : <LinkBlock {...rest} key={key} />
 })
 
-const NotePlayground = ({ setInnerPlaygroundController }) => {
+const NotePlayground = ({ setInnerPlaygroundController , leanDate }) => {
     const [content , setContent] = useKeyBaseState({title : "" , thingList : []})
     const [isInEditMode, setIsInEditMode] = useState(false);
     const [haveAnyChangeInEditMode, setHaveAnyChangeInEditMode] = useState(false);
     const [tempContent, setTempContent] = useState(null);
     
+    const [_noteId] = useState(() => idGenerator());
+
     const addThingToNoteTreeHandler = (thingType , thingValue) => {
         setContent(prev => ({
             ...prev,
@@ -100,6 +102,20 @@ const NotePlayground = ({ setInnerPlaygroundController }) => {
         }
     } , [content , isInEditMode , haveAnyChangeInEditMode, tempContent]);
 
+    
+    const debouncedSynced = useCallback(debounce(passedSyncedContent => {
+        if(passedSyncedContent.thingList.length && passedSyncedContent.title.trim()) {
+            // Synced
+            requests.commends.note.setNote(leanDate , {...passedSyncedContent , id : _noteId});
+        }else {
+            // Delete stored Note
+            requests.commends.note.removeNote(leanDate , _noteId);
+        }
+    } , 500) , [])
+
+
+    useEffect(() => debouncedSynced(content) , [content])
+
     const dynamicThingList = (() => isInEditMode ? tempContent.thingList : content.thingList)();
 
     return (
@@ -128,7 +144,7 @@ const dynamicPlayground = rest => ({
 })
 
 
-const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
+const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate }) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
     const [inputValue, setInputValue] = useState("");
@@ -198,11 +214,14 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
             if(currentInterpolatorName === "note") setToFullScreen(100)
             else setToFullScreen(50)
         }
-    } , [completedHash])
+    } , [completedHash]);
 
 
     return (
-    <Draggable isDragDisabled draggableId="injectedTodo" index={index}>
+    <Draggable 
+        // isDragDisabled={!completedHash} 
+        draggableId="injectedTodo" 
+        index={index}>
         {provided => (
             <div 
                 className={`todoInjector ${isInFullScreen ? "todoInjector--inFullMode" : ""}`}
@@ -232,7 +251,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen }) => {
                         </div>
                     </form>
                     {
-                        !!completedHash && dynamicPlayground({ setInnerPlaygroundController })[inputValue.slice(1)]
+                        !!completedHash && dynamicPlayground({ setInnerPlaygroundController , leanDate })[inputValue.slice(1)]
                     }
                 </div>
             </div>

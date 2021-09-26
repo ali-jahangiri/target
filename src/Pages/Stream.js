@@ -57,7 +57,6 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
 
   const leanDate = date.split("/").join('')
 
-
   const finishLoadingHandler = () => {
     setIsTargetStreamReadyToRender(true);
     setLoading(false)
@@ -317,6 +316,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         {
           sideBarEnabled ?
             <StreamSidebar
+              leanDate={leanDate}
               setShouldOverlayGetVisible={setShouldOverlayGetVisible}
               currentDetailsModeHabit={currentDetailsModeHabit}
               injectedTodo={injectedTodo}

@@ -56,7 +56,7 @@ const connectionObserver = {
 const commends = {
     reminder : {
         setReminder(streamId , newReminder) {
-            requestWrapper(resolve => references.stream.doc(streamId).update({ 
+            return requestWrapper(resolve => references.stream.doc(streamId).update({ 
                 reminder : firebase.firestore.FieldValue.arrayUnion(newReminder)
             }).then(resolve))
         },
@@ -72,7 +72,21 @@ const commends = {
         }
     },
     note : {
-
+        setNote(streamId , newNote) {
+            return requestWrapper(resolve => references.stream.doc(streamId).update({
+                note : newNote
+            }).then(resolve))
+        },
+        removeNote(streamId , targetNote) {
+            return requestWrapper(resolve => references.stream.doc(streamId).update({
+                note : []
+            }).then(resolve))
+        },
+        clearNote(streamId) {
+            return requestWrapper(resolve => references.stream.doc(streamId).update({
+                note : []
+            }).then(resolve))
+        }
     },
     event : {
 

@@ -3,8 +3,14 @@ import Input from "../Input";
 import ReminderDesc from "./ReminderDesc";
 import ReminderTimePicker from "./ReminderTimePicker";
 
-const ReminderPlayground = () => {
+import requests from "../../utils/requests";
+import { useState } from "react";
+import { selfClearTimeout } from "../../utils";
+
+const ReminderPlayground = ({ leanDate }) => {
     const [data , setData] = useKeyBaseState({ title : "" ,  });
+    const [wasReminderSet, setWasReminderSet] = useState(false);
+
 
     const titleInputChange = value => {
         setData("title" , value);
@@ -12,7 +18,14 @@ const ReminderPlayground = () => {
 
 
     const createReminderHandler = () => {
-        console.log(data , "daa");
+        requests.commends.reminder.setReminder(leanDate , data)
+            .then(() => {
+                setWasReminderSet(true);
+                setData({});
+                selfClearTimeout(() => {
+                    setWasReminderSet(false)
+                } , 2500)
+            })
     }
 
     const reminderDisableChecker = () => {
@@ -24,18 +37,25 @@ const ReminderPlayground = () => {
     
     return (
         <div className="reminderPlayground">
+            {
+                wasReminderSet && <div>Alert : reminder set</div>
+            }
             <Input
                 labelStyle={{ fontSize : "1.2rem" }}
                 style={{ fontSize : "2rem" }}
                 mode="dark"
-                showLabel 
+                showLabel
+                value={data?.title}
                 placeholder="Reminder Title"
                 onChange={titleInputChange}
                 />
             <ReminderTimePicker
-                value={data.time} 
+                value={data.time || { min : 0 , hr : 12 }} 
                 onChange={value => setData("time" , value)} />
-            <ReminderDesc value={data?.desc} onChange={value => setData("desc" , value)} />
+            
+            <ReminderDesc 
+                value={data?.desc || ""} 
+                onChange={value => setData("desc" , value)} />
 
             <button 
                 onClick={createReminderHandler} 
