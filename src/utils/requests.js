@@ -3,7 +3,7 @@ import firebase from "firebase";
 import { references } from "../firebase"
 import { Note } from "./modules";
 
-const makeValidSnapshotData = snapshot => snapshot.docs.map(el => ({ id : el.id , ...el.data() }));
+const makeValidSnapshotData = snapshot => snapshot.docs?.map(el => ({ id : el.id , ...el.data() }));
 
 const requestWrapper = requestCallback => {
     return new Promise((resolve , reject) => {
@@ -70,6 +70,9 @@ const commends = {
             requestWrapper(resolve => references.stream.doc(streamId).update({
                 reminder : []
             }).then(resolve))
+        },
+        getReminderList(streamId , callback) {
+            references.stream.doc(streamId).onSnapshot(snapshot => callback(snapshot.data().reminder))
         }
     },
     note : {

@@ -1,7 +1,8 @@
-import Input2 from "../components/Input2"
+import Input from "../components/Input"
 import useKeyBaseState from "../Hook/useKeyBaseState";
 
 import Btn from "../components/Btn";
+import { firebaseAuth, singInWithGoogle } from "../firebase/firebase";
 
 
 const Login = () => {
@@ -9,19 +10,19 @@ const Login = () => {
 
     const loginHandler = async () => {
         const { userName , password } = inputValue
-        // const result = await singInWithGoogle()
-        // // firebaseAuth.createUserWithEmailAndPassword(userName , password)
-        // //     .then(data => {
-        // //         console.log(data , '!!!!!!!!!!!!!!');
-        // //     })
+        console.log(inputValue);
+        const result = await singInWithGoogle()
+        console.log(result , "*");
+        // firebaseAuth.createUserWithEmailAndPassword(userName , password)
+        //     .then(data => {
+        //         console.log(data , '!!!!!!!!!!!!!!');
+        //     })
     }
 
     return (
         <div className="login">
             <div className="login__intro">
-                <div className="login__introText">
-                        <p>Discover user life as a simple stream !</p>
-                </div>
+                <div className="login__introText"></div>
             </div>
             <div className="login__mainSection">
                 <div className="login__form">
@@ -31,9 +32,20 @@ const Login = () => {
                             <p>Let's Login</p>
                         </div>
                     </div>
-                    <Input2 placeholder="User Name" value={inputValue?.userName} onChang={value => setInputValue('userName' , value)} />
-                    <Input2 placeholder="Password" value={inputValue?.password} onChang={value => setInputValue('password' , value)} />
-                    <Btn onClick={loginHandler}  >
+                    <Input
+                        showLabel
+                        mode="dark" 
+                        placeholder="User Name" 
+                        value={inputValue?.userName || ""} 
+                        onChange={value => setInputValue('userName' , value)} />
+                    <Input 
+                        showLabel
+                        mode="dark" 
+                        placeholder="Password" 
+                        type="password"
+                        value={inputValue?.password || ""} 
+                        onChange={value => setInputValue('password' , value)} />
+                    <Btn style={{ marginTop : "1rem" }} onClick={loginHandler}>
                         Click for sing in
                     </Btn>
                 </div>

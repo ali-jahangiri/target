@@ -20,11 +20,10 @@ const TODAY_ID = "todayHabit";
 
 const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   const [loading, setLoading] = useState(true);
+
   const [currentItemInDeleteProcess, setCurrentItemInDeleteProcess] = useState(false);
 
-
   const [habitInStream, setHabitInStream] = useState(null);
-
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
@@ -37,6 +36,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   const [sidebarClosedByUser, setSidebarClosedByUser] = useState(false);
 
   const [isDetailsModeActive, setIsDetailsModeActive] = useState(false);
+
   const [detailsTimeline, setDetailsTimeline] = useState([]);
 
   const [timelineDetails , setTimelineDetails] = useKeyBaseState({})
@@ -49,7 +49,6 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   
   const [firstTime, setFirstTime] = useState(true);
 
-  
   useEffect(() => setFirstTime(false) , []);
   
 
@@ -170,7 +169,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
       if (!clone[insertIndex].name) {
         clone[insertIndex] = {
           name : injectedTodo,
-          color : "988989",
+          color : "3b3b3b",
           id: idGenerator(),
           hoursGoNext: 1,
         };
@@ -179,7 +178,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         const habitClone = [...habitInStream];
         habitClone.splice(insertIndex, 0, {
           name : injectedTodo,
-          color : "988989",
+          color : "3b3b3b",
           id: idGenerator(),
           hoursGoNext: 1,
         });
@@ -253,7 +252,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         shouldOverlayGetVisible && <div className="helperOverlay" />
       }
       {isDetailsModeActive !== false && (
-        <div onClick={() => console.log()} style={{ top: isDetailsModeActive }} className="helperOverlay">
+        <div style={{ top: isDetailsModeActive }} className="helperOverlay">
           <span style={{ height: timelineDetails.height , top : timelineDetails.topPosition }} className={`helperOverlay__timeline ${timelineDetails.topPosition ? "helperOverlay__timeline--haveTopDistance" : ""}`}>
             <span></span>
           </span>
@@ -316,6 +315,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         {
           sideBarEnabled ?
             <StreamSidebar
+              isDraggingStart={isDraggingStart}
               leanDate={leanDate}
               setShouldOverlayGetVisible={setShouldOverlayGetVisible}
               currentDetailsModeHabit={currentDetailsModeHabit}

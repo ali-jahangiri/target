@@ -43,9 +43,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
     const mainContainerRef = useRef();
     
     const inputDetailsChangeHandler = (key, value) => {
-      setHabitInStream((prev) => {
-        return prev.map((el, i) => (el.id === id ? { ...el, [key]: value } : el));
-      });
+      setHabitInStream(prev => prev.map(el => (el.id === id ? { ...el, [key]: value } : el)));
     };
   
     const internalResizeHandler = (e, dir, ref, d) => {

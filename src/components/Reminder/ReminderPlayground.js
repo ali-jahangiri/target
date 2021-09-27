@@ -4,21 +4,30 @@ import ReminderDesc from "./ReminderDesc";
 import ReminderTimePicker from "./ReminderTimePicker";
 
 import requests from "../../utils/requests";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { selfClearTimeout } from "../../utils";
+import ReminderListDirectory from "./ReminderListDirectory";
+import { Reminder } from "../../utils/modules";
 
 const ReminderPlayground = ({ leanDate }) => {
-    const [data , setData] = useKeyBaseState({ title : "" ,  });
+    const [data , setData] = useKeyBaseState({ title : "" ,  desc : "" , time : { min : 0 , hr : 12 }});
     const [wasReminderSet, setWasReminderSet] = useState(false);
+    const [reminderList, setReminderList] = useState(null);
 
+    useEffect(() => {
+        requests.commends.reminder.getReminderList(leanDate , setReminderList)
+    } , []);
 
+    console.log(reminderList);
+    
     const titleInputChange = value => {
         setData("title" , value);
     }
 
 
     const createReminderHandler = () => {
-        requests.commends.reminder.setReminder(leanDate , data)
+        const { title , desc , time } = data;
+        requests.commends.reminder.setReminder(leanDate , new Reminder(title , desc , time) )
             .then(() => {
                 setWasReminderSet(true);
                 setData({});
@@ -50,11 +59,11 @@ const ReminderPlayground = ({ leanDate }) => {
                 onChange={titleInputChange}
                 />
             <ReminderTimePicker
-                value={data.time || { min : 0 , hr : 12 }} 
+                value={data.time} 
                 onChange={value => setData("time" , value)} />
             
             <ReminderDesc 
-                value={data?.desc || ""} 
+                value={data?.desc} 
                 onChange={value => setData("desc" , value)} />
 
             <button 
@@ -63,6 +72,9 @@ const ReminderPlayground = ({ leanDate }) => {
                 className="reminderPlayground__createTrigger">
                 <p>Create Reminder</p>
             </button>
+            {
+                reminderList && <ReminderListDirectory reminderList={reminderList} />
+            }
         </div>
     )
 }

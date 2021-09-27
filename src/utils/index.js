@@ -91,6 +91,11 @@ export const getRandomItem = (array = []) => {
   return array[Math.floor(Math.random() * array.length)]
 }
 
+
+export const addZeroToAboveTenNumber = number => {
+  return +number < 10 ? `0${number}` : number
+}
+
 export {
   requests
 }

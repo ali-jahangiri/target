@@ -1,0 +1,50 @@
+.reminderItem {
+    margin: .5rem 0;
+    transition: .2s;
+    padding: 1rem;
+
+    &__title {
+        font-size: 1.4rem;
+        margin-bottom: .3rem;
+        font-weight: 500;
+    }
+
+    &__desc {
+        color: $darkGrey;
+    }
+
+    &__time {
+        p {
+            span {
+                &:first-child {
+                    color: $darkGrey;
+                    font-size: 1rem;
+                }
+            }
+        }
+    }
+
+    &__controller {
+        text-align: center;
+        transition: .3s;
+        max-height: 0rem;
+        overflow: hidden;
+        p {
+            cursor: pointer;
+            display: inline;
+            transition: .3s;
+
+            &:hover {
+                color: $red;
+            }
+        }
+    }
+
+    &:hover {
+        background-color: $grey;
+        .reminderItem__controller {
+            max-height: 3rem;
+            padding: 1rem;
+        }
+    }
+}

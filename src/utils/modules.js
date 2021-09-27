@@ -22,7 +22,19 @@ class Note {
     }
 }
 
+class Reminder {
+    constructor(title , desc , time) {
+        return {
+            id : idGenerator(),
+            title,
+            desc,
+            time,
+        }
+    }
+}
+
 export {
     Todo,
     Note,
+    Reminder,
 }

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { FiChevronLeft, FiLock } from "react-icons/fi";
 import { debounce } from "../../utils";
@@ -7,9 +7,17 @@ import Todo from "./Todo";
 const HABIT_LIST_ID = "fromHabitList";
 
 
-const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , setShouldOverlayGetVisible , leanDate }) => {
+const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , setShouldOverlayGetVisible , leanDate , setInjectedTodo , isDraggingStart}) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
   const [containerScroll, setContainerScroll] = useState(0);
+
+  const [todoInputValue, setTodoInputValue] = useState("");
+
+  useEffect(() => {
+    if(isDraggingStart) {
+      setInjectedTodo(todoInputValue)
+    }
+  } , [todoInputValue , isDraggingStart])
 
   useLayoutEffect(() => {
   if(isInFullScreen) {
@@ -56,7 +64,7 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
                     ))}
                   </div> 
                   <Todo
-                    parentRef={sidebarContainerRef.current}
+                    setParentInputValue={setTodoInputValue}
                     leanDate={leanDate}
                     containerScroll={containerScroll}
                     isInFullScreen={isInFullScreen}

@@ -6,7 +6,8 @@ import { selfClearTimeout } from "../../utils";
 import ReminderPlayground from "../Reminder/ReminderPlayground";
 import NotePlayground from "../NotePlayground";
 
-const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
+// const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
+const command = ['note' , 'reminder'];
 
 const dynamicPlayground = rest => ({
     note : <NotePlayground {...rest} />,
@@ -14,7 +15,7 @@ const dynamicPlayground = rest => ({
 })
 
 
-const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , parentRef}) => {
+const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setParentInputValue }) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
     const [inputValue, setInputValue] = useState("");
@@ -24,6 +25,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , parentRef}
     
     const onChange = ({ target : { value = "" } }) => {
         setInputValue(value);
+        setParentInputValue(value)
         setCompletedHash(false)
         if(value.startsWith("#")) {
             setHashtagInterpolate(true)
@@ -42,13 +44,13 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , parentRef}
     const closeHandler = () => {
         setToFullScreen(false);
         setInputValue("");
+        setParentInputValue("")
         setHashtagInterpolate("");
         setCompletedHash(false);
     }
 
     const haveInterpolateValue = !!inputValue.slice(1) 
     
-
     const interpolateSubmitHandler = (e) => {
         e.preventDefault();
         if(inputValue && inputValue?.slice(1) && !completedHash){
@@ -85,7 +87,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , parentRef}
 
     return (
     <Draggable 
-        isDragDisabled={!!haveInterpolateValue}
+        isDragDisabled={!!hashtagInterpolate || !inputValue}
         draggableId="injectedTodo" 
         index={index}>
         {provided => (
@@ -98,7 +100,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , parentRef}
                     <form onSubmit={interpolateSubmitHandler}>
                         <div>
                             {
-                                hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!inputValue.slice(1) ?  command.find(el => el.includes(inputValue.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < inputValue.length ? "white" : "grey" }}>{el}</span>) : 'Write your commend ...'}</p>
+                                hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!inputValue.slice(1) ? command.find(el => el.startsWith(inputValue.slice(1)) && el.includes(inputValue.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < inputValue.length ? "white" : "grey" }}>{el}</span>) : 'Write your commend ...'}</p>
                             }
                                 <TodoInput value={inputValue} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
                             {
