@@ -9,8 +9,11 @@ const ScheduleSettingCircle = ({ currentMonth , setCurrentMonth , setIsHoverInNa
     const [transitionDelay, setTransitionDelay] = useState(1)
     const now = _date();
     
+
+    const allMonthDay = now.clone().add(currentMonth - 1 , "M").daysInMonth();
+
     const currentMonthName = now.add(currentMonth - 1 , "M").format("MMMM")
-    const currentDayName = _date(`${now.year()}/${now.month() + 1 + (currentMonth - 1)}/${currentDay + 2}`).format('dddd')
+    const currentDayName = _date(`${now.year()}/${now.month() + 1 + (currentMonth - 1)}/${currentDay + (allMonthDay === 31 ? 1 : 2)}`).format('dddd')
     
     const isNextMonthAvailable = (12 - (now.month() + currentMonth) ) > 0 ? true : false;
 

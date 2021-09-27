@@ -24,8 +24,6 @@ const Home = () => {
     
     const allMonthDay = new Array(now.clone().daysInMonth()).fill(1);
 
-    
-
     const clearScrollCountHandler = useCallback(debounce(() => {
         setCountOfStreamChange(0)
     } , countOfStreamChange >= 3 ? 2500 : 2000) , [])

@@ -38,7 +38,6 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
 
   const [isDetailsModeActive, setIsDetailsModeActive] = useState(false);
   const [detailsTimeline, setDetailsTimeline] = useState([]);
-  // const [timelineHeight, setTimelineHeight] = useState(0);
 
   const [timelineDetails , setTimelineDetails] = useKeyBaseState({})
 
