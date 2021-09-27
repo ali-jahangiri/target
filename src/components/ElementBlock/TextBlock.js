@@ -5,7 +5,8 @@ const TextBlock = ({ value , isInEditMode , editContentHandler , removeContentHa
     
 
     return (
-        <BlockWrapper 
+        <BlockWrapper
+            blockType="text"
             controllerVisible={isInEditMode} 
             removeHandler={removeContentHandler} >
             <TextareaAutosize

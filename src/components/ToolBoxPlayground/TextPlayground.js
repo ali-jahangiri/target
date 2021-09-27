@@ -11,6 +11,7 @@ const TextPlayground = ({ value , onChange , setIsValidToTriggerDone }) => {
     return (
         <div className="textPlayground">
             <PlaygroundTextArea
+                    autoFocus
                     value={value}
                     onChange={onChange}
                     placeholder="Start Write your Text from here"

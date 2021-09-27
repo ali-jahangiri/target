@@ -1,6 +1,7 @@
 import firebase from "firebase";
 
 import { references } from "../firebase"
+import { Note } from "./modules";
 
 const makeValidSnapshotData = snapshot => snapshot.docs.map(el => ({ id : el.id , ...el.data() }));
 
@@ -72,20 +73,24 @@ const commends = {
         }
     },
     note : {
-        setNote(streamId , newNote) {
+        syncNote(streamId , note) {
             return requestWrapper(resolve => references.stream.doc(streamId).update({
-                note : newNote
+                note : note
             }).then(resolve))
         },
-        removeNote(streamId , targetNote) {
-            return requestWrapper(resolve => references.stream.doc(streamId).update({
-                note : []
-            }).then(resolve))
-        },
-        clearNote(streamId) {
-            return requestWrapper(resolve => references.stream.doc(streamId).update({
-                note : []
-            }).then(resolve))
+        initializeNote(streamId) {
+            return requestWrapper(resolve => {
+                references.stream.doc(streamId)
+                .get()
+                .then(response => {
+                    if("note" in response.data()) resolve(response.data().note)
+                    else {
+                        const note = new Note();
+                        references.stream.doc(streamId)
+                            .update({ note }).then(_ => resolve(note))
+                    }
+                })
+            })
         }
     },
     event : {

@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import useKeyBaseState from "../Hook/useKeyBaseState";
-import { debounce, idGenerator, requests } from "../utils";
+import { debounce, requests, selfClearTimeout } from "../utils";
 import { DescBlock, ImageBlock, LinkBlock, TextBlock } from "./ElementBlock"
 import NewNoteThing from "./NewNoteThing";
 
@@ -13,12 +13,13 @@ const blocksClone = ({ key , ...rest }) => ({
 })
 
 const NotePlayground = ({ setInnerPlaygroundController , leanDate }) => {
-    const [content , setContent] = useKeyBaseState({title : "" , thingList : []})
+    const [content , setContent] = useKeyBaseState();
+    const [loading, setLoading] = useState(true);
     const [isInEditMode, setIsInEditMode] = useState(false);
     const [haveAnyChangeInEditMode, setHaveAnyChangeInEditMode] = useState(false);
-    const [tempContent, setTempContent] = useState(null);
-    
-    const [_noteId] = useState(() => idGenerator());
+    const [tempContent, setTempContent] = useState({ thingList : [] });
+
+    const isFirstRender = useRef(true);
 
     const addThingToNoteTreeHandler = (thingType , thingValue) => {
         setContent(prev => ({
@@ -64,7 +65,6 @@ const NotePlayground = ({ setInnerPlaygroundController , leanDate }) => {
                 if(i === index) {
                     if(!value) {
                         // TODO show a alert to user that you delete thing in background
-                        console.log('remove');
                         // return removeThingTreeHandler(index)
                     }
                     else return { name : el.name , value }
@@ -74,44 +74,52 @@ const NotePlayground = ({ setInnerPlaygroundController , leanDate }) => {
     };
 
     useEffect(function syncTempContentHandler() {
-        setTempContent(content)
-    } , [content]);
+        if(isInEditMode) setTempContent(content)
+    } , [content, isInEditMode]);
 
     useEffect(function attachEditTriggerToControllerChecker() {
-        if(content.thingList.length) {
-            setInnerPlaygroundController({
-                callback : () => {
-                    if(!isInEditMode) setIsInEditMode(prev => !prev)
-                    else stageTempContentHandler();
-                },
-                label : haveAnyChangeInEditMode ? "Save Change" : (isInEditMode ? "Back" : "Edit content"),
-                overwriteCloseTriggerCallback : resetEditMode,
-                closeTriggerConvertedTextTo : haveAnyChangeInEditMode && isInEditMode ?  "Cancel" : "Close"
-            })
-        }else setInnerPlaygroundController({callback : () => {}});
-    } , [content , isInEditMode , haveAnyChangeInEditMode, tempContent]);
+        if(!loading) {
+            if(content.thingList.length) {
+                        setInnerPlaygroundController({
+                            callback : () => {
+                                if(!isInEditMode) setIsInEditMode(prev => !prev)
+                                else stageTempContentHandler();
+                            },
+                            label : haveAnyChangeInEditMode ? "Save Change" : (isInEditMode ? "Back" : "Edit content"),
+                            overwriteCloseTriggerCallback : haveAnyChangeInEditMode && isInEditMode ? resetEditMode : undefined,
+                            closeTriggerConvertedTextTo : haveAnyChangeInEditMode && isInEditMode ?  "Cancel" : "Close"
+                        })
+                    }else setInnerPlaygroundController({callback : () => {}});
+        }
+        
+    } , [content , isInEditMode , haveAnyChangeInEditMode, tempContent, loading]);
 
     
+    useEffect(function contentInitializer() {
+        requests.commends.note.initializeNote(leanDate)
+            .then(res => {
+                setContent(() => res)
+                selfClearTimeout(() => setLoading(false) , 250);
+            })
+    } , []);
+
     const debouncedSynced = useCallback(debounce(passedSyncedContent => {
-        if(passedSyncedContent.thingList.length && passedSyncedContent.title.trim()) {
-            // Synced
-            requests.commends.note.setNote(leanDate , {...passedSyncedContent , id : _noteId});
-        }else {
-            // Delete stored Note
-            requests.commends.note.removeNote(leanDate , _noteId);
+        if(!isFirstRender.current) {
+            requests.commends.note.syncNote(leanDate,passedSyncedContent)
         }
-    } , 500) , [])
+        if(isFirstRender.current) isFirstRender.current = false
+    } , 500) , []);
 
 
     useEffect(() => debouncedSynced(content) , [content]);
 
-    const dynamicThingList = isInEditMode ? tempContent.thingList : content.thingList
+    const dynamicThingList = isInEditMode ? tempContent?.thingList : content.thingList
 
-    return (
+    return !loading ? (
         <div className="notePlayground">
             <TextareaAutosize
                 placeholder="Give note a Title ..."
-                value={content.noteTitle} 
+                value={content.title} 
                 minRows={2}
                 onChange={({ target : { value } }) => setContent("title" ,value)}
             />
@@ -122,7 +130,7 @@ const NotePlayground = ({ setInnerPlaygroundController , leanDate }) => {
                 hideBaseOnEditMode={isInEditMode} 
                 addThingToNoteTreeHandler={addThingToNoteTreeHandler} />
         </div>
-    )
+    ) : null
 }
 
 

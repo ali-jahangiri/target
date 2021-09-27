@@ -1,7 +1,18 @@
+@keyframes notePlaygroundFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
 .notePlayground {
     width: 80%;
     margin: 0 auto;
+    animation: notePlaygroundFadeIn .3s forwards alternate;
+
     textarea {
+        overflow-y: hidden;
         outline: none;
         resize: none;
         border: none;

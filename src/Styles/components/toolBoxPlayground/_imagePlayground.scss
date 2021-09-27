@@ -1,8 +1,7 @@
 
 .imagePlayground {
-    padding: 1rem;   
-
-
+    padding: 1rem;
+    
     &__image {
         display: flex;
         align-items: flex-end;
@@ -22,7 +21,7 @@
             top: 50%;
             
             svg {
-                fill: $grey;
+                fill: $darkGrey;
                 transition: .3s;
                 width: 1.5rem;
                 height: 1.5rem;
@@ -52,6 +51,16 @@
         &--visible {
             min-height: 250px !important;
             padding: 1rem;
+        }
+
+        &--inBlock {
+            svg {
+                fill: $grey !important;
+
+                &:hover {
+                    fill: $darkGrey !important;
+                }
+            }
         }
 
         &--invalidImagePath {

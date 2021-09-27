@@ -5,7 +5,8 @@ const DescriptionPlayground = ({
     value , 
     onChange , 
     setIsValidToTriggerDone , 
-    inBlock , 
+    inBlock ,
+    autoFocus = true,
     isInEditMode = true 
 }) => {
 
@@ -22,6 +23,7 @@ const DescriptionPlayground = ({
             <div className="descPlayground__container">
                 <div className="descPlayground__avatarBox" />
                 <PlaygroundTextArea
+                    autoFocus={autoFocus}
                     readOnly={!isInEditMode}
                     inBlock={inBlock}
                     value={value}

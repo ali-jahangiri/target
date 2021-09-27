@@ -2,11 +2,11 @@ import ImagePlayground from "../ToolBoxPlayground/ImagePlayground";
 import BlockWrapper from "./BlockWrapper";
 
 const ImageBlock = ({ value : { size , path , alignment }  , isInEditMode , editContentHandler , removeContentHandler}) => {
-    
 
     return (
-        <BlockWrapper controllerVisible={isInEditMode} removeHandler={removeContentHandler}>
+        <BlockWrapper blockType="image" controllerVisible={isInEditMode} removeHandler={removeContentHandler}>
                 <ImagePlayground
+                    autoFocus={false}
                     liftValuesForFirstTime={false} 
                     isInEditMode={isInEditMode} 
                     onChange={editContentHandler}

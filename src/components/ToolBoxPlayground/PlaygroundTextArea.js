@@ -1,9 +1,9 @@
 import TextareaAutosize from "react-textarea-autosize";
 
-const PlaygroundTextArea = ({ placeholder , value , onChange , className , inBlock , ...rest }) => {
+const PlaygroundTextArea = ({ placeholder , value , onChange , className , inBlock , autoFocus , ...rest }) => {
     return (
         <TextareaAutosize
-                autoFocus
+                autoFocus={autoFocus}
                 minRows={1}
                 value={value}
                 placeholder={placeholder}

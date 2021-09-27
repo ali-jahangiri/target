@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { FiChevronLeft, FiLock } from "react-icons/fi";
 import { debounce } from "../../utils";
@@ -19,6 +19,8 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
 
   // const onContainerScrollHandler = debounce(e => setContainerScroll(e.target.scrollTop) , 25);
 
+  const sidebarContainerRef = useRef();
+
   return (
         <div style={{ width : isInFullScreen ? `${isInFullScreen}vw` : "30vw" }} className={`today__habitSidebar ${isInFullScreen ? "today__habitSidebar--full" : ""} today__habitSidebar--${isSidebarOpen ? "open" : "close"} ${currentDetailsModeHabit ? "today__habitSidebar--lock" : ""}`}>
             <div
@@ -27,7 +29,8 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
             {currentDetailsModeHabit ? <FiLock color="rgb(82, 82, 82)" /> : <FiChevronLeft color="rgb(82, 82, 82)" />}
           </div>
           <div 
-            // onScroll={onContainerScrollHandler} 
+            // onScroll={onContainerScrollHandler}
+            ref={sidebarContainerRef}
             className="today__habitSidebar__habitDirectory">
             <Droppable isDropDisabled droppableId={HABIT_LIST_ID}>
               {(provided) => (
@@ -53,6 +56,7 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
                     ))}
                   </div> 
                   <Todo
+                    parentRef={sidebarContainerRef.current}
                     leanDate={leanDate}
                     containerScroll={containerScroll}
                     isInFullScreen={isInFullScreen}

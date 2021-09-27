@@ -12,7 +12,17 @@ class Todo {
 }
 
 
+class Note {
+    constructor() {
+        return {
+            id : idGenerator(),
+            title : "",
+            thingList : [],
+        }
+    }
+}
 
 export {
-    Todo
+    Todo,
+    Note,
 }

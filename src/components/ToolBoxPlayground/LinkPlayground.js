@@ -10,7 +10,8 @@ const modeIcon = {
 }
 
 const LinkPlayground = ({ 
-    setIsValidToTriggerDone , 
+    setIsValidToTriggerDone ,
+    isInEditMode = false , 
     value = { type : "" , linkPath : "" } , 
     onChange , 
     createOnFormSubmission,
@@ -85,7 +86,7 @@ const LinkPlayground = ({
                         value={linkPath} 
                         onChange={onInputChangeHandler} 
                         placeholder="Enter your Link or reference to a day or a web link"
-                        autoFocus
+                        autoFocus={!isInEditMode}
                         className={`linkPlayground__input ${detectedMode ? `linkPlayground__input--${detectedMode}` : ""}`}
                     />
                     <div className={`linkPlayground__prefix ${detectedMode ? `linkPlayground__prefix--inMode` : ""}`}>

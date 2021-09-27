@@ -7,6 +7,7 @@ import { MdVerticalAlignBottom , MdVerticalAlignTop , } from "react-icons/md"
 
 const ImagePlayground = ({
         isInEditMode,
+        autoFocus = true,
         onChange , 
         setIsValidToTriggerDone ,
         inBlock = false,
@@ -26,6 +27,8 @@ const ImagePlayground = ({
 
     const [someThingWasTouchForFirstTime, setSomeThingWasTouchForFirstTime] = useState(liftValuesForFirstTime);
     
+    const isInInitialRender = useRef(true);
+
     const setAlignmentHandler = align => {
         setAlignment(align);
         setSomeThingWasTouchForFirstTime(true);
@@ -85,6 +88,19 @@ const ImagePlayground = ({
     } , [inputValue , imageSize , alignment]);
 
 
+    useEffect(function setForcedValueToInternalState() {
+        if(inBlock) {
+            setSomeThingWasTouchForFirstTime(false)
+            if(!isInInitialRender.current) {
+                setAlignment(defaultAlignment);
+                setImageSize(defaultSize);
+                setInputValue(defaultInputValue);
+            }else {
+                isInInitialRender.current = false
+            }
+        }
+    } , [defaultAlignment , defaultInputValue , defaultSize]);
+
     const enableResizingChecker = () => {
         if(wasInvalidImage || !isInEditMode) return false
         // Undefined mean render all side resize controller
@@ -94,13 +110,12 @@ const ImagePlayground = ({
     return (
         <div className="imagePlayground">
             <Resizable
-
                 ref={resizableRef}
                 enable={enableResizingChecker()}
                 onResizeStart={setIsInResizeProcess}
                 defaultSize={imageSize}
                 onResizeStop={onResize}
-                className={`imagePlayground__image ${alignment ? `imagePlayground__image--${alignment}` : ""} ${isVisible ? "imagePlayground__image--visible" : ""} ${wasInvalidImage ? "imagePlayground__image--invalidImagePath" : ""} ${isInResizeProcess ? "imagePlayground__image--resize" : ""}`}
+                className={`imagePlayground__image ${inBlock ? "imagePlayground__image--inBlock" : ""} ${alignment ? `imagePlayground__image--${alignment}` : ""} ${isVisible ? "imagePlayground__image--visible" : ""} ${wasInvalidImage ? "imagePlayground__image--invalidImagePath" : ""} ${isInResizeProcess ? "imagePlayground__image--resize" : ""}`}
                 style={{ backgroundImage : `url(${inputValue})` }}
                 maxWidth="100%"
                 minWidth={240}
@@ -123,6 +138,7 @@ const ImagePlayground = ({
                         {
                             (isVisible && isInEditMode) && <div style={{ overflow : "hidden" , width : "100%" }}>
                                 <PlaygroundInput
+                                    autoFocus={autoFocus}
                                     className={`imagePlayground__input ${isVisible ? "imagePlayground__input--fade" : ""} ${!inputValue ? "imagePlayground__input--withoutImagePath" : ""} ${isInResizeProcess ? "imagePlayground__input--inResize" : ""}`}
                                     placeholder="Past image path "
                                     value={inputValue} 

@@ -3,8 +3,9 @@ import BlockWrapper from "./BlockWrapper";
 
 const DescBlock = ({ value , isInEditMode , editContentHandler , removeContentHandler }) => {
     return (
-        <BlockWrapper controllerVisible={isInEditMode} removeHandler={removeContentHandler}>
+        <BlockWrapper blockType="desc" controllerVisible={isInEditMode} removeHandler={removeContentHandler}>
             <DescriptionPlayground
+                autoFocus={false}
                 isInEditMode={isInEditMode} 
                 onChange={editContentHandler} 
                 value={value}

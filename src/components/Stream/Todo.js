@@ -8,16 +8,13 @@ import NotePlayground from "../NotePlayground";
 
 const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
 
-
-
-
 const dynamicPlayground = rest => ({
     note : <NotePlayground {...rest} />,
     reminder : <ReminderPlayground {...rest} />,
 })
 
 
-const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate }) => {
+const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , parentRef}) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
     const [inputValue, setInputValue] = useState("");
@@ -43,14 +40,10 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate }) => {
     }
 
     const closeHandler = () => {
-        if(innerPlaygroundController?.overwriteCloseTriggerCallback) {
-            innerPlaygroundController?.overwriteCloseTriggerCallback()
-        }else {
-            setToFullScreen(false);
-            setInputValue("");
-            setHashtagInterpolate("");
-            setCompletedHash(false);
-        }
+        setToFullScreen(false);
+        setInputValue("");
+        setHashtagInterpolate("");
+        setCompletedHash(false);
     }
 
     const haveInterpolateValue = !!inputValue.slice(1) 
@@ -92,7 +85,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate }) => {
 
     return (
     <Draggable 
-        isDragDisabled={!haveInterpolateValue}
+        isDragDisabled={!!haveInterpolateValue}
         draggableId="injectedTodo" 
         index={index}>
         {provided => (
@@ -114,12 +107,18 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate }) => {
                         </div>
                         <div className="todoInjector__controller">
                             {
-                                innerPlaygroundController.label && <div className="todoInjector__helperController">
+                                innerPlaygroundController.label && completedHash && <div className="todoInjector__helperController">
                                     <p onClick={innerPlaygroundController.callback}>{innerPlaygroundController.label}</p>
                                 </div>
                             }
                             <div className={`todoInjector__closeTrigger ${completedHash ? "todoInjector__closeTrigger--active" : ""}`}>
-                                <p onClick={closeHandler}>{innerPlaygroundController.closeTriggerConvertedTextTo || "Close"}</p>
+                                <p onClick={() => {
+                                    if(innerPlaygroundController?.overwriteCloseTriggerCallback) {
+                                        innerPlaygroundController?.overwriteCloseTriggerCallback()
+                                    }else {
+                                        closeHandler()
+                                    }
+                                }}>{innerPlaygroundController.closeTriggerConvertedTextTo || "Close"}</p>
                             </div>
                         </div>
                     </form>
