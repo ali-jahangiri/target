@@ -2,13 +2,39 @@
     font-size: 8rem;
     display: flex;
     align-items: center;
+    position: relative;
 
     p {
         cursor: pointer;
         transition: .3s;
-
+        user-select: none;
+        
         &:hover {
             transform: translateX(50px);
+        }
+    }
+    
+    &::after {
+        content: "";
+        transition: .3s;
+        width: 3rem;
+        height: 10px;
+        background: black;
+        position: absolute;
+        left: -50%;
+        top: 50%;
+    }
+
+    &--active {
+        margin-left: 5rem;
+
+        p {
+            &:hover {
+                transform: translateX(10px) !important;  
+            }
+        }
+        &::after {
+            left: -30%;
         }
     }
 }

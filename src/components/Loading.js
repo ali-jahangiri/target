@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import { selfClearTimeout } from "../utils";
 import MenuItem from "./MenuItem";
 
@@ -20,12 +21,22 @@ const menuList = [
     }
 ]
 
-const Loading = ({ children , loading , renderImmediately }) => {
+const Loading = ({ children , loading , renderImmediately , symbolPosition }) => {
     const [isReadyToRenderChildren, setIsReadyToRenderChildren] = useState(false);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-
     const [currentBgColor, setCurrentBgColor] = useState("3A6351")
-    
+
+    const [currentActiveMenu, setCurrentActiveMenu] = useState(false);
+
+
+    const { location : { pathname : currentLocation } , push : historyPush } = useHistory()
+
+    useEffect(() => {
+        if(currentActiveMenu) {
+            setCurrentBgColor(currentActiveMenu.color)
+        }
+    } , [currentActiveMenu])
+
     useEffect(() => {
         if(!loading && !renderImmediately) {
             selfClearTimeout(() => {
@@ -42,13 +53,18 @@ const Loading = ({ children , loading , renderImmediately }) => {
     const onChangeBgColorHandler = bgColor => setCurrentBgColor(bgColor)
 
 
+    const redirectionHandler = path => {
+        if(path === currentActiveMenu.path) setIsOverlayOpen(false)
+        else historyPush(path);
+    }
+
     return (
         <>
-            <div style={{ backgroundColor : `#${currentBgColor}` }} className={`loading ${isReadyToRenderChildren ? "loading--hide" : ""} ${isOverlayOpen ? "loading--overlayOpen" : ""}`}> 
+            <div style={{ backgroundColor : `#${currentBgColor}` }} className={`loading ${isReadyToRenderChildren ? "loading--hide" : ""} ${symbolPosition === "right" && isReadyToRenderChildren ? "loading--symbolRight" : ""} ${isOverlayOpen ? "loading--overlayOpen" : ""}`}> 
                 <span onClick={() => setIsOverlayOpen(prev => !prev)}>*</span>
                 <div className="loading__menu">
                     {
-                        menuList.map((el , i) => <MenuItem key={i} onHover={onChangeBgColorHandler} {...el} />)
+                        menuList.map((el , i) => <MenuItem redirectionHandler={redirectionHandler} currentActiveMenu={currentActiveMenu} setCurrentActiveMenu={setCurrentActiveMenu} currentLocation={currentLocation} key={i} onHover={onChangeBgColorHandler} {...el} />)
                     }
                 </div>
             </div>

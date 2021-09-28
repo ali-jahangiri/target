@@ -5,6 +5,7 @@ import { debounce,  _date } from "../utils";
 import ScheduleSettingCircle from "../components/ScheduleSettingCircle";
 import Stream from "./Stream";
 import Portal from "../Providers/Portal/Portal";
+import Loading from "../components/Loading";
 
 const Home = () => {
     const now = _date();
@@ -99,29 +100,33 @@ const Home = () => {
     } , [countOfStreamChange]);
 
     return (
-        <div onWheel={onWheelHandler} ref={containerRef} style={{ display : "flex" }} className="mainContainer">
-            {
-                allMonthDay.map((_ , i) => (
-                    <div key={i} className={`__dayContainer ${i === currentDay && false ? "__dayContainer--scrollDisabled" : ""}`}>
-                        <div
-                            style={{ transitionDelay : `${streamShowUpDelay}s` }} 
-                            data-id={i}
-                            className={`__innerContainer ${i === currentDay  ? "__innerContainer--active" : "__innerContainer--deActive"}`}>
-                            {renderScheduleChecker(i)}
+        <Loading renderImmediately>
+            {() => (
+                <div onWheel={onWheelHandler} ref={containerRef} style={{ display : "flex" }} className="mainContainer">
+                {
+                    allMonthDay.map((_ , i) => (
+                        <div key={i} className={`__dayContainer ${i === currentDay && false ? "__dayContainer--scrollDisabled" : ""}`}>
+                            <div
+                                style={{ transitionDelay : `${streamShowUpDelay}s` }} 
+                                data-id={i}
+                                className={`__innerContainer ${i === currentDay  ? "__innerContainer--active" : "__innerContainer--deActive"}`}>
+                                {renderScheduleChecker(i)}
+                            </div>
                         </div>
-                    </div>
-                ))
-            }
-            <Portal>
-                <ScheduleSettingCircle
-                    visible={isTargetStreamReadyToRender}
-                    goToday={goToday}
-                    currentDay={currentDay + 1} 
-                    setIsHoverInNavigationCircle={setHoveringOnNavigatorCircle} 
-                    setCurrentMonth={setCurrentMonth} 
-                    currentMonth={currentMonth} />
-            </Portal>
-        </div>
+                    ))
+                }
+                <Portal>
+                    <ScheduleSettingCircle
+                        visible={isTargetStreamReadyToRender}
+                        goToday={goToday}
+                        currentDay={currentDay + 1} 
+                        setIsHoverInNavigationCircle={setHoveringOnNavigatorCircle} 
+                        setCurrentMonth={setCurrentMonth} 
+                        currentMonth={currentMonth} />
+                </Portal>
+            </div>
+            )}
+        </Loading>
     )
 }
 

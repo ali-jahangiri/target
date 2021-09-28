@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 
@@ -48,6 +48,16 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   const [injectedTodo, setInjectedTodo] = useState("")
   
   const [firstTime, setFirstTime] = useState(true);
+
+  const [isWelcomeLoadingVisible, setIsWelcomeLoadingVisible] = useState(true);
+
+
+  useLayoutEffect(() => {
+    selfClearTimeout(() => {
+      setIsWelcomeLoadingVisible(false);
+    } , 3000);
+  } , [])
+
 
   useEffect(() => setFirstTime(false) , []);
   
@@ -245,8 +255,15 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   };
 
 
-  return loading ? "loading" : (
+  return loading ? <div className="today__loadingScreen" /> : (
     <div className="today">
+      {
+        isWelcomeLoadingVisible && <div className="today__loadingWelcome">
+          <div className="today__loadingWelcome__container">
+            <p>Welcome</p>
+          </div>
+        </div>
+      }
       <Timeline />
       {
         shouldOverlayGetVisible && <div className="helperOverlay" />
