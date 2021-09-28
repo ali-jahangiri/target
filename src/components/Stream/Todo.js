@@ -6,7 +6,9 @@ import { selfClearTimeout } from "../../utils";
 import ReminderPlayground from "../Reminder/ReminderPlayground";
 import NotePlayground from "../NotePlayground";
 
-// const command = ['emotion' , 'note' , 'reminder' , 'transaction'];
+import { FaRegHandPointer } from "react-icons/fa";
+import { FaRegHandPaper } from "react-icons/fa";
+
 const command = ['note' , 'reminder'];
 
 const dynamicPlayground = rest => ({
@@ -15,17 +17,17 @@ const dynamicPlayground = rest => ({
 })
 
 
-const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setParentInputValue }) => {
+const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setInputValue , inputValue }) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
-    const [inputValue, setInputValue] = useState("");
+    
     const [flashDestroy, setFlashDestroy] = useState(false);
 
     const [innerPlaygroundController, setInnerPlaygroundController] = useState({ callback : () => {} , label : "", closeTriggerConvertedTextTo : "Close" , overwriteCloseTriggerCallback : () => {} });
     
     const onChange = ({ target : { value = "" } }) => {
         setInputValue(value);
-        setParentInputValue(value)
+        setInputValue(value)
         setCompletedHash(false)
         if(value.startsWith("#")) {
             setHashtagInterpolate(true)
@@ -44,7 +46,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setParentI
     const closeHandler = () => {
         setToFullScreen(false);
         setInputValue("");
-        setParentInputValue("")
+        setInputValue("")
         setHashtagInterpolate("");
         setCompletedHash(false);
     }
@@ -106,6 +108,11 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setParentI
                             {
                                 (!flashDestroy && hashtagInterpolate) && <span className="todoInjector__flash"></span>
                             }
+                            <div className={`todoInjector__dragHandHelper ${inputValue && !completedHash ? "todoInjector__dragHandHelper--active" : ""}`}>
+                                {/* <FaRegHandPointer /> */}
+                                <FaRegHandPaper />
+                            </div>
+                            
                         </div>
                         <div className="todoInjector__controller">
                             {
@@ -117,9 +124,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setParentI
                                 <p onClick={() => {
                                     if(innerPlaygroundController?.overwriteCloseTriggerCallback) {
                                         innerPlaygroundController?.overwriteCloseTriggerCallback()
-                                    }else {
-                                        closeHandler()
-                                    }
+                                    }else closeHandler()
                                 }}>{innerPlaygroundController.closeTriggerConvertedTextTo || "Close"}</p>
                             </div>
                         </div>

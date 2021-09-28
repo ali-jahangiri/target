@@ -1,38 +1,46 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { FiChevronLeft, FiLock } from "react-icons/fi";
-import { debounce } from "../../utils";
+
 import Todo from "./Todo";
 
 const HABIT_LIST_ID = "fromHabitList";
 
 
-const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , setShouldOverlayGetVisible , leanDate , setInjectedTodo , isDraggingStart}) => {
+const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , setShouldOverlayGetVisible , leanDate , setInjectedTodo , isDraggingStart , habitInStream = []}) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
-  const [containerScroll, setContainerScroll] = useState(0);
-
   const [todoInputValue, setTodoInputValue] = useState("");
-
+  
   useEffect(() => {
     if(isDraggingStart) {
       setInjectedTodo(todoInputValue)
     }
   } , [todoInputValue , isDraggingStart])
-
+  
   useLayoutEffect(() => {
-  if(isInFullScreen) {
+    if(isInFullScreen) {
       setShouldOverlayGetVisible(true)
     }else setShouldOverlayGetVisible(false)
   } , [isInFullScreen])
+  
+  const internalSideBarCloseHandler = () => {
+    sideBarHandler()
+    setTodoInputValue("")
+  }
 
+  useEffect(function todoInputValueCleanupAfterCreation() {
+    if(habitInStream.some(el => el.name === todoInputValue)) setTodoInputValue("")
+  } , [isDraggingStart])
+
+  // const [containerScroll, setContainerScroll] = useState(0);
   // const onContainerScrollHandler = debounce(e => setContainerScroll(e.target.scrollTop) , 25);
-
+  
   const sidebarContainerRef = useRef();
 
   return (
         <div style={{ width : isInFullScreen ? `${isInFullScreen}vw` : "30vw" }} className={`today__habitSidebar ${isInFullScreen ? "today__habitSidebar--full" : ""} today__habitSidebar--${isSidebarOpen ? "open" : "close"} ${currentDetailsModeHabit ? "today__habitSidebar--lock" : ""}`}>
             <div
-            onClick={() => !currentDetailsModeHabit && sideBarHandler()}
+            onClick={() => !currentDetailsModeHabit && internalSideBarCloseHandler()}
             className={`today__habitSidebar__closeTrigger ${isSidebarOpen ? "today__habitSidebar__closeTrigger--flipped" : ""}`}>
             {currentDetailsModeHabit ? <FiLock color="rgb(82, 82, 82)" /> : <FiChevronLeft color="rgb(82, 82, 82)" />}
           </div>
@@ -62,14 +70,16 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
                       </Draggable>
                       ))
                     ))}
-                  </div> 
+                  </div>
                   <Todo
-                    setParentInputValue={setTodoInputValue}
+                    setInputValue={setTodoInputValue}
+                    inputValue={todoInputValue}
                     leanDate={leanDate}
-                    containerScroll={containerScroll}
                     isInFullScreen={isInFullScreen}
                     setToFullScreen={setIsInFullScreen}
-                    index={todayHabit.length} />
+                    index={todayHabit.length} 
+                    // containerScroll={containerScroll}
+                  />
                   {provided.placeholder}
                 </div>
               )}

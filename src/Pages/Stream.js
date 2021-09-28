@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 
@@ -44,6 +44,8 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
 
   const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
+  const [isOverlayInHideProcess, setIsOverlayInHideProcess] = useState(false);
+  
   
   const [injectedTodo, setInjectedTodo] = useState("")
   
@@ -238,7 +240,11 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         
       } , 600);
     } else {
-      setIsDetailsModeActive(false);
+      setIsOverlayInHideProcess(true)
+      selfClearTimeout(() => {
+        setIsOverlayInHideProcess(false)
+        setIsDetailsModeActive(false);
+      } , 2000)
       setTimelineDetails({});
       setDetailsTimeline([]);
       setCurrentDetailsModeHabit(null);
@@ -255,7 +261,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         shouldOverlayGetVisible && <div className="helperOverlay" />
       }
       {isDetailsModeActive !== false && (
-        <div style={{ top: isDetailsModeActive }} className="helperOverlay">
+        <div style={{ top: isDetailsModeActive }} className={`helperOverlay ${isOverlayInHideProcess ? "helperOverlay--inDestroyProcess" : ""}`}>
           <span style={{ height: timelineDetails.height , top : timelineDetails.topPosition }} className={`helperOverlay__timeline ${timelineDetails.topPosition ? "helperOverlay__timeline--haveTopDistance" : ""}`}>
             <span></span>
           </span>
@@ -318,6 +324,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         {
           sideBarEnabled ?
             <StreamSidebar
+              habitInStream={habitInStream.filter(el => el.name)}
               isDraggingStart={isDraggingStart}
               leanDate={leanDate}
               setShouldOverlayGetVisible={setShouldOverlayGetVisible}
