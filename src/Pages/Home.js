@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useLayoutEffect , useRef , useState } from "react";
 
-import { debounce,  _date } from "../utils";
+import { debounce,  selfClearTimeout,  _date } from "../utils";
 
 import ScheduleSettingCircle from "../components/ScheduleSettingCircle";
 import Stream from "./Stream";
 import Portal from "../Providers/Portal/Portal";
 import Loading from "../components/Loading";
+import WelcomeLoading from "../components/WelcomeLoading";
 
 const Home = () => {
     const now = _date();
@@ -21,6 +22,8 @@ const Home = () => {
     const [currentMonth, setCurrentMonth] = useState(1);
     const [currentDay, setCurrentDay] = useState(currentLeftPosition.current / window.innerWidth);
     
+    const [isWelcomeLoadingVisible, setIsWelcomeLoadingVisible] = useState(true);
+
     const [streamShowUpDelay, setStreamShowUpDelay] = useState(.7)
     
     const allMonthDay = new Array(now.clone().daysInMonth()).fill(1);
@@ -82,6 +85,11 @@ const Home = () => {
 
     }
 
+    useLayoutEffect(() => {
+        selfClearTimeout(() => {
+          setIsWelcomeLoadingVisible(false);
+        } , 1900);
+      } , []);
 
     const goToday = () => {
         let s = (now.date() - 1) * window.innerWidth
@@ -103,17 +111,18 @@ const Home = () => {
         <Loading renderImmediately>
             {() => (
                 <div onWheel={onWheelHandler} ref={containerRef} style={{ display : "flex" }} className="mainContainer">
-                {
-                    allMonthDay.map((_ , i) => (
-                        <div key={i} className={`__dayContainer ${i === currentDay && false ? "__dayContainer--scrollDisabled" : ""}`}>
-                            <div
-                                style={{ transitionDelay : `${streamShowUpDelay}s` }} 
-                                data-id={i}
-                                className={`__innerContainer ${i === currentDay  ? "__innerContainer--active" : "__innerContainer--deActive"}`}>
-                                {renderScheduleChecker(i)}
+                    { isWelcomeLoadingVisible && <WelcomeLoading /> }
+                    {
+                        allMonthDay.map((_ , i) => (
+                            <div key={i} className={`__dayContainer ${i === currentDay && false ? "__dayContainer--scrollDisabled" : ""}`}>
+                                <div
+                                    style={{ transitionDelay : `${streamShowUpDelay}s` }} 
+                                    data-id={i}
+                                    className={`__innerContainer ${i === currentDay  ? "__innerContainer--active" : "__innerContainer--deActive"}`}>
+                                    {renderScheduleChecker(i)}
+                                </div>
                             </div>
-                        </div>
-                    ))
+                        ))
                 }
                 <Portal>
                     <ScheduleSettingCircle

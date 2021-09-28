@@ -49,16 +49,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   
   const [firstTime, setFirstTime] = useState(true);
 
-  const [isWelcomeLoadingVisible, setIsWelcomeLoadingVisible] = useState(true);
-
-
-  useLayoutEffect(() => {
-    selfClearTimeout(() => {
-      setIsWelcomeLoadingVisible(false);
-    } , 3000);
-  } , [])
-
-
+  
   useEffect(() => setFirstTime(false) , []);
   
 
@@ -172,7 +163,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
     });
   };
 
-  const todoInjectionHandler = (destination, source) => {
+  const todoInjectionHandler = destination => {
     let insertIndex = destination.index;
     setHabitInStream((prev) => {
       const clone = [...prev];
@@ -212,7 +203,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   
   const resizeHandler = ({ height, index }) => {
     if (habitInStream[index].hoursGoNext + index === 24) {
-      Alert.warning("your habit cannot ross over today hours");
+      Alert.warning("your habit cannot cross over today hours");
       return;
     }
     const wasUnderValidH = height <= 0 && habitInStream[index].hoursGoNext === 1 ? true : false;
@@ -233,6 +224,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
 
     if (!isDetailsModeActive) {
       setCurrentDetailsModeHabit(id);
+      setIsTargetStreamReadyToRender(false)
       selfClearTimeout(() => {
         streamContainer.overflow = "hidden";
         setDetailsTimeline(possibleStep);
@@ -250,6 +242,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
       setTimelineDetails({});
       setDetailsTimeline([]);
       setCurrentDetailsModeHabit(null);
+      setIsTargetStreamReadyToRender(true)
       streamContainer.overflow = "auto";
     }
   };
@@ -257,13 +250,6 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
 
   return loading ? <div className="today__loadingScreen" /> : (
     <div className="today">
-      {
-        isWelcomeLoadingVisible && <div className="today__loadingWelcome">
-          <div className="today__loadingWelcome__container">
-            <p>Welcome</p>
-          </div>
-        </div>
-      }
       <Timeline />
       {
         shouldOverlayGetVisible && <div className="helperOverlay" />
@@ -297,9 +283,9 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
                   className="today__droppableContainer">
                   {habitInStream.map((el, i) => {
                     if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
-                    else
-                      return (
+                    else return (
                         <StreamItem
+                          leanDate={leanDate}
                           deleteTimeoutRef={deleteTimeoutRef}
                           snapshot={snapshot}
                           setCurrentItemInDeleteProcess={setCurrentItemInDeleteProcess}

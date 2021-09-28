@@ -2,50 +2,45 @@ import { useRef , useEffect , useState } from "react";
 import { Resizable } from "re-resizable";
 import { Draggable } from "react-beautiful-dnd";
 import { CgClose } from "react-icons/cg";
-import { FiCheck, FiMoreHorizontal } from "react-icons/fi";
-import { selfClearTimeout } from "../../utils";
+import { FiMoreHorizontal } from "react-icons/fi";
 
 import DetailsOptionsMenu from "../DetailsOptionMenu";
 import StreamResizeTrigger from "./StreamResizeTrigger";
 
+import WritableDetails from "./WritableDetails";
+import { selfClearTimeout } from "../../utils";
 
+const StreamItem = ({ 
+    detailsShowHandler, 
+    id, 
+    sidebarClosedByUser, 
+    index, 
+    setIsSidebarOpen, 
+    color, 
+    habitName, 
+    resizeHandler, 
+    hoursGoNext, 
+    setNthChildHandler, 
+    isInDragging, 
+    isInResizing, 
+    isInDetailsMode, 
+    habitInStream, 
+    snapshot , 
+    deleteTimeoutRef , 
+    setCurrentItemInDeleteProcess , 
+    currentItemInDeleteProcess , 
+    leanDate
+}) => {
 
-const WritableDetails = ({ value, onChange, placeholder = "write and save your idea about this habit..."}) => {
-    const inputRef = useRef();
-  
-    useEffect(() => {
-      selfClearTimeout(() => { 
-        inputRef.current?.focus();
-      }, 3000);
-    }, [inputRef]);
-  
-    return (
-      <input
-        placeholder={placeholder}
-        ref={inputRef}
-        value={value}
-        onChange={({ target: { value } }) => onChange(value)}
-        className="writableDetails"
-      />
-    );
-  };
-  
-  const StreamItem = ({ detailsShowHandler, id, sidebarClosedByUser, index, setIsSidebarOpen, color, habitName, resizeHandler, hoursGoNext, setNthChildHandler, isInDragging, isInResizing, isInDetailsMode, setHabitInStream, habitInStream, snapshot , deleteTimeoutRef , setCurrentItemInDeleteProcess , currentItemInDeleteProcess}) => {
-
-    const [forcer, setFourcer] = useState(Date.now())
+    const [forcer, setForcer] = useState(Date.now())
     const [internalH, setInternalH] = useState(0);
     const [isDetailsOptionMenuOpen, setIsDetailsOptionMenuOpen] = useState(false);
-
     const [detailsActive, setDetailsActive] = useState(false);
-
-    const [position, setposition] = useState(0);
+    const [position, setPosition] = useState(0);
+    const [isDetailsInCloseProcess, setIsDetailsInCloseProcess] = useState(false);
 
     const mainContainerRef = useRef();
     
-    const inputDetailsChangeHandler = (key, value) => {
-      setHabitInStream(prev => prev.map(el => (el.id === id ? { ...el, [key]: value } : el)));
-    };
-  
     const internalResizeHandler = (e, dir, ref, d) => {
       setInternalH(d.height);
       setIsSidebarOpen(false);
@@ -58,37 +53,40 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
       !sidebarClosedByUser && setIsSidebarOpen(true);
     };
   
+    
+    
+    useEffect(() => setForcer(Date.now()) , [hoursGoNext]);
     let availableNextHours = (24 - (index + hoursGoNext)) - position;
-    const _initialWasSettled = !!habitInStream.find((el) => el.id === id)?._initial;
-    
-    
-    useEffect(() => {
-      setFourcer(Date.now())
-    } , [hoursGoNext])
-
 
     const determineHandler = () => setIsDetailsOptionMenuOpen(false)
 
-    useEffect(() => {
+    useEffect(function calculateAvailableNextHr() {
       const validStream = habitInStream.filter(el => el.name);
-        const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
-        const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
-        const hh = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
-        let start = index + hh;
-        const end = start + hoursGoNext;
-
-        
-        setposition(hh)
-
-    })
+      const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
+      const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
+      const hh = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
+      // let start = index + hh;
+      // const end = start + hoursGoNext;
+      setPosition(hh)
+    }, [habitInStream, hoursGoNext, id, index])
 
 
     const closeHandler = () => {
-      setIsDetailsOptionMenuOpen(false)
-      // change current stream item mode to nothing - we don't specify any mode
-      setDetailsActive(false)
-      // tell to parent handler that we are done this this side and pass nothing to detailsShowHandler method
-      detailsShowHandler();
+      if(isInDetailsMode) {
+        setIsDetailsInCloseProcess(true)
+        selfClearTimeout(() => {
+          setIsDetailsInCloseProcess(false)
+          setIsDetailsOptionMenuOpen(false)
+          setDetailsActive(false)
+          detailsShowHandler();
+        } , 400)
+      }else {
+        setIsDetailsOptionMenuOpen(false)
+        // change current stream item mode to nothing - we don't specify any mode
+        setDetailsActive(false)
+        // tell to parent handler that we are done this this side and pass nothing to detailsShowHandler method
+        detailsShowHandler();
+      }
     }
 
     const showDetailsHandler = () => {
@@ -127,40 +125,7 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
       setCurrentItemInDeleteProcess(null);
     }
 
-    const renderChecker = () => {
-      if(currentItemInDeleteProcess === id) {
-        return (
-          <div onClick={cancelDeleteProcess}>Deleting are you sure ? you can cancel it if you wish ?</div>
-        )
-      }else return <>
-      <div className={`streamItem__innerContainer ${isInDetailsMode ? "streamItem__innerContainer--setUp" : ""}`} >
-      <p>{habitName}</p>
-      <div className="streamItem__detailsModeCtaContainer">
-        <div
-          onClick={showDetailsHandler}
-          className={`streamItem__detailsTrigger ${isInDetailsMode? "streamItem__detailsTrigger--rotate": ""}`} >
-          <FiMoreHorizontal />
-        </div>
-        <div onClick={closeHandler} className={`determiner ${isInDetailsMode ? "determiner--active" : ""}`} >
-          <div className={`${_initialWasSettled ? "visible" : ""}`}>
-            <FiCheck />
-          </div>
-          <div className={`${!_initialWasSettled ? "visible" : ""}`}>
-            <CgClose />
-          </div>
-        </div>
-      </div>
-    </div>
-    {isInDetailsMode && (
-      <div style={{ paddingTop: "4rem" }}>
-        <WritableDetails
-          value={habitInStream.find((el) => el.id === id)?._initial}
-          onChange={value => inputDetailsChangeHandler("_initial", value)} />
-      </div>
-    )}
-          </>
-    }
-
+    
     return (
       <Draggable isDragDisabled={isInDetailsMode} draggableId={id} index={index}>
         {(provided) => (
@@ -169,23 +134,17 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
             onResize={internalResizeHandler}
             onResizeStop={resizeEndHandler}
             width="100%"
+            maxWidth="100%"
+            maxHeight={!availableNextHours ? (hoursGoNext * 100) : ((availableNextHours * 100) + (hoursGoNext * 100))}
+            minHeight={100}
+            defaultSize={{ width: "100%", height: hoursGoNext * 100 }}
             ref={mainContainerRef}
             className={`habitMainContainer ${isInDetailsMode ? "habitMainContainer--inDetailsMode" : ""}`}
             enable={{ bottom: !isInDetailsMode && index + hoursGoNext !== 24 ? true : false }}
-            minHeight={100}
-            maxHeight={!availableNextHours ? hoursGoNext * 100 : availableNextHours * 100 + hoursGoNext * 100}
             grid={[100, 100]}
-            defaultSize={{ width: "100%", height: hoursGoNext * 100 }}
-            maxWidth="100%"
             handleComponent={{bottom: currentItemInDeleteProcess !== id && <StreamResizeTrigger isInResizing={isInResizing === id} /> }} >
-            {isDetailsOptionMenuOpen && (
-              <DetailsOptionsMenu
-                closeHandler={determineHandler}
-                bgColor={color}
-              />
-            )}
+            {isDetailsOptionMenuOpen && <DetailsOptionsMenu closeHandler={determineHandler} bgColor={color} /> }
             <div
-              id={position}
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
@@ -194,7 +153,30 @@ const WritableDetails = ({ value, onChange, placeholder = "write and save your i
                 onClick={() => currentItemInDeleteProcess === id && cancelDeleteProcess()}
                 className={`streamItem__container ${currentItemInDeleteProcess === id ? "streamItem__container--delete" : ""}`}
                 style={{ backgroundColor: `#${color || "dcdcdc"}` }}>
-                  {renderChecker()}
+                  {(() => {
+                    if(currentItemInDeleteProcess === id) {
+                      return (
+                        <div onClick={cancelDeleteProcess}>Deleting are you sure ? you can cancel it if you wish ?</div>
+                      )
+                    }else return <>
+                      <div className={`streamItem__innerContainer ${isInDetailsMode ? "streamItem__innerContainer--setUp" : ""}`} >
+                        <p>{habitName}</p>
+                        <div className="streamItem__detailsModeCtaContainer">
+                          <div
+                            onClick={showDetailsHandler}
+                            className={`streamItem__detailsTrigger ${isInDetailsMode? "streamItem__detailsTrigger--rotate": ""}`} >
+                            <FiMoreHorizontal />
+                          </div>
+                          <div onClick={closeHandler} className={`determiner ${isInDetailsMode ? "determiner--active" : ""}`} >
+                            <div className="visible">
+                              <CgClose />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {isInDetailsMode && <WritableDetails streamId={leanDate} isInCloseProcess={isDetailsInCloseProcess} />}
+                    </>
+                  })()}
               </div>
             </div>
           </Resizable>
