@@ -6,9 +6,6 @@ import { selfClearTimeout } from "../../utils";
 import ReminderPlayground from "../Reminder/ReminderPlayground";
 import NotePlayground from "../NotePlayground";
 
-import { FaRegHandPointer } from "react-icons/fa";
-import { FaRegHandPaper } from "react-icons/fa";
-
 const command = ['note' , 'reminder'];
 
 const dynamicPlayground = rest => ({
@@ -109,8 +106,16 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setInputVa
                                 (!flashDestroy && hashtagInterpolate) && <span className="todoInjector__flash"></span>
                             }
                             <div className={`todoInjector__dragHandHelper ${inputValue && !completedHash ? "todoInjector__dragHandHelper--active" : ""}`}>
-                                {/* <FaRegHandPointer /> */}
-                                <FaRegHandPaper />
+                                <div>
+                                    <div />
+                                    <div />
+                                    <div />
+                                </div>
+                                <div>
+                                    <div />
+                                    <div />
+                                    <div />
+                                </div>
                             </div>
                             
                         </div>

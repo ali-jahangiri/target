@@ -9,7 +9,24 @@ const client = {
             "پنج‌شنبه",
             "جمعه",
           ]
-    }
+    },
+    menuList : [
+        {
+            name : "Stream",
+            path : "/",
+            color : "865858"
+        },
+        {
+            name : "Target",
+            path : "/target",
+            color : "889EAF"
+        },
+        {
+            name : "Profile",
+            path : "/profile",
+            color : "7F8B52"
+        }
+    ]
 }
 
 

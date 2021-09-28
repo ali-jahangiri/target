@@ -1,25 +1,10 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import client from "../client";
 import { selfClearTimeout } from "../utils";
 import MenuItem from "./MenuItem";
 
-const menuList = [
-    {
-        name : "Stream",
-        path : "/",
-        color : "865858"
-    },
-    {
-        name : "Target",
-        path : "/target",
-        color : "889EAF"
-    },
-    {
-        name : "Profile",
-        path : "/profile",
-        color : "7F8B52"
-    }
-]
+
 
 const Loading = ({ children , loading , renderImmediately , symbolPosition }) => {
     const [isReadyToRenderChildren, setIsReadyToRenderChildren] = useState(false);
@@ -54,7 +39,7 @@ const Loading = ({ children , loading , renderImmediately , symbolPosition }) =>
 
 
     const redirectionHandler = path => {
-        if(path === currentActiveMenu.path) setIsOverlayOpen(false)
+        if(path === currentActiveMenu.path) return setIsOverlayOpen(false)
         else historyPush(path);
     }
 
@@ -64,7 +49,15 @@ const Loading = ({ children , loading , renderImmediately , symbolPosition }) =>
                 <span onClick={() => setIsOverlayOpen(prev => !prev)}>*</span>
                 <div className="loading__menu">
                     {
-                        menuList.map((el , i) => <MenuItem redirectionHandler={redirectionHandler} currentActiveMenu={currentActiveMenu} setCurrentActiveMenu={setCurrentActiveMenu} currentLocation={currentLocation} key={i} onHover={onChangeBgColorHandler} {...el} />)
+                        client.menuList.map((el , i) => 
+                            <MenuItem 
+                                redirectionHandler={redirectionHandler} 
+                                currentActiveMenu={currentActiveMenu} 
+                                setCurrentActiveMenu={setCurrentActiveMenu} 
+                                currentLocation={currentLocation} 
+                                key={i} 
+                                onHover={onChangeBgColorHandler} 
+                                {...el} />)
                     }
                 </div>
             </div>

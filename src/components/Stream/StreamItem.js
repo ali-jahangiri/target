@@ -1,4 +1,4 @@
-import { useRef , useEffect , useState } from "react";
+import { useRef , useEffect , useState, useLayoutEffect } from "react";
 import { Resizable } from "re-resizable";
 import { Draggable } from "react-beautiful-dnd";
 import { CgClose } from "react-icons/cg";
@@ -40,7 +40,7 @@ const StreamItem = ({
     const [isDetailsInCloseProcess, setIsDetailsInCloseProcess] = useState(false);
 
     const mainContainerRef = useRef();
-    
+
     const internalResizeHandler = (e, dir, ref, d) => {
       setInternalH(d.height);
       setIsSidebarOpen(false);
@@ -125,6 +125,14 @@ const StreamItem = ({
       setCurrentItemInDeleteProcess(null);
     }
 
+    
+    useLayoutEffect(() => {
+      if(isInDetailsMode) {
+        window.addEventListener("click" , e => {
+          
+        })
+      }
+    } , [isInDetailsMode])
     
     return (
       <Draggable isDragDisabled={isInDetailsMode} draggableId={id} index={index}>

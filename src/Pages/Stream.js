@@ -2,61 +2,40 @@ import { useEffect, useRef, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 
-import { EmptyHabitBlock , StreamItem, StreamSidebar} from "../components/Stream";
-
 import { idGenerator, selfClearTimeout, _date } from "../utils";
 
-
+import { EmptyHabitBlock , StreamItem, StreamSidebar} from "../components/Stream";
 import TodayHoursRow from "../components/TodayHoursRow";
 import Alert from "../components/Alert";
-import { references } from "../firebase";
 import Timeline from "../components/Timeline";
+
+import { references } from "../firebase";
 import useKeyBaseState from "../Hook/useKeyBaseState";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
-
 const TODAY_ID = "todayHabit";
+
 
 const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   const [loading, setLoading] = useState(true);
-
   const [currentItemInDeleteProcess, setCurrentItemInDeleteProcess] = useState(false);
-
   const [habitInStream, setHabitInStream] = useState(null);
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
   const [todayHabit, setTodayHabit] = useState([]);
-  
   const [isDraggingStart, setIsDraggingStart] = useState(false);
-
   const [isResizeStart, setIsResizeStart] = useState(false);
-
   const [sidebarClosedByUser, setSidebarClosedByUser] = useState(false);
-
   const [isDetailsModeActive, setIsDetailsModeActive] = useState(false);
-
   const [detailsTimeline, setDetailsTimeline] = useState([]);
-
   const [timelineDetails , setTimelineDetails] = useKeyBaseState({})
-
   const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
-
   const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
   const [isOverlayInHideProcess, setIsOverlayInHideProcess] = useState(false);
-  
-  
   const [injectedTodo, setInjectedTodo] = useState("")
-  
   const [firstTime, setFirstTime] = useState(true);
 
-  
-  useEffect(() => setFirstTime(false) , []);
-  
-
   const deleteTimeoutRef = useRef();
-
 
   const leanDate = date.split("/").join('')
 
@@ -65,7 +44,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
     setLoading(false)
   }
 
-  useEffect(() => {
+  useEffect(function streamInitializer() {
     references.stream.doc(leanDate).onSnapshot(snapShot => {
       if(snapShot.exists) {
           setHabitInStream(snapShot.data().item);
@@ -95,14 +74,14 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
     })
   } , [date])
 
-  useEffect(() => {
+  useEffect(function syncStream () {
     if(!firstTime) {
       references.stream.doc(leanDate)
         .update({item : habitInStream})
+    }else {
+      setFirstTime(false)
     }
   } , [habitInStream])
-
-
 
   useEffect(() => {
     if(isSidebarOpen && !loading) {
@@ -190,7 +169,6 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
     });
   }
 
-
   const dragStartHandler = ({ source }) => {
     setIsDraggingStart(true);
     if (source.droppableId === TODAY_ID || source.droppableId === "injectedTodo") setIsSidebarOpen(false);
@@ -219,7 +197,6 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
     setSidebarClosedByUser(true);
     setIsSidebarOpen((prev) => !prev);
   };
-
 
   const detailsShowHandler = (id, possibleStep , elementRef) => {
     const streamContainer = document.getElementsByClassName("mainContainer")[0].style;
@@ -284,9 +261,9 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
             {(provided , snapshot) => {
               return (
                   <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="today__droppableContainer">
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="today__droppableContainer">
                   {habitInStream.map((el, i) => {
                     if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
                     else return (
@@ -322,7 +299,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
           </Droppable>
         </div>
         {
-          sideBarEnabled ?
+          sideBarEnabled && (
             <StreamSidebar
               habitInStream={habitInStream.filter(el => el.name)}
               isDraggingStart={isDraggingStart}
@@ -333,7 +310,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
               isSidebarOpen={isSidebarOpen}
               setInjectedTodo={setInjectedTodo}
               sideBarHandler={sideBarHandler}
-              todayHabit={todayHabit} /> : null
+              todayHabit={todayHabit} /> )
         }
       </DragDropContext>
     </div>
