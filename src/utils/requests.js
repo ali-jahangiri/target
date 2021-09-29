@@ -35,6 +35,10 @@ const target = {
 
 
 const habitPerWeek = {
+    getEntireSchedule(callback) {
+        // return requestWrapper(resolve => references.habitPerWeek.onSnapshot(snapshot => ))  
+        references.habitPerWeek.onSnapshot(snapshot => callback(makeValidSnapshotData(snapshot)))  
+    },
     deleteEntireSchedule(targetId) {
         return requestWrapper(resolve => references.habitPerWeek.doc(targetId).delete().then(resolve))
     },
@@ -104,9 +108,19 @@ const commends = {
             })
         }
     },
-    event : {
+}
+
+
+const routine = {
+    setNewRoutine(dayName , routine) {
 
     },
+    removeRoutine(dayName , routineId) {
+
+    },
+    editRoutine(dayName , updatedRoutine) {
+
+    }
 }
 
 const requests =  {
@@ -115,6 +129,7 @@ const requests =  {
     stream,
     connectionObserver,
     commends,
+    routine,
 }
 
 

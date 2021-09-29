@@ -1,0 +1,113 @@
+@keyframes controllerInitialSee {
+    from {
+        max-height: 200px;
+    }
+    to {
+        max-height: 0;
+    }
+}
+
+.weekDay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    
+    &__sum {
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        opacity: .8;
+    }
+
+    &__habitIntro {
+        margin-top: 5rem;
+        margin-left: .5rem;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    &__nameContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        user-select: none;
+
+        &__innerContainer {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(0, rgba(0, 0, 0, 0.699), transparent);
+            align-items: center;
+
+        }
+
+        &:hover {
+            .weekDay__controller {
+                max-height: 200px;
+            }
+        }
+
+    }
+
+
+    &__habit {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+
+    &__habitItem {
+        flex: 1;
+        min-width: 150px;
+        margin: .5rem .5rem;
+        padding: 1rem;
+        height: 100px;
+    }
+
+    &__controller {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        max-height: 200px;
+        transition: .3s .2s;
+        overflow: hidden;
+
+        &--hide {
+            max-height: 0px;
+        }
+
+        button {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            padding: 1rem;
+            cursor: pointer;
+            transition: .3s;
+
+            &:disabled {
+                opacity: 0;
+                cursor: default;
+            }
+
+            svg {
+                width: 2rem;
+                height: 2rem;
+            }
+        }
+
+        &__returnTrigger {
+            display: flex;
+            align-items: center;
+
+            p {
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    &__detailsContainer {
+        flex: 1.5;
+    }
+}

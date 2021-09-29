@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { selfClearTimeout } from "../utils";
 import MenuItem from "./MenuItem";
@@ -58,6 +58,10 @@ const Loading = ({ children , loading , renderImmediately , symbolPosition }) =>
         else historyPush(path);
     }
 
+    const memoizedChildren = useMemo(() => {
+        return children(isReadyToRenderChildren)
+    } , [isReadyToRenderChildren , children])
+
     return (
         <>
             <div style={{ backgroundColor : `#${currentBgColor}` }} className={`loading ${isReadyToRenderChildren ? "loading--hide" : ""} ${symbolPosition === "right" && isReadyToRenderChildren ? "loading--symbolRight" : ""} ${isOverlayOpen ? "loading--overlayOpen" : ""}`}> 
@@ -68,7 +72,7 @@ const Loading = ({ children , loading , renderImmediately , symbolPosition }) =>
                     }
                 </div>
             </div>
-            {children(isReadyToRenderChildren)}
+            { memoizedChildren }
         </>
     )
 }
