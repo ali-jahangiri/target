@@ -14,6 +14,7 @@ const AllWeekSchedule = () => {
 
     const [isInDaySwitchProcess, setIsInDaySwitchProcess] = useState(false)
 
+
     useEffect(() => {
         requests.habitPerWeek.getEntireSchedule(res => {
             setHabitPerWeek(res)
