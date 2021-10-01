@@ -128,18 +128,30 @@
         transition: all .3s , opacity .1s;
     }
 
-    &__routineTrigger {
+    &__routine {
         position: absolute;
         left: 0;
-        bottom: 10px;
-        font-size: 1.3rem;
+        top: 93vh;
         transition: .5s;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
         width: 90%;
-        // z-index: 9999;
         
+        &__trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.3rem;
+        }
+
+        &__form {
+            width: 90%;
+            opacity: 0;
+            animation: newRoutineBackTriggerGetVisible .5s .5s forwards alternate;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50% , -50%);
+        }
+
         &__backTrigger {
             font-size: 1.5rem;
             margin-top: .5rem;
@@ -147,11 +159,18 @@
             cursor: pointer;
             animation: newRoutineBackTriggerGetVisible .5s 1s forwards alternate;
             transition: .3s;
-            color: #2e2e2ea1;
+            color: $grey;
 
             &:hover {
-                color: $textColor;
+                color: white;
             }
+        }
+
+        &__createTrigger {
+            color: $grey;
+            font-size: 1.5rem;
+            margin-top: .5rem;
+            margin-left: 1rem;
         }
 
         p {
@@ -172,19 +191,27 @@
     }
 
     &--newRoutineMode {
-        .weekDay {
-            &__routineTrigger {
-                bottom: 83%;
-                transform: translateY(-50%);
-                font-size: 3rem;
-                left: 4.5rem;
-                p {
-                    cursor: default;
 
-                    &:last-child {
-                        cursor: pointer;
+        .weekDay {
+
+
+            &__routine {
+                top: 0%;
+                left: 4.5rem;
+                
+                &__trigger {
+                    font-size: 3rem;
+                    color: rgba(255, 255, 255, 0.534);
+
+                    p {
+                        cursor: default;
+    
+                        &:last-child {
+                            cursor: pointer;
+                        }
                     }
                 }
+                
             }
 
             &__controller {
@@ -193,6 +220,7 @@
 
             &__nameContainer {
                 width: 100%;
+                background-color: black !important;
 
                 &__innerContainer {
                     position: relative;
@@ -204,10 +232,12 @@
 
             &__dayLabel {
                 font-size: 2.5rem;
+                color: rgba(255, 255, 255, 0.788);
             }
 
             &__sum {
                 font-size: 1.5rem !important;
+                color: rgba(255, 255, 255, 0.226);
             }
 
             &__detailsContainer {

@@ -1,7 +1,8 @@
-import { calcAllHabitForDay, selfClearTimeout } from "../../utils";
+import { calcAllHabitForDay, requests, selfClearTimeout } from "../../utils";
 
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { useLayoutEffect, useState } from "react";
+import RoutineCreator from "./RoutineCreator";
 
 
 const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => {
@@ -11,13 +12,20 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
 
     const [isInNewRoutineCreationProcess, setIsInNewRoutineCreationProcess] = useState(false);
 
+    const [isValidToCreateRoutine, setIsValidToCreateRoutine] = useState(false);
+
     useLayoutEffect(() => {
         selfClearTimeout(() => {
             setShouldControllerGetInitialHide(true);
         } , 1300)
     } , [])
 
-    console.log(currentDayName , "*");
+
+
+    const createRoutineHandler = () => {
+        requests.routine.setNewRoutine(name , isValidToCreateRoutine)
+    }
+
     return (
         <div className={`weekDay ${isInNewRoutineCreationProcess ? "weekDay--newRoutineMode" : ""}`}>
             <div className="weekDay__detailsContainer">
@@ -54,10 +62,24 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
                     </div>
                 </div>
             </div>
-            <div className="weekDay__routineTrigger">
-                    <p onClick={() => setIsInNewRoutineCreationProcess(true)}>Find a new <span>Routine</span> in the day ? </p>
+            <div className="weekDay__routine">
+                    <div className="weekDay__routine__trigger">
+                        <p onClick={() => setIsInNewRoutineCreationProcess(true)}>Find a new <span>Routine</span> in the day ? </p>
+                        <div style={{ display : "flex" , alignItems : "center" }}>
+                            {
+                                isInNewRoutineCreationProcess && <span className="weekDay__routine__backTrigger" onClick={() => setIsInNewRoutineCreationProcess(false)}>Back</span>
+                            }
+                            {
+                                isValidToCreateRoutine && isInNewRoutineCreationProcess && <div className="weekDay__routine__createTrigger"> 
+                                    <p onClick={createRoutineHandler}>Create Routine</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
                     {
-                        isInNewRoutineCreationProcess && <span className="weekDay__routineTrigger__backTrigger" onClick={() => setIsInNewRoutineCreationProcess(false)}>Back</span>
+                        isInNewRoutineCreationProcess && <div className="weekDay__routine__form">
+                            <RoutineCreator setIsValidToCreateRoutine={setIsValidToCreateRoutine} />
+                        </div>
                     }
             </div>
         </div>

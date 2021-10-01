@@ -3,7 +3,7 @@ import { Resizable } from "re-resizable";
 import PlaygroundInput from "./PlaygroundInput";
 import { selfClearTimeout } from "../../utils";
 
-import { MdVerticalAlignBottom , MdVerticalAlignTop , } from "react-icons/md"
+import { MdVerticalAlignBottom , MdVerticalAlignTop } from "react-icons/md"
 
 const ImagePlayground = ({
         isInEditMode,

@@ -113,7 +113,9 @@ const commends = {
 
 const routine = {
     setNewRoutine(dayName , routine) {
-
+        return requestWrapper(resolve => references.routine.doc(dayName).update({
+            items : firebase.firestore.FieldValue.arrayUnion(routine)
+        }).then(resolve))
     },
     removeRoutine(dayName , routineId) {
 
