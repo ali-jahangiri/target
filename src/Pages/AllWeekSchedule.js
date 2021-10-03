@@ -9,14 +9,14 @@ const AllWeekSchedule = () => {
     const [habitPerWeek, setHabitPerWeek] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentDayName, setCurrentDayName] = useState(1);
+    const [isInDaySwitchProcess, setIsInDaySwitchProcess] = useState(false);
 
-    const [isInDaySwitchProcess, setIsInDaySwitchProcess] = useState(false)
 
 
     useEffect(() => {
         requests.habitPerWeek.getEntireSchedule(res => {
-            setHabitPerWeek(res)
-            setLoading(false)    
+            setHabitPerWeek(res);
+            setLoading(false);
         });
     } , [])
 
@@ -34,7 +34,12 @@ const AllWeekSchedule = () => {
             <div className="allWeekSchedule">
                 <div className={`allWeekSchedule__flasher ${isInDaySwitchProcess ? "allWeekSchedule__flasher--visible" : ""}`} />
                 {
-                    client.STATIC.DAY_OF_WEEK.slice(currentDayName - 1 , currentDayName).map((el , i) => <WeekDay currentDayName={currentDayName} setCurrentDayName={daySwitchHandler} filedHabit={findFilledStreamWeekDay(el , habitPerWeek)} name={el} key={i}  />)
+                    client.STATIC.DAY_OF_WEEK.slice(currentDayName - 1 , currentDayName).map((el , i) => <WeekDay 
+                        currentDayName={currentDayName} 
+                        setCurrentDayName={daySwitchHandler} 
+                        filedHabit={findFilledStreamWeekDay(el , habitPerWeek)} 
+                        name={el} 
+                        key={i}  />)
                 }
             </div>
         )}

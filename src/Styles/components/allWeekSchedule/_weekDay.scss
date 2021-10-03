@@ -84,7 +84,7 @@
         display: flex;
         width: 100%;
         justify-content: space-between;
-        max-height: 200px;
+        max-height: 0;
         transition: .3s .2s;
         overflow: hidden;
 
@@ -133,7 +133,7 @@
         left: 0;
         top: 93vh;
         transition: .5s;
-        width: 90%;
+        width: 400px;
         
         &__trigger {
             display: flex;
@@ -198,6 +198,7 @@
             &__routine {
                 top: 0%;
                 left: 4.5rem;
+                width: 90%;
                 
                 &__trigger {
                     font-size: 3rem;
