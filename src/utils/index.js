@@ -96,6 +96,17 @@ export const addZeroToAboveTenNumber = number => {
   return +number < 10 ? `0${number}` : number
 }
 
+
+export const findFilledStreamWeekDay = (weekDayName = "" , streamList = []) => {
+  return streamList.filter(el => el.schedule[weekDayName].length).map(el => ({ ...el, schedule : el.schedule[weekDayName] }))
+}
+
+export const calcAllHabitForDay = dayHabitList => {
+  return dayHabitList.reduce((acc , res) => {
+    return acc + res.schedule.length
+ } , 0)
+}
+
 export {
   requests
 }

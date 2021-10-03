@@ -1,0 +1,250 @@
+@keyframes controllerInitialSee {
+    from {
+        max-height: 200px;
+    }
+    to {
+        max-height: 0;
+    }
+}
+
+@keyframes newRoutineBackTriggerGetVisible {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.weekDay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    
+    &__sum {
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        opacity: .8;
+    }
+
+    &__habitIntro {
+        margin-top: 5rem;
+        margin-left: .5rem;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    &__nameContainer {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        user-select: none;
+        transition: .3s;
+
+        &__innerContainer {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(0, rgba(0, 0, 0, 0.699), transparent);
+            align-items: center;
+
+            p {
+                transition: .3s;
+            }
+
+        }
+
+        &:hover {
+            .weekDay__controller {
+                max-height: 200px;
+            }
+        }
+
+    }
+
+
+    &__habit {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+
+    &__habitItem {
+        flex: 1;
+        min-width: 150px;
+        margin: .5rem .5rem;
+        padding: 1rem;
+        height: 100px;
+    }
+
+    &__controller {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        max-height: 200px;
+        transition: .3s .2s;
+        overflow: hidden;
+
+        &--hide {
+            max-height: 0px;
+        }
+
+        button {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            padding: 1rem;
+            cursor: pointer;
+            transition: .3s;
+
+            &:disabled {
+                opacity: 0;
+                cursor: default;
+            }
+
+            svg {
+                width: 2rem;
+                height: 2rem;
+            }
+        }
+
+        &__returnTrigger {
+            display: flex;
+            align-items: center;
+
+            p {
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    &__detailsContainer {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        transition: all .3s , opacity .1s;
+    }
+
+    &__routine {
+        position: absolute;
+        left: 0;
+        top: 93vh;
+        transition: .5s;
+        width: 90%;
+        
+        &__trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.3rem;
+        }
+
+        &__form {
+            width: 90%;
+            opacity: 0;
+            animation: newRoutineBackTriggerGetVisible .5s .5s forwards alternate;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50% , -50%);
+        }
+
+        &__backTrigger {
+            font-size: 1.5rem;
+            margin-top: .5rem;
+            opacity: 0;
+            cursor: pointer;
+            animation: newRoutineBackTriggerGetVisible .5s 1s forwards alternate;
+            transition: .3s;
+            color: $grey;
+
+            &:hover {
+                color: white;
+            }
+        }
+
+        &__createTrigger {
+            color: $grey;
+            font-size: 1.5rem;
+            margin-top: .5rem;
+            margin-left: 1rem;
+        }
+
+        p {
+            cursor: pointer;
+            display: inline;
+            padding: 0.5rem;
+
+            span {
+                font-weight: 500;
+            }
+
+        }
+    }
+
+    &__dayLabel {
+        font-size: 4rem;
+        transition: .2s;
+    }
+
+    &--newRoutineMode {
+
+        .weekDay {
+
+
+            &__routine {
+                top: 0%;
+                left: 4.5rem;
+                
+                &__trigger {
+                    font-size: 3rem;
+                    color: rgba(255, 255, 255, 0.534);
+
+                    p {
+                        cursor: default;
+    
+                        &:last-child {
+                            cursor: pointer;
+                        }
+                    }
+                }
+                
+            }
+
+            &__controller {
+                max-height: 0px !important;
+            }
+
+            &__nameContainer {
+                width: 100%;
+                background-color: black !important;
+
+                &__innerContainer {
+                    position: relative;
+                    left: 0;
+                    top: 0;
+                    transition: .3s;
+                }
+            }
+
+            &__dayLabel {
+                font-size: 2.5rem;
+                color: rgba(255, 255, 255, 0.788);
+            }
+
+            &__sum {
+                font-size: 1.5rem !important;
+                color: rgba(255, 255, 255, 0.226);
+            }
+
+            &__detailsContainer {
+                width: 0;
+                overflow: hidden;
+                opacity: 0;
+            }
+        }
+    }
+}

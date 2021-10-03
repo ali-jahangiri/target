@@ -1,0 +1,17 @@
+.allWeekSchedule {
+
+    &__flasher {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 0;
+        background-color: $green;
+        z-index: 5;
+        transition: .3s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+        &--visible {
+            height: 100vh;
+        }
+    }
+}
