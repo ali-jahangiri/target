@@ -10,7 +10,6 @@
         
         .routineTimeSelector {
             &__hour {
-
                 &--deActive {
                    width: 50px !important;
                    flex: 1 0 50px;
@@ -18,7 +17,14 @@
                 }
             }
 
-
+            &__routeNameContainer {
+                &--goTop {
+                    top: -30%;
+                    input {
+                        width: auto;
+                    }
+                }
+            }
         }
         & div[class*=Push] {
             opacity: 1;
@@ -79,12 +85,7 @@
             }
         }
 
-        &--goTop {
-            top: -30%;
-            input {
-                width: auto;
-            }
-        }
+        
     }
 
     &__leftPush {
@@ -92,8 +93,9 @@
     }
 
     &__resizable {
-        background-color: $budGreen;
+        background-color: $green;
         transition: width .1s , left .2s;
+
         &__innerContainer {
             width: 100%;
             height: 100%;
@@ -119,21 +121,6 @@
                     }
                 }
             }
-
-            // &::after , &::before {
-            //     content: "";
-            //     width: .2rem;
-            //     height: 5rem;
-            //     background-color: $budGreen;
-            //     position: absolute;
-            //     left: 0;
-            //     bottom: -20px;
-            // }
-
-            // &::after {
-            //     transform: translateX(-100%);
-            //     left: 100%;
-            // }
         }
     }
 }

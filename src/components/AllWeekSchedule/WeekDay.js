@@ -23,7 +23,8 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
 
 
     const createRoutineHandler = () => {
-        requests.routine.setNewRoutine(name , isValidToCreateRoutine)
+        // requests.routine.setNewRoutine(name , isValidToCreateRoutine)
+        console.log(isValidToCreateRoutine);
     }
 
     return (

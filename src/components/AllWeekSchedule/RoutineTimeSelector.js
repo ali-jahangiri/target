@@ -24,8 +24,6 @@ const RoutineTimeSelector = ({ setIsValidToCreateRoutine }) => {
     const ts = Math.round(currentResizableWidth / 50) 
     const px = currentResizablePosition / 50
 
-    console.log(`from ${px} to ${ts + px}`);
-    
     useEffect(() => {
         if(routineName) {
             setIsValidToCreateRoutine({
@@ -41,11 +39,13 @@ const RoutineTimeSelector = ({ setIsValidToCreateRoutine }) => {
     } , [routineName , currentResizableWidth , currentResizablePosition])
 
 
+    
     return ( 
         <div onMouseEnter={() => setIsHoverOnMainContainer(true)} onMouseLeave={() => setIsHoverOnMainContainer(false)} className="routineTimeSelector">
-            <div style={{ margin : '0 25px' }}>
-                <Resizable
+            <div style={{ margin : '0 25px' , paddingTop : currentResizableWidth <= 150 ? 30 : 0 , transition : ".25s" }}>
+                <Resizable 
                     onResize={onResizeStopHandler}
+                    onResizeStop={onResizeStopHandler}
                     className="routineTimeSelector__resizable"
                     defaultSize={{width : 50 , height : 100}}
                     enable={{ right : !!!(ts >= 23) && (ts + px) < 23 && true , left : true }}

@@ -25,7 +25,12 @@ const client = {
             name : "Profile",
             path : "/profile",
             color : "7F8B52"
-        }
+        },
+        {
+            name : "Schedule",
+            path : "/habitPerWeek",
+            color : "D9CAB3"
+        },
     ]
 }
 
