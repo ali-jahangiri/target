@@ -107,6 +107,14 @@ export const calcAllHabitForDay = dayHabitList => {
  } , 0)
 }
 
+
+export const hourValueChecker = (value , des , toHr , from) => {
+  if(des === "from" && value >= toHr) return value - 1;
+  else if(des === 'to' && value <= from) return value + 1
+  if (value > 24) return 24;
+  else return value
+}
+
 export {
   requests
 }

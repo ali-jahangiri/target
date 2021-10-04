@@ -115,10 +115,8 @@ const routine = {
     initializeRoutineName(dayName) {
         return requestWrapper(resolve => references.routine.doc(dayName).set({ list : [] }).then(resolve))
     },
-    getRoutineList(dayName) {
-        return requestWrapper(resolve => references.routine.doc(dayName).get().then(res => {
-            resolve(res.data())
-        }))
+    getRoutineList(dayName , callback) {
+        references.routine.doc(dayName).onSnapshot(snapshot => callback({ ...snapshot.data() , id : snapshot.id }))
     },
     setNewRoutine(dayName , routine) {
         return requestWrapper(resolve => references.routine.doc(dayName).update({

@@ -1,8 +1,9 @@
-import { calcAllHabitForDay, requests, selfClearTimeout } from "../../utils";
+import { calcAllHabitForDay, generateColor, idGenerator, requests, selfClearTimeout } from "../../utils";
 
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { useEffect, useLayoutEffect, useState } from "react";
 import RoutineCreator from "./RoutineCreator";
+import RoutineBlock from "./RoutineBlock";
 
 
 const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => {
@@ -20,26 +21,28 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
     } , [])
 
     useEffect(function getRoutineList() {
-        requests.routine.getRoutineList(name)
-            .then(data => setRoutineList(data.list))
-    } , []);
+        requests.routine.getRoutineList(name , res => {
+            setRoutineList(res?.list || [])
+        })
+    } , [name]);
 
+
+    const cleanUpRoutineCreation = () => {
+        setIsInNewRoutineCreationProcess(false);
+        setIsInNewRoutineCreationProcess(false);
+    }
 
     const createRoutineHandler = () => {
         if(routineList.length) {
             // you can add new routine to current existing routine day
-            requests.routine.setNewRoutine(name , isValidToCreateRoutine)
-                .then(_ => {
-                    console.log('create new routiene');
-                })
+            requests.routine.setNewRoutine(name , { ...isValidToCreateRoutine , id : idGenerator()})
+                .then(cleanUpRoutineCreation)
         }else {
             // then you should initialize routine day document
             requests.routine.initializeRoutineName(name)
                 .then(_ => {
-                    requests.routine.setNewRoutine(name , isValidToCreateRoutine)
-                        .then(_ => {
-                            console.log('create new routiene');
-                        })
+                    requests.routine.setNewRoutine(name , { ...isValidToCreateRoutine , id : idGenerator()})
+                        .then(cleanUpRoutineCreation)
             })
         }
 
@@ -48,17 +51,31 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
     return (
         <div className={`weekDay ${isInNewRoutineCreationProcess ? "weekDay--newRoutineMode" : ""}`}>
             <div className="weekDay__detailsContainer">
-                <div className="weekDay__habitIntro">
-                    <p>Settled Habit </p>
+                <div className="weekDay__habitListContainer">
+                    <div className="weekDay__habitIntro">
+                        <p>Settled Habit </p>
+                    </div>
+                    <div className="weekDay__habit">
+                    {
+                            filedHabit.map(target => target.schedule.map((el , i) => (
+                                <div style={{ backgroundColor : `#${target.color}`}} className="weekDay__habitItem" key={i}>
+                                    <p>{el.name}</p>
+                                </div>
+                            )))
+                        }
+                    </div>
                 </div>
-                <div className="weekDay__habit">
-                {
-                        filedHabit.map(target => target.schedule.map((el , i) => (
-                            <div style={{ backgroundColor : `#${target.color}`}} className="weekDay__habitItem" key={i}>
-                                <p>{el.name}</p>
-                            </div>
-                        )))
-                    }
+                <div className="weekDay__routineListContainer">
+                    <div className="weekDay__routineIntro">
+                        <p>Settled Routine</p>
+                    </div>
+                    <div className="weekDay__routineDirectory">
+                        {
+                            routineList.map((el , i) => (
+                                <RoutineBlock currentDayName={name} key={i} {...el} />
+                            ))
+                        }
+                    </div>
                 </div>
             </div>
             <div onMouseEnter={() => setShouldControllerGetInitialHide(false)} style={{ backgroundColor : `#${mostRepeatedColor}` }} className="weekDay__nameContainer">

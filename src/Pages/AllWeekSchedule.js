@@ -18,7 +18,7 @@ const AllWeekSchedule = () => {
             setHabitPerWeek(res);
             setLoading(false);
         });
-    } , [])
+    } , []);
 
 
     const daySwitchHandler = newPassedDayName => {
