@@ -5,31 +5,31 @@
     justify-content: center;
     width: 100%;
 
-
-    // &:hover {
+    &:hover {
         
-    //     .routineTimeSelector {
-    //         &__hour {
-    //             &--deActive {
-    //                width: 50px !important;
-    //                flex: 1 0 50px;
-    //                opacity: 1;
-    //             }
-    //         }
+        .routineTimeSelector {
+            &__hour {
+                &--deActive {
+                   width: 50px !important;
+                   flex: 1 0 50px;
+                   opacity: 1;
+                }
+            }
 
-    //         &__routeNameContainer {
-    //             &--goTop {
-    //                 top: -30%;
-    //                 input {
-    //                     width: auto;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     & div[class*=Push] {
-    //         opacity: 1;
-    //     }
-    // }
+            &__routeNameContainer {
+                &--goTop {
+                    top: -30%;
+                    
+                    input {
+                        width: auto;
+                    }
+                }
+            }
+        }
+        & div[class*=Push] {
+            opacity: 1;
+        }
+    }
 
     &__hourContainer {
         margin-top: 1.5rem;
@@ -41,8 +41,6 @@
 
 
     &__hour {
-        flex: 1 0 50px;
-        max-width: 50px;
         transition: .2s;
         text-align: center;
         color: white;
@@ -51,16 +49,15 @@
             color: white;
             font-weight: 500;
             font-size: 1.7rem;
-            // max-width: auto !important;
+            max-width: 999px !important;
         }
 
         &--deActive {
-            // max-width: auto !important;
+            min-width: 0 !important;
             color: $darkGrey;
-            // width: 0;
-            // flex: 0 0 0;
-            // overflow: hidden;
-            // opacity: 0;
+            overflow: hidden;
+            width: 0 !important;
+            opacity: 0;
         }
     }
 
@@ -97,6 +94,7 @@
     &__resizable {
         background-color: $green;
         transition: left .2s , background-color 5s;
+        position: relative;
         
         &__innerContainer {
             width: 100%;
@@ -110,6 +108,7 @@
                 right: 100%;
                 transform: translateY(-50%);
                 transition: .3s;    
+                opacity: 0;
 
                 svg {
                     width: 1.5rem;
