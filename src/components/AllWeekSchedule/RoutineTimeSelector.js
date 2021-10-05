@@ -6,7 +6,7 @@ import { colors, selfClearInterval } from "../../utils";
 import Input from "../Input";
 
 
-const RoutineTimeSelector = ({ setIsValidToCreateRoutine }) => {
+const RoutineTimeSelector = ({ setIsValidToCreateRoutine , routineList }) => {
     const [routineName, setRoutineName] = useState("")
     const [currentResizablePosition, setCurrentResizablePosition] = useState(0)
     const [currentResizableWidth, setCurrentResizableWidth] = useState(0);
@@ -130,6 +130,20 @@ const RoutineTimeSelector = ({ setIsValidToCreateRoutine }) => {
                             }
                         })()}`} 
                         key={i}>{i + 1}
+                        </div>
+                    ))
+                }
+            </div>
+            <div className="routineTimeSelector__previousRoutineContainer">
+                {
+                    routineList.map((el , i) => (
+                        <div style={{ 
+                            backgroundColor : `#${el.color}` , 
+                            width: ((el.hour.to + 1) - (el.hour.from + 1)) * mainUnit,
+                            left: (el.hour.from + 0) * mainUnit
+                        }} 
+                        key={i}>
+                            <p><span>Settled as : </span> {el.name}</p>
                         </div>
                     ))
                 }

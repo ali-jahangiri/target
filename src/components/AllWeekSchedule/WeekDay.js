@@ -1,9 +1,10 @@
-import { calcAllHabitForDay, generateColor, idGenerator, requests, selfClearTimeout } from "../../utils";
+import { calcAllHabitForDay, idGenerator, requests, selfClearTimeout } from "../../utils";
 
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { useEffect, useLayoutEffect, useState } from "react";
 import RoutineCreator from "./RoutineCreator";
 import RoutineBlock from "./RoutineBlock";
+import useAfterInitialEffect from "./useAfterInitialEffect";
 
 
 const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => {
@@ -26,6 +27,7 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
         })
     } , [name]);
 
+    console.log(routineList);
 
     const cleanUpRoutineCreation = () => {
         setIsInNewRoutineCreationProcess(false);
@@ -48,6 +50,15 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
 
     }
 
+
+    const editRoutineHandler= newRoutineModel => {
+        setRoutineList(prev => prev.map(el => el.id === newRoutineModel.id ? newRoutineModel : el))
+    }
+
+    useAfterInitialEffect(function syncRoutineHandler() {
+        requests.routine.syncRoutine(name , routineList)
+    } , [routineList])
+
     return (
         <div className={`weekDay ${isInNewRoutineCreationProcess ? "weekDay--newRoutineMode" : ""}`}>
             <div className="weekDay__detailsContainer">
@@ -65,18 +76,20 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
                         }
                     </div>
                 </div>
-                <div className="weekDay__routineListContainer">
-                    <div className="weekDay__routineIntro">
-                        <p>Settled Routine</p>
+                {
+                    !!routineList.length && <div key={idGenerator()} className="weekDay__routineListContainer">
+                        <div className="weekDay__routineIntro">
+                            <p>Settled Routine</p>
+                        </div>
+                        <div className="weekDay__routineDirectory">
+                            {
+                                routineList.map((el , i) => (
+                                    <RoutineBlock editRoutineHandler={editRoutineHandler} currentDayName={name} key={i} {...el} />
+                                ))
+                            }
+                        </div>
                     </div>
-                    <div className="weekDay__routineDirectory">
-                        {
-                            routineList.map((el , i) => (
-                                <RoutineBlock currentDayName={name} key={i} {...el} />
-                            ))
-                        }
-                    </div>
-                </div>
+                }
             </div>
             <div onMouseEnter={() => setShouldControllerGetInitialHide(false)} style={{ backgroundColor : `#${mostRepeatedColor}` }} className="weekDay__nameContainer">
                 <div className="weekDay__nameContainer__innerContainer">
@@ -100,7 +113,7 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
             </div>
             <div className="weekDay__routine">
                     <div className="weekDay__routine__trigger">
-                        <p onClick={() => setIsInNewRoutineCreationProcess(true)}>Found a new <span>Routine</span> in the day ? </p>
+                        <p className="weekDay__routine__starterTrigger" onClick={() => setIsInNewRoutineCreationProcess(true)}>Found a new <span>Routine</span> in the day ? </p>
                         <div style={{ display : "flex" , alignItems : "center" }}>
                             {
                                 isInNewRoutineCreationProcess && <span className="weekDay__routine__backTrigger" onClick={() => setIsInNewRoutineCreationProcess(false)}>Back</span>
@@ -114,7 +127,7 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
                     </div>
                     {
                         isInNewRoutineCreationProcess && <div className="weekDay__routine__form">
-                            <RoutineCreator setIsValidToCreateRoutine={setIsValidToCreateRoutine} />
+                            <RoutineCreator routineList={routineList} setIsValidToCreateRoutine={setIsValidToCreateRoutine} />
                         </div>
                     }
             </div>

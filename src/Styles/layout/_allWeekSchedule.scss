@@ -7,7 +7,7 @@
         left: 0;
         height: 0;
         background-color: $green;
-        z-index: 5;
+        z-index: 99999;
         transition: .3s cubic-bezier(0.075, 0.82, 0.165, 1);
 
         &--visible {

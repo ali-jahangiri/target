@@ -16,6 +16,15 @@
     }
 }
 
+@keyframes hideBaseOnOpacity {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
 .weekDay {
     position: absolute;
     left: 0;
@@ -24,6 +33,23 @@
     width: 100vw;
     display: flex;
     
+    &__routineEditModeOverlay {
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: rgba(0, 0, 0, 0.932);
+        width: 100vw;
+        height: 100vh;
+        z-index: 999;
+        animation: newRoutineBackTriggerGetVisible .5s forwards alternate;
+        opacity: 0;
+        transition: .3s;
+
+        &--hide {
+            animation: hideBaseOnOpacity .5s forwards alternate;
+        }
+    }
+
     &__sum {
         margin-bottom: 1rem;
         font-size: 2rem;
@@ -51,7 +77,7 @@
         padding: 1rem;
         position: relative;
         margin: .5rem 1.5%;
-        height: 100px;
+        height: 150px;
         min-width: 300px;
         width: 47%;
         transition: .3s;
@@ -73,9 +99,11 @@
             align-items: center;
             justify-content: space-between;
 
+
+
             input {
                 font-size: 1.1rem;
-                color: $textColor;
+                color: black;
                 text-align: center;
                 font-weight: 500;
                 transition: .3s;
@@ -101,7 +129,7 @@
             div {
                 display: flex;
                 position: relative;
-                z-index: 5000;
+                z-index: 99;
             }
         }
 
@@ -111,13 +139,17 @@
             cursor: pointer;
             background-color: white;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
+            
+            
             
             
             
             span {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50% , -50%);
                 transition: .3s;
                 width: 70%;
                 height: 70%;
@@ -138,12 +170,25 @@
 
         &__controller {
             position: absolute;
-            right: 20px;
+            right: 0px;
             bottom: -70px;
             justify-content: space-between;
             display: flex;
             align-items: center;
             transition: .3s;
+            padding: 1rem;
+
+            &__save {
+                transition: .3s;
+                flex: 0 0 0;
+                max-width: 0px;
+                overflow: hidden;
+                
+                &--active {
+                    max-width: 50px;
+                    flex: 1 0;
+                }
+            }
 
             button {
                 background-color: transparent;
@@ -151,6 +196,7 @@
                 font-size: 1rem;
                 user-select: none;
                 cursor: pointer;
+                transition: .3s;
             }
 
             div {
@@ -162,10 +208,26 @@
             }
 
             &--show {
-                bottom: 20px;
+                bottom: 0;
             }
-        }
 
+            &--preventCloseByOverlayAction {
+                background-color: lighten($color: $red, $amount: 20);
+                button {
+                    color: $red !important;
+                }
+            }
+
+        }
+        
+        &--getRemoved {
+            height: 0 !important;
+            opacity: 0;
+            // padding: 0;
+            overflow: hidden;
+            margin: 0;
+            width: 0% !important;
+        }
 
         &__colorPicker {
             position: absolute;
@@ -184,7 +246,9 @@
             }
         }
 
-
+        &--inEditMode {
+            z-index: 999;
+        }
     }
 
     &__routineIntro {
@@ -283,15 +347,20 @@
         display: flex;
         flex-direction: column;
         transition: all .3s , opacity .1s;
+        max-height: 100vh;
+        overflow-y: scroll;
+        padding-bottom: 3rem;
     }
 
     &__routine {
         position: absolute;
         left: 0;
-        top: 93vh;
-        transition: .5s;
-        width: 400px;
-        
+        bottom: 0;
+        transition: all .5s , background-color .3s .5s;
+        width: calc(100% - 30%);
+        background-color: white;
+        z-index: 99;
+
         &__trigger {
             display: flex;
             align-items: center;
@@ -330,7 +399,7 @@
             margin-left: 1rem;
         }
 
-        p {
+        &__starterTrigger {
             cursor: pointer;
             display: inline;
             padding: 0.5rem;
@@ -353,10 +422,12 @@
 
 
             &__routine {
-                top: 0%;
+                bottom: 88%;
                 left: 4.5rem;
                 width: 90%;
-                
+                background-color: transparent;
+                transition: all .5s , background-color 0s 0s;
+
                 &__trigger {
                     font-size: 3rem;
                     color: rgba(255, 255, 255, 0.534);

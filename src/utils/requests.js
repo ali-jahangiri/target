@@ -124,10 +124,14 @@ const routine = {
         }).then(resolve))
     },
     removeRoutine(dayName , routineId) {
-
+        return requestWrapper(resolve => references.routine.doc(dayName).update({
+            list : firebase.firestore.FieldValue.arrayRemove(routineId)
+        }).then(resolve))
     },
-    editRoutine(dayName , updatedRoutine) {
-
+    syncRoutine(dayName , newRoutineModel) {
+        requestWrapper(resolve => references.routine.doc(dayName).update({
+            list : newRoutineModel
+        }).then(resolve))
     }
 }
 

@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 
-import { idGenerator, selfClearTimeout, _date } from "../utils";
+import { idGenerator, requests, selfClearTimeout, _date } from "../utils";
+
+import RoutineStream from "../components/Stream/RoutineStream";
 
 import { EmptyHabitBlock , StreamItem, StreamSidebar} from "../components/Stream";
 import TodayHoursRow from "../components/TodayHoursRow";
@@ -33,7 +35,6 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
   const [isOverlayInHideProcess, setIsOverlayInHideProcess] = useState(false);
   const [injectedTodo, setInjectedTodo] = useState("")
-  const [firstTime, setFirstTime] = useState(true);
 
   const deleteTimeoutRef = useRef();
 
@@ -47,14 +48,22 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   useEffect(function streamInitializer() {
     references.stream.doc(leanDate).onSnapshot(snapShot => {
       if(snapShot.exists) {
-          setHabitInStream(snapShot.data().item);
-          references.habitPerWeek
-          .get()
-          .then(res => {
-            let ss = _date(date).add(1 , 'day').format('dddd')
+        references.habitPerWeek
+        .get()
+        .then(res => {
+          let ss = _date(date).add(1 , 'day').format('dddd')
+          const validTodayDayName = _date(date).add(2 , 'day').format('dddd');
+          requests.routine.getRoutineList(validTodayDayName , response => {
+            console.log(response?.list , date , validTodayDayName);
             const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
+            const endResultHabitInStreamForWorkingWith = snapShot.data().item;
+            response?.list?.map(routine => {
+              endResultHabitInStreamForWorkingWith.map((el, i) => i === routine.hour.from ? endResultHabitInStreamForWorkingWith[i] = {...routine , type : "routine"} : el)
+            })
+            setHabitInStream(endResultHabitInStreamForWorkingWith);
             setTodayHabit(_s)
             finishLoadingHandler()
+          })
           })
         }else {
           const curr = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }))
@@ -74,14 +83,14 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
     })
   } , [date])
 
-  useEffect(function syncStream () {
-    if(!firstTime) {
-      references.stream.doc(leanDate)
-        .update({item : habitInStream})
-    }else {
-      setFirstTime(false)
-    }
-  } , [habitInStream])
+  // useEffect(function syncStream () {
+  //   if(!firstTime) {
+  //     references.stream.doc(leanDate)
+  //       .update({item : habitInStream})
+  //   }else {
+  //     setFirstTime(false)
+  //   }
+  // } , [habitInStream])
 
   useEffect(() => {
     if(isSidebarOpen && !loading) {
@@ -245,7 +254,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         </div>
       )}
       <DragDropContext onDragStart={dragStartHandler} onDragEnd={dragEndHandler} >
-        <div style={{ overflowX : "hidden" }} id="Container2" className={`todayHoursRow__container ${isDraggingStart || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
+        <div  id="Container2" className={`todayHoursRow__container ${isDraggingStart || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
           <div id="Container" style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : 5}}>
             {hours.map((el, i) => (
               <TodayHoursRow
@@ -266,6 +275,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
                     className="today__droppableContainer">
                   {habitInStream.map((el, i) => {
                     if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
+                    else if(el.type === "routine") return <RoutineStream index={i} key={i} {...el} />
                     else return (
                         <StreamItem
                           leanDate={leanDate}
