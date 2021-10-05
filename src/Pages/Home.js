@@ -76,8 +76,14 @@ const Home = () => {
 
         const dateForPassingIntoStream = `${now.year()}/${passMoth < 10 ? `0${passMoth}` : passMoth}/${passDay < 10 ? `0${passDay}` : passDay}`
         
+        const todayDate = _date().format('YYYY/MM/DD');
+        const isAfterToday = _date(todayDate).diff(dateForPassingIntoStream) <= 0 ? true : false;
+
+        console.log(isAfterToday , dateForPassingIntoStream);
+
         if(index >= min && index <= max) {
             return <Stream
+                        isDisable={!isAfterToday}
                         setIsTargetStreamReadyToRender={setIsTargetStreamReadyToRender}
                         sideBarEnabled={index === currentDay} 
                         date={dateForPassingIntoStream} />

@@ -13,13 +13,14 @@ import Timeline from "../components/Timeline";
 
 import { references } from "../firebase";
 import useKeyBaseState from "../Hook/useKeyBaseState";
+import PreventUserInteractOverlay from "../components/Stream/PreventUserInteractOverlay";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
 const TODAY_ID = "todayHabit";
 
 
-const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
+const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDisable }) => {
   const [loading, setLoading] = useState(true);
   const [currentItemInDeleteProcess, setCurrentItemInDeleteProcess] = useState(false);
   const [habitInStream, setHabitInStream] = useState(null);
@@ -35,6 +36,10 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
   const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
   const [isOverlayInHideProcess, setIsOverlayInHideProcess] = useState(false);
   const [injectedTodo, setInjectedTodo] = useState("")
+  const [firstTime, setIsFirstTme] = useState(true)
+
+
+  const mainContainerRef = useRef();
 
   const deleteTimeoutRef = useRef();
 
@@ -52,45 +57,47 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         .get()
         .then(res => {
           let ss = _date(date).add(1 , 'day').format('dddd')
-          const validTodayDayName = _date(date).add(2 , 'day').format('dddd');
-          requests.routine.getRoutineList(validTodayDayName , response => {
-            console.log(response?.list , date , validTodayDayName);
-            const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
-            const endResultHabitInStreamForWorkingWith = snapShot.data().item;
-            response?.list?.map(routine => {
-              endResultHabitInStreamForWorkingWith.map((el, i) => i === routine.hour.from ? endResultHabitInStreamForWorkingWith[i] = {...routine , type : "routine"} : el)
-            })
-            setHabitInStream(endResultHabitInStreamForWorkingWith);
-            setTodayHabit(_s)
-            finishLoadingHandler()
-          })
+          // const validTodayDayName = _date(date).add(2 , 'day').format('dddd');
+          const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
+          setTodayHabit(_s)
+          setHabitInStream(snapShot.data().item);
+          finishLoadingHandler()
           })
         }else {
-          const curr = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }))
+          console.log('INITIAL CREATE');
+          requests.routine.getRoutineList(_date(date).add(2 , 'day').format('dddd') , response => {
+          console.log(response , date);
+          const curr = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }));
+          if(response?.list?.length) {
+            response.list.map(routine => (
+              curr[routine.hour.from] = { ...routine , type : "routine" }
+            ))
+          }
           references.stream.doc(leanDate).set({ item : curr })
-            .then(_ => {
-              setHabitInStream(curr)
-              references.habitPerWeek
-                .get()
-                .then(res => {
-                  let ss = _date(date).add(1 , 'day').format('dddd');
-                  const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
-                  setTodayHabit(_s)
-                  finishLoadingHandler()
-                })
-            })
+              .then(_ => {
+                setHabitInStream(curr)
+                references.habitPerWeek
+                  .get()
+                  .then(res => {
+                    let ss = _date(date).add(1 , 'day').format('dddd');
+                    const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
+                    setTodayHabit(_s)
+                    finishLoadingHandler()
+                  })
+              })
+          })
         }
     })
   } , [date])
 
-  // useEffect(function syncStream () {
-  //   if(!firstTime) {
-  //     references.stream.doc(leanDate)
-  //       .update({item : habitInStream})
-  //   }else {
-  //     setFirstTime(false)
-  //   }
-  // } , [habitInStream])
+  useEffect(function syncStream () {
+    if(!firstTime) {
+      references.stream.doc(leanDate)
+        .update({item : habitInStream})
+    }else {
+      setIsFirstTme(false)
+    }
+  } , [habitInStream])
 
   useEffect(() => {
     if(isSidebarOpen && !loading) {
@@ -106,7 +113,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
     if (!isSidebarOpen && !sidebarClosedByUser) {
       selfClearTimeout(() => setIsSidebarOpen(true), 500);
     }
-
+    
     if (!destination || destination.index > 23) {
       let needToAssign = true;
       let timer = setTimeout(() => {
@@ -119,7 +126,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
       if(needToAssign) deleteTimeoutRef.current = timer;
       return;
     }
-
+    
     if (source.droppableId === TODAY_ID)
       return reorderHandler(destination, source);
 
@@ -242,7 +249,10 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
 
   return loading ? <div className="today__loadingScreen" /> : (
     <div className="today">
-      <Timeline />
+      <Timeline shouldGoToCurrentHour={!isDisable} />
+      {
+        isDisable && <PreventUserInteractOverlay protectFrom={mainContainerRef.current} />
+      }
       {
         shouldOverlayGetVisible && <div className="helperOverlay" />
       }
@@ -254,7 +264,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
         </div>
       )}
       <DragDropContext onDragStart={dragStartHandler} onDragEnd={dragEndHandler} >
-        <div  id="Container2" className={`todayHoursRow__container ${isDraggingStart || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
+        <div ref={mainContainerRef} id="Container2" className={`todayHoursRow__container ${isDraggingStart || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
           <div id="Container" style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : 5}}>
             {hours.map((el, i) => (
               <TodayHoursRow
@@ -309,7 +319,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender }) => {
           </Droppable>
         </div>
         {
-          sideBarEnabled && (
+          !isDisable && sideBarEnabled && (
             <StreamSidebar
               habitInStream={habitInStream.filter(el => el.name)}
               isDraggingStart={isDraggingStart}

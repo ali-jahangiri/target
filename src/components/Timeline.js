@@ -1,7 +1,16 @@
-import { useEffect , useState  } from "react";
+import { useEffect , useLayoutEffect, useState  } from "react";
+import { selfClearTimeout } from "../utils";
 
-const Timeline = () => {
+const Timeline = ({ shouldGoToCurrentHour }) => {
     const [position, setPosition] = useState(((new Date().getHours() - 1) * 100 ) + (new Date().getMinutes() * 1.66666));
+
+    useLayoutEffect(function scrollIntoCurrentHour() {
+        if(shouldGoToCurrentHour) {
+            selfClearTimeout(() => {
+                document.querySelector('.mainContainer').scrollTo({ top : position , behavior : "smooth" })
+            } , 500)
+        }
+    } , []);
 
     useEffect(() => {
         let timer = setInterval(() => {
