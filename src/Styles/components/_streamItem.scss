@@ -116,13 +116,13 @@
         }
     }
 
-    &+div {
+    & + div {
         height: 25px;
         position: absolute;
         bottom: 0;
         left: 0;
         width: 100%;
-        z-index: 5;
+        z-index: 9999;
 
         &>div {
             transition: .3s;
@@ -165,6 +165,7 @@
         top: 50%;
         transform: translateX(-50%) translateY(-50%);
         transition: .3s .8s;
+        z-index: 9;
 
         p {
             transition: .3s;

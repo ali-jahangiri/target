@@ -1,0 +1,81 @@
+@keyframes rotatedLineMovements {
+    0% {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 140px 0;
+    }
+}
+
+@keyframes initialShowStreamOverHour {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.streamOverHour {
+    position: absolute;
+    width: 100%;
+    max-height: 100%;
+    background: #ffffff8f;
+    // background: linear-gradient(180deg, #ffffffa1, transparent);
+    z-index: 9;
+    height: 0;
+    transition: .25s .1s cubic-bezier(0.215, 0.610, 0.355, 1);
+    overflow: hidden;
+    animation: initialShowStreamOverHour .3s forwards alternate;
+
+    &__rotatedLineContainer {
+        width: 100%;
+        height: 100%;
+        animation: rotatedLineMovements 9s reverse linear infinite;
+        background-size: 70px 70px;
+        transition: .3s;
+        background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    }
+
+    &__helperText {
+        position: absolute;
+        left: 50%;
+        top: -10px;
+        transform: translate(-50% , -50%);
+        transition: .3s .25s;
+        color: rgba(255, 255, 255, 0.562);
+        font-weight: 500;
+
+    }
+
+    &:hover {
+        .streamOverHour {
+            &__helperText {
+                top: 50%;
+            }
+        }
+    }
+
+    &--fullyCompleted {
+        background: #0000004f;
+        
+        .streamOverHour {
+            &__rotatedLineContainer {
+                animation-play-state: paused;
+                opacity: 0;
+            }
+        }
+        &:hover {
+            .streamOverHour__helperText {
+                top: -10px !important;
+            }
+        }
+
+    }
+
+    &--hide {
+        height: 0 !important;
+        overflow: hidden;
+        opacity: 0;
+    }
+}

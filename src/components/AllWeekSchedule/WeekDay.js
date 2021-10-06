@@ -59,6 +59,8 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
         requests.routine.syncRoutine(name , routineList)
     } , [routineList])
 
+
+
     return (
         <div className={`weekDay ${isInNewRoutineCreationProcess ? "weekDay--newRoutineMode" : ""}`}>
             <div className="weekDay__detailsContainer">
@@ -71,6 +73,7 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
                             filedHabit.map(target => target.schedule.map((el , i) => (
                                 <div style={{ backgroundColor : `#${target.color}`}} className="weekDay__habitItem" key={i}>
                                     <p>{el.name}</p>
+                                    <p>For <span>{target.targetName}</span></p>
                                 </div>
                             )))
                         }

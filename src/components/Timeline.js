@@ -2,7 +2,8 @@ import { useEffect , useLayoutEffect, useState  } from "react";
 import { selfClearTimeout } from "../utils";
 
 const Timeline = ({ shouldGoToCurrentHour }) => {
-    const [position, setPosition] = useState(((new Date().getHours() - 1) * 100 ) + (new Date().getMinutes() * 1.66666));
+    const currentHr = new Date().getHours()
+    const [position, setPosition] = useState(((currentHr > 0 ? currentHr - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666));
 
     useLayoutEffect(function scrollIntoCurrentHour() {
         if(shouldGoToCurrentHour) {
@@ -14,7 +15,8 @@ const Timeline = ({ shouldGoToCurrentHour }) => {
 
     useEffect(() => {
         let timer = setInterval(() => {
-            setPosition(((new Date().getHours() - 1) * 100 ) + (new Date().getMinutes() * 1.66666))
+            const currentHr = new Date().getHours()
+            setPosition(((currentHr > 0 ? currentHr - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666))
         } , 60000)
         return () => clearInterval(timer);
     } , [])

@@ -1,9 +1,14 @@
 .routineStream {
-    min-height: 100px;
+    z-index: 99;
     position: relative;
-    padding: 2rem;
+    width: 100%;
+    min-height: 100px;
+
     &__name {
-        font-size: 2rem;
+        font-weight: 400;
+        width: 95%;
+        margin: 0 auto;
+        padding: 1rem 0;
     }
 
     &__circle {
@@ -14,6 +19,7 @@
         height: 2rem;
         background-color: white;
         border-radius: 50%;
+        cursor: pointer;
         
         & > div {
             width: 80%;
@@ -23,6 +29,27 @@
             top: 50%;
             transform: translate(-50% , -50%);
             border-radius: 50%;
+        }
+    }
+
+    &__time {
+        position: absolute;
+        left: 6%;
+        bottom: 25px;
+        opacity: .5;
+        transition: .3s;
+
+        span {
+            font-weight: 500;
+        }
+    }
+
+
+    &:hover {
+        .routineStream {
+            &__time {
+                opacity: 1;
+            }
         }
     }
 }

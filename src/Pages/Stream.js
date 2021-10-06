@@ -14,6 +14,7 @@ import Timeline from "../components/Timeline";
 import { references } from "../firebase";
 import useKeyBaseState from "../Hook/useKeyBaseState";
 import PreventUserInteractOverlay from "../components/Stream/PreventUserInteractOverlay";
+import { useLayoutEffect } from "react";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -38,6 +39,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
   const [injectedTodo, setInjectedTodo] = useState("")
   const [firstTime, setIsFirstTme] = useState(true)
 
+  const [currentInProgressBlock, setCurrentInProgressBlock] = useState(null);
 
   const mainContainerRef = useRef();
 
@@ -56,21 +58,18 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
         references.habitPerWeek
         .get()
         .then(res => {
-          let ss = _date(date).add(1 , 'day').format('dddd')
-          // const validTodayDayName = _date(date).add(2 , 'day').format('dddd');
+          let ss = _date(date).add(2 , 'day').format('dddd')
           const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
           setTodayHabit(_s)
           setHabitInStream(snapShot.data().item);
           finishLoadingHandler()
           })
         }else {
-          console.log('INITIAL CREATE');
           requests.routine.getRoutineList(_date(date).add(2 , 'day').format('dddd') , response => {
-          console.log(response , date);
           const curr = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }));
           if(response?.list?.length) {
             response.list.map(routine => (
-              curr[routine.hour.from] = { ...routine , type : "routine" }
+              curr[routine.hour.from] = { ...routine , type : "routine" , hoursGoNext : routine.hour.to - routine.hour.from }
             ))
           }
           references.stream.doc(leanDate).set({ item : curr })
@@ -79,7 +78,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                 references.habitPerWeek
                   .get()
                   .then(res => {
-                    let ss = _date(date).add(1 , 'day').format('dddd');
+                    let ss = _date(date).add(2 , 'day').format('dddd');
                     const _s = res.docs.map(el => el.data()).map(el => ({ color : el.color , item : el.schedule[ss] })).filter(el => el.item?.length)
                     setTodayHabit(_s)
                     finishLoadingHandler()
@@ -246,10 +245,15 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
     }
   };
 
+  useLayoutEffect(() => {
+    selfClearTimeout(() => {
+      currentInProgressBlock?.scrollIntoView({ behavior : "smooth" })
+    } , 500)
+  } , [currentInProgressBlock])
 
   return loading ? <div className="today__loadingScreen" /> : (
     <div className="today">
-      <Timeline shouldGoToCurrentHour={!isDisable} />
+      <Timeline shouldGoToCurrentHour={!isDisable || !currentInProgressBlock} />
       {
         isDisable && <PreventUserInteractOverlay protectFrom={mainContainerRef.current} />
       }
@@ -288,6 +292,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                     else if(el.type === "routine") return <RoutineStream index={i} key={i} {...el} />
                     else return (
                         <StreamItem
+                          setCurrentInProgressBlock={setCurrentInProgressBlock}
                           leanDate={leanDate}
                           deleteTimeoutRef={deleteTimeoutRef}
                           snapshot={snapshot}

@@ -9,6 +9,7 @@ import StreamResizeTrigger from "./StreamResizeTrigger";
 
 import WritableDetails from "./WritableDetails";
 import { selfClearTimeout } from "../../utils";
+import StreamOverHour from "./StreamOverHour";
 
 const StreamItem = ({ 
     detailsShowHandler, 
@@ -26,6 +27,7 @@ const StreamItem = ({
     isInDetailsMode, 
     habitInStream, 
     snapshot , 
+    setCurrentInProgressBlock,
     deleteTimeoutRef , 
     setCurrentItemInDeleteProcess , 
     currentItemInDeleteProcess , 
@@ -64,10 +66,11 @@ const StreamItem = ({
       const validStream = habitInStream.filter(el => el.name);
       const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
       const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
-      const hh = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
-      // let start = index + hh;
-      // const end = start + hoursGoNext;
-      setPosition(hh)
+      const pushCountFromAboveBlocks = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
+      let start = index + pushCountFromAboveBlocks;
+      const end = start + hoursGoNext;
+
+      setPosition(pushCountFromAboveBlocks)
     }, [habitInStream, hoursGoNext, id, index])
 
 
@@ -125,15 +128,12 @@ const StreamItem = ({
       setCurrentItemInDeleteProcess(null);
     }
 
-    
-    useLayoutEffect(() => {
-      if(isInDetailsMode) {
-        window.addEventListener("click" , e => {
-          
-        })
+    const internalPassingUpCurrentInProgressBlockHandler = shouldPassToTop => {
+      if(shouldPassToTop) {
+        setCurrentInProgressBlock((index + position )* 100)
       }
-    } , [isInDetailsMode])
-    
+    }
+  
     return (
       <Draggable isDragDisabled={isInDetailsMode} draggableId={id} index={index}>
         {(provided) => (
@@ -157,6 +157,7 @@ const StreamItem = ({
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               className={`streamItem ${isInDragging ? "streamItem--hideResizeTrigger" : ""} ${detailsActive ? "streamItem--overflowHidden" : ""}`}>
+                <StreamOverHour setIsInProgress={internalPassingUpCurrentInProgressBlockHandler} isInDetailsMode={isInDetailsMode} startPoint={(position + index) * 100} endPoint={(position + index + hoursGoNext) * 100} />
               <div
                 onClick={() => currentItemInDeleteProcess === id && cancelDeleteProcess()}
                 className={`streamItem__container ${currentItemInDeleteProcess === id ? "streamItem__container--delete" : ""}`}
