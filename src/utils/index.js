@@ -91,6 +91,7 @@ export const getRandomItem = (array = []) => {
   return array[Math.floor(Math.random() * array.length)]
 }
 
+export const deepClone = data => JSON.parse(JSON.stringify(data));
 
 export const addZeroToAboveTenNumber = number => {
   return +number < 10 ? `0${number}` : number

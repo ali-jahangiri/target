@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 
-import { idGenerator, requests, selfClearTimeout, _date } from "../utils";
+import { debounce, deepClone, idGenerator, requests, selfClearTimeout, _date } from "../utils";
 
 import RoutineStream from "../components/Stream/RoutineStream";
 
@@ -14,7 +14,6 @@ import Timeline from "../components/Timeline";
 import { references } from "../firebase";
 import useKeyBaseState from "../Hook/useKeyBaseState";
 import PreventUserInteractOverlay from "../components/Stream/PreventUserInteractOverlay";
-import { useLayoutEffect } from "react";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -39,7 +38,9 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
   const [injectedTodo, setInjectedTodo] = useState("")
   const [firstTime, setIsFirstTme] = useState(true)
 
-  const [currentInProgressBlock, setCurrentInProgressBlock] = useState(null);
+  const [activeBlockList, setActiveBlockList] = useState([]);
+
+  const [isInInitialActiveBlockList, setIsInInitialActiveBlockList] = useState(true);
 
   const mainContainerRef = useRef();
 
@@ -105,8 +106,8 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
       setIsTargetStreamReadyToRender(true);
     }
   } , [isSidebarOpen])
-  
-  
+
+
   const dragEndHandler = ({ source, destination, draggableId }) => {
     setIsDraggingStart(false);
     if (!isSidebarOpen && !sidebarClosedByUser) {
@@ -245,21 +246,42 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
     }
   };
 
-  useLayoutEffect(() => {
-    selfClearTimeout(() => {
-      currentInProgressBlock?.scrollIntoView({ behavior : "smooth" })
-    } , 500)
-  } , [currentInProgressBlock])
+  const addToActiveBlockHandler = newActiveBlock => {
+    setActiveBlockList(prev => [...prev , newActiveBlock]);
+  }
+
+
+  const debouncedScrollToActiveBlockHandler = useCallback(debounce((passedSyncedList = []) => {
+    const currentHour = new Date().getHours();
+    const mainParentContainerRef = document.querySelector('.mainContainer');
+    
+    if(passedSyncedList.length) {
+      if(passedSyncedList.some(el => el.isInDoing)) {
+        mainParentContainerRef.scrollTo({ top : passedSyncedList.find(el => el.isInDoing).startPointPosition * 100 , behavior : "smooth" })
+      }else {
+        const sortedActiveList = deepClone(passedSyncedList).sort((a , b) => a.startPointPosition - b.startPointPosition).sort((_ , b) => b.startPointPosition - currentHour);
+        mainParentContainerRef.scrollTo({ top : sortedActiveList[0].startPointPosition * 100 , behavior : "smooth" })
+      }
+      setIsInInitialActiveBlockList(false);
+    }else {
+      selfClearTimeout(() => {
+        const currentTimelinePosition = ((currentHour > 0 ? currentHour - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666);
+        mainParentContainerRef.scrollTo({ top : currentTimelinePosition , behavior : "smooth" });
+      } , 700);
+    }
+  } , 250) , []);
+
+  useEffect(() => isInInitialActiveBlockList && debouncedScrollToActiveBlockHandler(activeBlockList) , [activeBlockList]);
 
   return loading ? <div className="today__loadingScreen" /> : (
     <div className="today">
-      <Timeline shouldGoToCurrentHour={!isDisable || !currentInProgressBlock} />
-      {
-        isDisable && <PreventUserInteractOverlay protectFrom={mainContainerRef.current} />
-      }
-      {
-        shouldOverlayGetVisible && <div className="helperOverlay" />
-      }
+      <Timeline shouldGoToCurrentHour={!isDisable || !activeBlockList} />
+        {
+          isDisable && <PreventUserInteractOverlay protectFrom={mainContainerRef.current} />
+        }
+        {
+          shouldOverlayGetVisible && <div className="helperOverlay" />
+        }
       {isDetailsModeActive !== false && (
         <div style={{ top: isDetailsModeActive }} className={`helperOverlay ${isOverlayInHideProcess ? "helperOverlay--inDestroyProcess" : ""}`}>
           <span style={{ height: timelineDetails.height , top : timelineDetails.topPosition }} className={`helperOverlay__timeline ${timelineDetails.topPosition ? "helperOverlay__timeline--haveTopDistance" : ""}`}>
@@ -275,7 +297,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                 indexInTimeline={detailsTimeline.includes(el) && detailsTimeline.indexOf(el)}
                 isInTimeLine={detailsTimeline.includes(el)}
                 index={el}
-                key={i}
+                key={i} 
               />
             ))}
           </div>
@@ -292,7 +314,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                     else if(el.type === "routine") return <RoutineStream index={i} key={i} {...el} />
                     else return (
                         <StreamItem
-                          setCurrentInProgressBlock={setCurrentInProgressBlock}
+                          addToActiveBlockHandler={addToActiveBlockHandler}
                           leanDate={leanDate}
                           deleteTimeoutRef={deleteTimeoutRef}
                           snapshot={snapshot}

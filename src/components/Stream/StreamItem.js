@@ -1,4 +1,4 @@
-import { useRef , useEffect , useState, useLayoutEffect } from "react";
+import { useRef , useEffect , useState } from "react";
 import { Resizable } from "re-resizable";
 import { Draggable } from "react-beautiful-dnd";
 import { CgClose } from "react-icons/cg";
@@ -27,7 +27,7 @@ const StreamItem = ({
     isInDetailsMode, 
     habitInStream, 
     snapshot , 
-    setCurrentInProgressBlock,
+    addToActiveBlockHandler,
     deleteTimeoutRef , 
     setCurrentItemInDeleteProcess , 
     currentItemInDeleteProcess , 
@@ -40,7 +40,6 @@ const StreamItem = ({
     const [detailsActive, setDetailsActive] = useState(false);
     const [position, setPosition] = useState(0);
     const [isDetailsInCloseProcess, setIsDetailsInCloseProcess] = useState(false);
-
     const mainContainerRef = useRef();
 
     const internalResizeHandler = (e, dir, ref, d) => {
@@ -67,8 +66,8 @@ const StreamItem = ({
       const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
       const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
       const pushCountFromAboveBlocks = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
-      let start = index + pushCountFromAboveBlocks;
-      const end = start + hoursGoNext;
+      // let start = index + pushCountFromAboveBlocks;
+      // const end = start + hoursGoNext;
 
       setPosition(pushCountFromAboveBlocks)
     }, [habitInStream, hoursGoNext, id, index])
@@ -122,15 +121,15 @@ const StreamItem = ({
       }
     }, [snapshot]);
 
-
+    
     const cancelDeleteProcess = () => {
       clearTimeout(deleteTimeoutRef.current)
       setCurrentItemInDeleteProcess(null);
     }
 
-    const internalPassingUpCurrentInProgressBlockHandler = shouldPassToTop => {
-      if(shouldPassToTop) {
-        setCurrentInProgressBlock((index + position )* 100)
+    const internalPassingUpCurrentInProgressBlockHandler = (shouldAddBlockToList) => {
+      if(shouldAddBlockToList) {
+        addToActiveBlockHandler(shouldAddBlockToList);
       }
     }
   

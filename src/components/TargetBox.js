@@ -8,7 +8,7 @@ import Input from './Input';
 import DeleteBoxHabitOfTarget from "./DeleteBoxHabitOfTarget";
 import ColorSuggest from "./ColorSuggest";
 
-import { debounce, idGenerator, requests, selfClearTimeout } from "../utils"
+import { debounce, idGenerator, requests, selfClearTimeout } from "../utils";
 
 const TargetBox = ({ targetName , color , habit = [] , id}) => {
     const [inputValues , setInputValues] = useKayBaseState({});

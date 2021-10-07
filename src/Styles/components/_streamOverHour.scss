@@ -26,7 +26,10 @@
     height: 0;
     transition: .25s .1s cubic-bezier(0.215, 0.610, 0.355, 1);
     overflow: hidden;
-    animation: initialShowStreamOverHour .3s forwards alternate;
+    
+    &--initialRender {
+        animation: initialShowStreamOverHour .3s forwards alternate;
+    }
 
     &__rotatedLineContainer {
         width: 100%;
