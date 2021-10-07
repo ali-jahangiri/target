@@ -77,11 +77,17 @@ const Home = () => {
         const dateForPassingIntoStream = `${now.year()}/${passMoth < 10 ? `0${passMoth}` : passMoth}/${passDay < 10 ? `0${passDay}` : passDay}`
         
         const todayDate = _date().format('YYYY/MM/DD');
-        const isAfterToday = _date(todayDate).diff(dateForPassingIntoStream) <= 0 ? true : false;
+        const isTodayOrAfter = _date(todayDate).diff(dateForPassingIntoStream) <= 0 ? true : false;
+        const isNextDayAfterToday = _date(todayDate).diff(dateForPassingIntoStream) < 0;
+        const isToday = _date(todayDate).diff(dateForPassingIntoStream) === 0;
+
 
         if(index >= min && index <= max) {
             return <Stream
-                        isDisable={!isAfterToday}
+                        parentNodeRef={containerRef}
+                        isToday={isToday}
+                        isDisable={!isTodayOrAfter}
+                        isNextDayAfterToday={isNextDayAfterToday}
                         setIsTargetStreamReadyToRender={setIsTargetStreamReadyToRender}
                         sideBarEnabled={index === currentDay} 
                         date={dateForPassingIntoStream} />
@@ -99,7 +105,7 @@ const Home = () => {
         let s = (now.date() - 1) * window.innerWidth
         setCurrentDay(s / window.innerWidth );
         currentLeftPosition.current = s
-        containerRef.current?.scroll({ left : s , behavior : "smooth" })
+        containerRef.current?.scroll({ left : s })
     }
 
 

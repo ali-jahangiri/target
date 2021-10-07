@@ -1,20 +1,30 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { FiChevronLeft, FiLock } from "react-icons/fi";
+import { generateColor } from "../../utils";
 
 import Todo from "./Todo";
 
 const HABIT_LIST_ID = "fromHabitList";
 
 
-const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandler , todayHabit , setShouldOverlayGetVisible , leanDate , setInjectedTodo , isDraggingStart , habitInStream = []}) => {
+const StreamSidebar = ({ 
+    isSidebarOpen , 
+    currentDetailsModeHabit  , 
+    sideBarHandler , 
+    todayHabit , 
+    setShouldOverlayGetVisible , 
+    leanDate , 
+    setInjectedTodo , 
+    isDraggingStart , 
+    leanedHabitInStream = []
+}) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
   const [todoInputValue, setTodoInputValue] = useState("");
   
+
   useEffect(() => {
-    if(isDraggingStart) {
-      setInjectedTodo(todoInputValue)
-    }
+    if(isDraggingStart) setInjectedTodo(todoInputValue);
   } , [todoInputValue , isDraggingStart])
   
   useLayoutEffect(() => {
@@ -29,12 +39,9 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
   }
 
   useEffect(function todoInputValueCleanupAfterCreation() {
-    if(habitInStream.some(el => el.name === todoInputValue)) setTodoInputValue("")
+    if(leanedHabitInStream.some(el => el.name === todoInputValue)) setTodoInputValue("")
   } , [isDraggingStart])
 
-  // const [containerScroll, setContainerScroll] = useState(0);
-  // const onContainerScrollHandler = debounce(e => setContainerScroll(e.target.scrollTop) , 25);
-  
   const sidebarContainerRef = useRef();
 
   return (
@@ -45,7 +52,6 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
             {currentDetailsModeHabit ? <FiLock color="rgb(82, 82, 82)" /> : <FiChevronLeft color="rgb(82, 82, 82)" />}
           </div>
           <div 
-            // onScroll={onContainerScrollHandler}
             ref={sidebarContainerRef}
             className="today__habitSidebar__habitDirectory">
             <Droppable isDropDisabled droppableId={HABIT_LIST_ID}>
@@ -64,6 +70,11 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
                             <div style={{backgroundColor: `#${el.color || "dcdcdc"}`}}
                               className="sliderHabitBlock__habitItem__container">
                               <p>{habit.name}</p>
+                              {
+                                leanedHabitInStream.find(el => el.name === habit.name) && <div>
+                                  <p>Already Used</p>
+                                </div>
+                              }
                             </div>
                           </div>
                         )}
@@ -78,7 +89,6 @@ const StreamSidebar = ({ isSidebarOpen , currentDetailsModeHabit  , sideBarHandl
                     isInFullScreen={isInFullScreen}
                     setToFullScreen={setIsInFullScreen}
                     index={todayHabit.length} 
-                    // containerScroll={containerScroll}
                   />
                   {provided.placeholder}
                 </div>

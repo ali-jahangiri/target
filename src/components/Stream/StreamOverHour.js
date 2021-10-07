@@ -1,8 +1,10 @@
 import { useLayoutEffect, useRef } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import client from "../../client";
 
-const StreamOverHour = ({ startPoint , endPoint , isInDetailsMode , setIsInProgress }) => {
+
+const StreamOverHour = ({ startPoint , endPoint , isInDetailsMode = false , setIsInProgress }) => {
     const currentHr = new Date().getHours()
     const [currentHeight, setCurrentHeight] = useState(((currentHr > 0 ? currentHr - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666));
     const [currentHelperText, setCurrentHelperText] = useState("");
@@ -31,9 +33,11 @@ const StreamOverHour = ({ startPoint , endPoint , isInDetailsMode , setIsInProgr
     } , []);
 
     useEffect(function visualHelperHandler() {
-        if((endPoint - currentHeight) <= 50) setCurrentHelperText('Almost Done !');
-        else if((endPoint - currentHeight) <= (endPoint / 2)) setCurrentHelperText("Pass The Half !");
-        else setCurrentHelperText("Beginning !")
+        const { ALMOST , BEGGING , HALF , DONE } = client.STATIC.overHourMessage;
+
+        // if((endPoint - currentHeight) <= 50) setCurrentHelperText(ALMOST);
+        // else if((endPoint - currentHeight) <= (endPoint / 2)) setCurrentHelperText(HALF);
+        // else setCurrentHelperText(BEGGING);
 
         // lets parent know this stream is in progress and need to scroll into it
         if(isNotStartedYet || isInDoing) {

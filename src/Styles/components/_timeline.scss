@@ -8,6 +8,10 @@
     transition: .3s;
     position: relative;
 
+    &--hide {
+        opacity: 0;
+    }
+
     &::after {
         content: "";
         width: 20px;

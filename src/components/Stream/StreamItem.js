@@ -31,7 +31,8 @@ const StreamItem = ({
     deleteTimeoutRef , 
     setCurrentItemInDeleteProcess , 
     currentItemInDeleteProcess , 
-    leanDate
+    leanDate,
+    isNextDayAfterToday,
 }) => {
 
     const [forcer, setForcer] = useState(Date.now())
@@ -71,7 +72,6 @@ const StreamItem = ({
 
       setPosition(pushCountFromAboveBlocks)
     }, [habitInStream, hoursGoNext, id, index])
-
 
     const closeHandler = () => {
       if(isInDetailsMode) {
@@ -114,7 +114,6 @@ const StreamItem = ({
       
     };
 
-
     useEffect(() => {
       if(!snapshot.isDraggingOver && !currentItemInDeleteProcess) {
         setCurrentItemInDeleteProcess(snapshot.draggingFromThisWith)
@@ -156,7 +155,14 @@ const StreamItem = ({
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               className={`streamItem ${isInDragging ? "streamItem--hideResizeTrigger" : ""} ${detailsActive ? "streamItem--overflowHidden" : ""}`}>
-                <StreamOverHour setIsInProgress={internalPassingUpCurrentInProgressBlockHandler} isInDetailsMode={isInDetailsMode} startPoint={(position + index) * 100} endPoint={(position + index + hoursGoNext) * 100} />
+                {
+                  !isNextDayAfterToday && <StreamOverHour 
+                    setIsInProgress={internalPassingUpCurrentInProgressBlockHandler} 
+                    isInDetailsMode={isInDetailsMode} 
+                    startPoint={(position + index) * 100} 
+                    endPoint={(position + index + hoursGoNext) * 100} />
+                }
+                
               <div
                 onClick={() => currentItemInDeleteProcess === id && cancelDeleteProcess()}
                 className={`streamItem__container ${currentItemInDeleteProcess === id ? "streamItem__container--delete" : ""}`}

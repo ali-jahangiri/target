@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 
-import { debounce, deepClone, idGenerator, requests, selfClearTimeout, _date } from "../utils";
+import { deepClone, idGenerator, requests, selfClearTimeout, _date } from "../utils";
 
 import RoutineStream from "../components/Stream/RoutineStream";
 
@@ -20,7 +20,12 @@ const hours = new Array(24).fill().map((_, i) => i + 1);
 const TODAY_ID = "todayHabit";
 
 
-const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDisable }) => {
+const AfterAllChildRenderSetter = ({ setAllChildRender }) => {
+  useEffect(() => setAllChildRender(true) , []);
+  return null
+}
+
+const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDisable , isNextDayAfterToday , parentNodeRef , isToday }) => {
   const [loading, setLoading] = useState(true);
   const [currentItemInDeleteProcess, setCurrentItemInDeleteProcess] = useState(false);
   const [habitInStream, setHabitInStream] = useState(null);
@@ -39,9 +44,9 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
   const [firstTime, setIsFirstTme] = useState(true)
 
   const [activeBlockList, setActiveBlockList] = useState([]);
-
-  const [isInInitialActiveBlockList, setIsInInitialActiveBlockList] = useState(true);
-
+  const [allChildrenGetRender, setAllChildrenGetRender] = useState(false);
+  const [initialHelperScrollGetCompleted, setInitialHelperScrollGetCompleted] = useState(false);
+    
   const mainContainerRef = useRef();
 
   const deleteTimeoutRef = useRef();
@@ -251,31 +256,35 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
   }
 
 
-  const debouncedScrollToActiveBlockHandler = useCallback(debounce((passedSyncedList = []) => {
-    const currentHour = new Date().getHours();
-    const mainParentContainerRef = document.querySelector('.mainContainer');
-    
-    if(passedSyncedList.length) {
-      if(passedSyncedList.some(el => el.isInDoing)) {
-        mainParentContainerRef.scrollTo({ top : passedSyncedList.find(el => el.isInDoing).startPointPosition * 100 , behavior : "smooth" })
-      }else {
-        const sortedActiveList = deepClone(passedSyncedList).sort((a , b) => a.startPointPosition - b.startPointPosition).sort((_ , b) => b.startPointPosition - currentHour);
-        mainParentContainerRef.scrollTo({ top : sortedActiveList[0].startPointPosition * 100 , behavior : "smooth" })
+  useEffect(function scrollToActiveBlockHandler() {
+    if(isToday) {
+      if(!initialHelperScrollGetCompleted) {
+        const currentHour = new Date().getHours();
+        const mainParentContainerRef = parentNodeRef.current;
+        
+        if(activeBlockList.length) {
+          if(activeBlockList.some(el => el.isInDoing)) {
+            mainParentContainerRef.scrollTo({ top : activeBlockList.find(el => el.isInDoing).startPointPosition * 100 , behavior : "smooth" })
+          }else {
+            const sortedActiveList = deepClone(activeBlockList).sort((a , b) => a.startPointPosition - b.startPointPosition).sort((_ , b) => b.startPointPosition - currentHour);
+            mainParentContainerRef.scrollTo({ top : sortedActiveList[0].startPointPosition * 100 , behavior : "smooth" })
+          }
+          setInitialHelperScrollGetCompleted(true)
+        }else if(!loading && allChildrenGetRender){
+          const currentTimelinePosition = ((currentHour > 0 ? currentHour - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666);
+          selfClearTimeout(() => {
+              mainParentContainerRef.scrollTo({ top : currentTimelinePosition ,  behavior : "smooth" });
+              setInitialHelperScrollGetCompleted(true)
+            } , 1500);
+        }
       }
-      setIsInInitialActiveBlockList(false);
-    }else {
-      selfClearTimeout(() => {
-        const currentTimelinePosition = ((currentHour > 0 ? currentHour - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666);
-        mainParentContainerRef.scrollTo({ top : currentTimelinePosition , behavior : "smooth" });
-      } , 700);
     }
-  } , 250) , []);
+  } , [activeBlockList, parentNodeRef, loading, isToday, allChildrenGetRender, initialHelperScrollGetCompleted]);
 
-  useEffect(() => isInInitialActiveBlockList && debouncedScrollToActiveBlockHandler(activeBlockList) , [activeBlockList]);
 
   return loading ? <div className="today__loadingScreen" /> : (
     <div className="today">
-      <Timeline shouldGoToCurrentHour={!isDisable || !activeBlockList} />
+      <Timeline shouldGetHide={currentDetailsModeHabit} />
         {
           isDisable && <PreventUserInteractOverlay protectFrom={mainContainerRef.current} />
         }
@@ -314,6 +323,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                     else if(el.type === "routine") return <RoutineStream index={i} key={i} {...el} />
                     else return (
                         <StreamItem
+                          isNextDayAfterToday={isNextDayAfterToday}
                           addToActiveBlockHandler={addToActiveBlockHandler}
                           leanDate={leanDate}
                           deleteTimeoutRef={deleteTimeoutRef}
@@ -339,6 +349,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                         />
                       );
                   })}
+                  <AfterAllChildRenderSetter setAllChildRender={setAllChildrenGetRender} />
                   {provided.placeholder}
                 </div>
               )
@@ -348,7 +359,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
         {
           !isDisable && sideBarEnabled && (
             <StreamSidebar
-              habitInStream={habitInStream.filter(el => el.name)}
+              leanedHabitInStream={habitInStream.filter(el => el.name)}
               isDraggingStart={isDraggingStart}
               leanDate={leanDate}
               setShouldOverlayGetVisible={setShouldOverlayGetVisible}

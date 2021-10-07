@@ -8,7 +8,13 @@ const client = {
             "چهارشنبه",
             "پنج‌شنبه",
             "جمعه",
-          ]
+          ],
+          overHourMessage : {
+              ALMOST : "Almost Done!",
+              HALF : "Pass The Half",
+              DONE : "Completed!",
+              BEGGING : "Beginning",
+          },
     },
     menuList : [
         {
