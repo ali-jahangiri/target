@@ -3,6 +3,7 @@
     position: relative;
     width: 100%;
     min-height: 100px;
+    background-color: white ;
 
     &__name {
         font-weight: 400;
@@ -12,9 +13,7 @@
     }
 
     &__circle {
-        position: absolute;
-        left: 2.5%;
-        bottom: 20px;
+        position: relative;
         width: 2rem;
         height: 2rem;
         background-color: white;
@@ -32,13 +31,26 @@
         }
     }
 
-    &__time {
+    &__footer {
         position: absolute;
-        left: 6%;
-        bottom: 25px;
+        left: 2.5%;
+        bottom: 20px;
+        display: flex;
+        align-items: center;
         opacity: .5;
         transition: .3s;
+    }
 
+    &__timeLiftAlert {
+        margin-left: 1rem;
+        font-size: .8rem;
+        span {
+            font-weight: 500;
+        }
+    }
+
+    &__time {
+        margin-left: 1rem;
         span {
             font-weight: 500;
         }
@@ -47,7 +59,7 @@
 
     &:hover {
         .routineStream {
-            &__time {
+            &__footer {
                 opacity: 1;
             }
         }

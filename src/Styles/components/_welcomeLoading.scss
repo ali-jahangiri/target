@@ -2,13 +2,8 @@
     0% {
         opacity: 0;
     }
-
-    80% {
-        opacity: 1;
-    }
-    
     100% {
-        opacity: 0;
+        opacity: 1;
     }
 }
 
@@ -18,6 +13,14 @@
     }
     to {
         opacity: 0;
+    }
+}
+@keyframes test123 {
+    from {
+        background-color: #000000;
+    }
+    to {
+        background-color: #ffffff00;
     }
 }
 
@@ -34,17 +37,22 @@
     align-items: center;
     justify-content: center;
     opacity: 1;
-    animation: getRideOfWelcome 1s 1.2s forwards alternate;
     user-select: none;
     cursor: default;
-    
+
     &__container {
         animation: welcomeAnimation 1s forwards alternate;
     }
     
     p {
+        animation: getRideOfWelcome 1s 1.2s forwards alternate;
         font-size: 9rem;
         font-weight: 500;
         color: white;
+    }
+
+
+    &--destroy {
+        animation: test123 2s forwards alternate;
     }
 }

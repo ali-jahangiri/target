@@ -15,6 +15,9 @@ import { references } from "../firebase";
 import useKeyBaseState from "../Hook/useKeyBaseState";
 import PreventUserInteractOverlay from "../components/Stream/PreventUserInteractOverlay";
 
+import Portal from "../Providers/Portal/Portal"
+
+
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
 const TODAY_ID = "todayHabit";
@@ -320,7 +323,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                     className="today__droppableContainer">
                   {habitInStream.map((el, i) => {
                     if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
-                    else if(el.type === "routine") return <RoutineStream index={i} key={i} {...el} />
+                    else if(el.type === "routine") return <RoutineStream habitInStream={habitInStream} index={i} key={i} {...el} />
                     else return (
                         <StreamItem
                           isNextDayAfterToday={isNextDayAfterToday}

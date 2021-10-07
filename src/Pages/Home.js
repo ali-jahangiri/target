@@ -121,7 +121,7 @@ const Home = () => {
         <Loading renderImmediately>
             {() => (
                 <div onWheel={onWheelHandler} ref={containerRef} style={{ display : "flex" }} className="mainContainer">
-                    { isWelcomeLoadingVisible && <WelcomeLoading /> }
+                    <WelcomeLoading isInLoading={isWelcomeLoadingVisible} /> }
                     {
                         allMonthDay.map((_ , i) => (
                             <div key={i} className={`__dayContainer ${i === currentDay && false ? "__dayContainer--scrollDisabled" : ""}`}>

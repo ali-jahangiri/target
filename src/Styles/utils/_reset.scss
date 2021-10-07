@@ -9,8 +9,6 @@ button,
 input,
 textarea {
     font-family: 'Inter', 'Vazir', sans-serif;
-    // font-size: 1.6rem;
-    // font-weight: 500;
 }
 
 * {
@@ -29,6 +27,15 @@ textarea {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@keyframes testShit {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
 .__innerContainer {
