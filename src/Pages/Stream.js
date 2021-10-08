@@ -266,6 +266,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
         const mainParentContainerRef = parentNodeRef.current;
         
         if(activeBlockList.length) {
+          console.log('d***' , date);
           if(activeBlockList.some(el => el.isInDoing)) {
             mainParentContainerRef.scrollTo({ top : activeBlockList.find(el => el.isInDoing).startPointPosition * 100 , behavior : "smooth" })
           }else {

@@ -1,15 +1,46 @@
+@keyframes suggestItemGetVisible {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 .routineStream {
     z-index: 99;
     position: relative;
     width: 100%;
     min-height: 100px;
     background-color: white ;
+    overflow: hidden;
 
     &__name {
+        position: absolute;
+        left: 5%;
+        top: 1rem;
         font-weight: 400;
-        width: 95%;
-        margin: 0 auto;
-        padding: 1rem 0;
+        z-index: 5;
+    }
+
+    &__helperFiller {
+        position: absolute;
+        left: 2.5%;
+        bottom: 20px;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        z-index: 1;
+        transition: .3s;
+        transform: scale(0);
+
+        &--active {
+            opacity: 1;
+            height: 2rem;
+            width: 2rem;
+            transform: scale(70);
+        }
+
     }
 
     &__circle {
@@ -19,7 +50,8 @@
         background-color: white;
         border-radius: 50%;
         cursor: pointer;
-        
+        transition: .3s;
+
         & > div {
             width: 80%;
             height: 80%;
@@ -39,7 +71,16 @@
         align-items: center;
         opacity: .5;
         transition: .3s;
+        z-index: 9;
+
+        &--otherVision {
+            opacity: 1;
+
+        }
     }
+
+
+    
 
     &__timeLiftAlert {
         margin-left: 1rem;
@@ -53,6 +94,56 @@
         margin-left: 1rem;
         span {
             font-weight: 500;
+        }
+    }
+
+    &__donePreviewText {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 100%;
+        transform: translate(-50% , -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &__container {
+            // display: flex;
+        }
+    }
+
+    &__suggestHourContainer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    &__suggestItem {
+        opacity: 0;
+        p {
+            cursor: pointer;
+        }
+    }
+
+    &__doneUnitResizable {
+        position: relative;
+        transition: height .3s;
+        z-index: 5;
+        overflow: hidden;
+
+        &--showUp {
+            transition: height .3s .4s !important;
+            .routineStream {
+                &__suggestItem {
+                    animation: suggestItemGetVisible 0.6s forwards alternate;
+                }
+            }
+        }
+
+        &--hide {
+            transition-delay: 0s !important;
+            height: 0 !important;
         }
     }
 

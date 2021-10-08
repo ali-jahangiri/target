@@ -32,8 +32,11 @@ const Home = () => {
         setCountOfStreamChange(0)
     } , countOfStreamChange >= 3 ? 2500 : 2000) , [])
 
+
+    const unexpectedGapUnit = 6
+
     const scrollHandler = left => {
-      containerRef.current?.scroll({ left , behavior : "smooth"})
+      containerRef.current?.scroll({ left : left + unexpectedGapUnit , behavior : "smooth"})
       setCurrentDay(left / window.innerWidth);
       clearScrollCountHandler()
     }
@@ -64,7 +67,7 @@ const Home = () => {
     }
 
     useLayoutEffect(() => {
-        containerRef.current?.scroll({ left : currentLeftPosition.current })
+        containerRef.current?.scroll({ left : currentLeftPosition.current + unexpectedGapUnit })
     } , [isTargetStreamReadyToRender]);
 
     const renderScheduleChecker = index => {
