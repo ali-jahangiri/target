@@ -15,9 +15,6 @@ import { references } from "../firebase";
 import useKeyBaseState from "../Hook/useKeyBaseState";
 import PreventUserInteractOverlay from "../components/Stream/PreventUserInteractOverlay";
 
-import Portal from "../Providers/Portal/Portal"
-
-
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
 const TODAY_ID = "todayHabit";
@@ -39,7 +36,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
   const [sidebarClosedByUser, setSidebarClosedByUser] = useState(false);
   const [isDetailsModeActive, setIsDetailsModeActive] = useState(false);
   const [detailsTimeline, setDetailsTimeline] = useState([]);
-  const [timelineDetails , setTimelineDetails] = useKeyBaseState({})
+  const [timelineDetails , setTimelineDetails] = useState({})
   const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
   const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
   const [isOverlayInHideProcess, setIsOverlayInHideProcess] = useState(false);
@@ -222,42 +219,38 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
     setIsSidebarOpen((prev) => !prev);
   };
 
-  const detailsShowHandler = (id, possibleStep , elementRef) => {
-    const streamContainer = document.getElementsByClassName("mainContainer")[0].style;
-
+  const detailsShowHandler = (blockId, possibleStep , itemTopDistance) => {
     if (!isDetailsModeActive) {
-      setCurrentDetailsModeHabit(id);
+      setCurrentDetailsModeHabit(blockId);
       setIsTargetStreamReadyToRender(false)
       selfClearTimeout(() => {
-        streamContainer.overflow = "hidden";
         setDetailsTimeline(possibleStep);
         const scroll = document.getElementsByClassName('mainContainer')[0].scrollTop;
         setIsDetailsModeActive(scroll);
       }, 500);
+      setTimelineDetails({ topPosition : itemTopDistance })
       selfClearTimeout(() => {
-        setTimelineDetails("height" , possibleStep.length * 100)
-        const haveTopDistance = elementRef.getClientRects()[0].top;
-        if(haveTopDistance) setTimelineDetails("topPosition" , haveTopDistance);
-        
-      } , 600);
+        setTimelineDetails({height : possibleStep.length * 100 , topPosition : itemTopDistance });
+      } , 500);
     } else {
       setIsOverlayInHideProcess(true)
       selfClearTimeout(() => {
         setIsOverlayInHideProcess(false)
         setIsDetailsModeActive(false);
-      } , 2000)
-      setTimelineDetails({});
+      } , 800)
+      setTimelineDetails({
+        height: 0,
+        top : 0
+      });
       setDetailsTimeline([]);
       setCurrentDetailsModeHabit(null);
       setIsTargetStreamReadyToRender(true)
-      streamContainer.overflow = "auto";
     }
   };
 
   const addToActiveBlockHandler = newActiveBlock => {
     setActiveBlockList(prev => [...prev , newActiveBlock]);
   }
-
 
   useEffect(function scrollToActiveBlockHandler() {
     if(isToday) {
@@ -266,7 +259,6 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
         const mainParentContainerRef = parentNodeRef.current;
         
         if(activeBlockList.length) {
-          console.log('d***' , date);
           if(activeBlockList.some(el => el.isInDoing)) {
             mainParentContainerRef.scrollTo({ top : activeBlockList.find(el => el.isInDoing).startPointPosition * 100 , behavior : "smooth" })
           }else {
@@ -286,6 +278,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
   } , [activeBlockList, parentNodeRef, loading, isToday, allChildrenGetRender, initialHelperScrollGetCompleted]);
 
 
+  
   return loading ? <div className="today__loadingScreen" /> : (
     <div className="today">
       <Timeline shouldGetHide={currentDetailsModeHabit} />
@@ -293,10 +286,10 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
           isDisable && <PreventUserInteractOverlay protectFrom={mainContainerRef.current} />
         }
         {
-          shouldOverlayGetVisible && <div className="helperOverlay" />
+          shouldOverlayGetVisible && <div  className="helperOverlay" />
         }
       {isDetailsModeActive !== false && (
-        <div style={{ top: isDetailsModeActive }} className={`helperOverlay ${isOverlayInHideProcess ? "helperOverlay--inDestroyProcess" : ""}`}>
+        <div className={`helperOverlay ${isOverlayInHideProcess ? "helperOverlay--inDestroyProcess" : ""}`}>
           <span style={{ height: timelineDetails.height , top : timelineDetails.topPosition }} className={`helperOverlay__timeline ${timelineDetails.topPosition ? "helperOverlay__timeline--haveTopDistance" : ""}`}>
             <span></span>
           </span>
@@ -324,7 +317,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                     className="today__droppableContainer">
                   {habitInStream.map((el, i) => {
                     if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
-                    else if(el.type === "routine") return <RoutineStream habitInStream={habitInStream} index={i} key={i} {...el} />
+                    else if(el.type === "routine") return <RoutineStream setIsInOtherVisionToParent={detailsShowHandler} habitInStream={habitInStream} index={i} key={i} {...el} />
                     else return (
                         <StreamItem
                           isNextDayAfterToday={isNextDayAfterToday}

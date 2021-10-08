@@ -108,7 +108,7 @@ const StreamItem = ({
         
         const possibleStep = new Array(end - start).fill("").map((_) => ++start);
 
-        detailsShowHandler(id , possibleStep , mainContainerRef.current.resizable);
+        detailsShowHandler(id , possibleStep , (index + hh) * 100);
         setDetailsActive(true)
       }
       

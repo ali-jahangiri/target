@@ -7,8 +7,17 @@
     }
 }
 
+@keyframes getAUniqueWidth {
+    from {
+        max-width: 0;
+    }
+    to {
+        max-width: 15rem;
+    }
+}
+
 .routineStream {
-    z-index: 99;
+    z-index: 999999;
     position: relative;
     width: 100%;
     min-height: 100px;
@@ -108,7 +117,24 @@
         justify-content: center;
 
         &__container {
-            // display: flex;
+            display: flex;
+            min-width: 57%;
+            justify-content: center;
+            flex-direction: column;
+        }
+    }
+
+    &__currentSelectedSuggest {
+        cursor: pointer;
+        margin-left: 1rem;
+        transition: .9s .1s;
+        max-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        font-weight: 500;
+
+        &--haveValue {
+            animation: getAUniqueWidth 1s forwards alternate;
         }
     }
 
@@ -116,13 +142,31 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: 1rem;
+        margin-top: .9rem;
+        transition: .5s linear;
+        max-height: 200px;
+        overflow: hidden;
+        
+        &--getHide {
+            opacity: 0;
+            margin-top: 0;
+            max-height: 0;
+        }
     }
 
     &__suggestItem {
         opacity: 0;
+        transition: .3s;
+
         p {
             cursor: pointer;
+        }
+
+        &--active {
+            opacity: .2 !important;
+            p {
+                cursor: default;
+            }
         }
     }
 
@@ -131,7 +175,8 @@
         transition: height .3s;
         z-index: 5;
         overflow: hidden;
-
+        
+        
         &--showUp {
             transition: height .3s .4s !important;
             .routineStream {
