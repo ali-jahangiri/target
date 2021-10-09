@@ -18,7 +18,7 @@ const RoutineTimeSelector = ({ setIsValidToCreateRoutine , routineList }) => {
     const [isInResizeProcess, setIsInResizeProcess] = useState(false);
 
 
-    const onResizeStopHandler = (e, dir, ref, d) => {
+    const onResizeHandler = (e, dir, ref, d) => {
         setCurrentResizableWidth(Math.ceil(Math.round(ref.getClientRects()[0].width / mainUnit) * mainUnit));
         if(!resizableGotTouched) {
             setResizableGotTouched(true)
@@ -77,7 +77,7 @@ const RoutineTimeSelector = ({ setIsValidToCreateRoutine , routineList }) => {
                 <Resizable
                     onResizeStart={setIsInResizeProcess}
                     onResizeStop={() => setIsInResizeProcess(false)}
-                    onResize={onResizeStopHandler}
+                    onResize={onResizeHandler}
                     className="routineTimeSelector__resizable"
                     defaultSize={{width : 50 , height : 100}}
                     enable={{ right : true , left : true }}

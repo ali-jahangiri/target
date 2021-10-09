@@ -75,7 +75,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
           const curr = hours.map((_) => ({ name: null, id: idGenerator(), hoursGoNext: 1 }));
           if(response?.list?.length) {
             response.list.map(routine => (
-              curr[routine.hour.from] = { ...routine , type : "routine" , hoursGoNext : routine.hour.to - routine.hour.from }
+              curr[routine.hour.from] = { ...routine , type : "routine" , hoursGoNext : routine.hour.to - routine.hour.from , spendTime : -1 }
             ))
           }
           references.stream.doc(leanDate).set({ item : curr })
@@ -252,6 +252,12 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
     setActiveBlockList(prev => [...prev , newActiveBlock]);
   }
 
+
+  const setRoutinePropertiesHandler = ({ id , propName , value }) => {
+    setHabitInStream(prev => prev.map(el => el.id === id ? ({...el , [propName] : value}) : el))
+  }
+
+  
   useEffect(function scrollToActiveBlockHandler() {
     if(isToday) {
       if(!initialHelperScrollGetCompleted) {
@@ -317,7 +323,13 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                     className="today__droppableContainer">
                   {habitInStream.map((el, i) => {
                     if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
-                    else if(el.type === "routine") return <RoutineStream setIsInOtherVisionToParent={detailsShowHandler} habitInStream={habitInStream} index={i} key={i} {...el} />
+                    else if(el.type === "routine") return <RoutineStream 
+                                                              setIsInOtherVisionToParent={detailsShowHandler} 
+                                                              habitInStream={habitInStream} 
+                                                              index={i} 
+                                                              key={i}
+                                                              setPropHandler={setRoutinePropertiesHandler}
+                                                              {...el} />
                     else return (
                         <StreamItem
                           isNextDayAfterToday={isNextDayAfterToday}

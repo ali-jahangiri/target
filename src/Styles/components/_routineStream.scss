@@ -24,6 +24,13 @@
     background-color: white ;
     overflow: hidden;
 
+
+    // overwrite
+    .streamResizeTrigger {
+        opacity: 1;
+    }
+
+
     &__name {
         position: absolute;
         left: 5%;
@@ -115,12 +122,17 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: .3s;
 
         &__container {
             display: flex;
             min-width: 57%;
             justify-content: center;
             flex-direction: column;
+
+        }
+        &--getHide {
+            opacity: 0;
         }
     }
 
@@ -170,6 +182,35 @@
         }
     }
 
+    &__spendHourPercent {
+        position: absolute;
+        left: 50%;
+        top: -10%;
+        transform: translate(-50% , -50%);
+        p {
+            transition: .3s;
+        }
+
+        &__helperText {
+            opacity: 0;
+            transition: .3;
+            position: absolute;
+            width: max-content;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 500;
+            
+            &--active {
+                opacity: 1;
+            }
+        }
+        
+        &--show {
+            top: 50%;
+        }
+    }
+
     &__doneUnitResizable {
         position: relative;
         transition: height .3s;
@@ -178,7 +219,7 @@
         
         
         &--showUp {
-            transition: height .3s .4s !important;
+            transition: height .1s !important;
             .routineStream {
                 &__suggestItem {
                     animation: suggestItemGetVisible 0.6s forwards alternate;

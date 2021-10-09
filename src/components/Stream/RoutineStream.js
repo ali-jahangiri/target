@@ -1,26 +1,45 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Resizable } from "re-resizable";
-import { generateColor, selfClearTimeout } from "../../utils";
+import { debounce, generateColor, selfClearTimeout } from "../../utils";
+import StreamResizeTrigger from "./StreamResizeTrigger";
+import useAfterInitialEffect from "../AllWeekSchedule/useAfterInitialEffect";
 
 
-const optionsList = ["Completed" , "Half of it" , "Leave"]
+const optionsList = ["Completed" , "Half of it" , "Leave"];
 const optionsHeight = {
-    Completed : "100%" , 
-    "Half of it" : "50%" , 
-    Leave : "25%"
+    Completed : 100 , 
+    "Half of it" : 50 ,
+    Leave : 25
 }
 
-const RoutineStream = ({ id , color , name , hour , index , habitInStream , setIsInOtherVisionToParent }) => {
+const RoutineStream = ({ 
+    id , 
+    color , 
+    name , 
+    hour ,
+    index , 
+    habitInStream ,
+    spendTime = 50,
+    setIsInOtherVisionToParent,
+    setPropHandler,
+ }) => {
     const [liftedTimeFromAboveBlocks, setLiftedTimeFromAboveBlocks] = useState(null);
     const [isOtherVisionVisible, setIsOtherVisionVisible] = useState(false);
     const [showSpendTimeResizable, setShowSpendTimeResizable] = useState(false);
     const [currentActiveSuggest, setCurrentActiveSuggest] = useState(null);
     const [showSuggestContainer, setShowSuggestContainer] = useState(true);
+    const [internalSpendTime, setInternalSpendTime] = useState(spendTime);
+    const [isInResizing, setIsInResizing] = useState(false);
+    const [hasTouchOnManualResize, setHasTouchOnManualResize] = useState(false);
+    const [removeSuggestHour, setRemoveSuggestHour] = useState(false);
 
-    const containerRef = useRef();
 
     const routineTime = hour.to - hour.from;
+
+    const userDontSetSpentTimeYet = internalSpendTime === -1;
+    const getFullSpendTime = internalSpendTime === 100;
+    const almostLeaveSpendTime = internalSpendTime < 10;
 
     useEffect(function calcOverPushFromAboveBlock() {
         const validStream = habitInStream.filter(el => el.name);
@@ -52,11 +71,40 @@ const RoutineStream = ({ id , color , name , hour , index , habitInStream , setI
         if(hour !== currentActiveSuggest) {
             setCurrentActiveSuggest(hour);
             selfClearTimeout(() => {
+                setInternalSpendTime(optionsHeight[hour]);
+            } , 1000);
+            
+            selfClearTimeout(() => {
                 setShowSuggestContainer(false);
             } , 500)
         }
     }
 
+    const onResizeStartHandler = () => {
+        setHasTouchOnManualResize(true);
+        setIsInResizing(true);
+        selfClearTimeout(() => {
+            setRemoveSuggestHour(true);
+        } , 350)
+    }
+
+    const onResizeEndHandler = () => {
+        setIsInResizing(false);
+    }
+    
+    
+    const onResizeHandler = debounce((e , dir , resRef) => {
+        const roundedReceivedNumber = Math.ceil(Math.round(resRef.clientHeight / 50) * 50);
+        const percentOfFilled = Math.ceil((roundedReceivedNumber / routineTime));
+        setInternalSpendTime(percentOfFilled);
+    } , 15);
+
+
+    useAfterInitialEffect(function syncRoutineWithParentHandler (){
+        if(!isInResizing) {
+            setPropHandler({ id , propName : "spendTime" , value : internalSpendTime })
+        }
+    } , [internalSpendTime , isInResizing]);
 
     return (
         <Draggable draggableId={id} index={index} isDragDisabled>
@@ -68,39 +116,55 @@ const RoutineStream = ({ id , color , name , hour , index , habitInStream , setI
                 {...provided.dragHandleProps}>
                     <div style={{ backgroundColor : generateColor(`#${color}` , 8) , height : routineTime * 100 }}>
                         <Resizable
-                                ref={containerRef}
                                 minWidth="100%"
+                                minHeight={50}
+                                size={{ height : userDontSetSpentTimeYet ? "50%" : `${internalSpendTime}%` }}
                                 maxHeight="100%"
                                 defaultSize={{ height : "75%" }}
+                                enable={{ bottom : true }}
+                                handleComponent={{ bottom : <StreamResizeTrigger /> }}
                                 grid={[50 , 50]}
+                                onResizeStart={onResizeStartHandler}
+                                onResizeStop={onResizeEndHandler}
+                                onResize={onResizeHandler}
                                 style={{ backgroundColor : `#${color}`}}
                                 className={`routineStream__doneUnitResizable ${!isOtherVisionVisible ? "routineStream__doneUnitResizable--hide" : ""} ${showSpendTimeResizable ? "routineStream__doneUnitResizable--showUp" : ""}`}>
-                                <div className="routineStream__donePreviewText">
-                                    <div className="routineStream__donePreviewText__container">
-                                        <div style={{ display : "flex" }}>
-                                            <p>How much you spend for this <span>Routine</span>?</p>
-                                            {
-                                                currentActiveSuggest && <div
-                                                    key={currentActiveSuggest}
-                                                    className={`routineStream__currentSelectedSuggest ${currentActiveSuggest ? "routineStream__currentSelectedSuggest--haveValue" : ""}`}
-                                                    onClick={() => setShowSuggestContainer(prev => !prev)} >
-                                                    {currentActiveSuggest}
+                                {
+                                    spendTime === -1 && !removeSuggestHour && spendTime  && <div className={`routineStream__donePreviewText ${hasTouchOnManualResize ? "routineStream__donePreviewText--getHide" : ""}`}>
+                                        <div className="routineStream__donePreviewText__container">
+                                            <div style={{ display : "flex" }}>
+                                                <p>How much you spend for this <span>Routine</span>?</p>
+                                                {
+                                                    currentActiveSuggest && <div
+                                                        key={currentActiveSuggest}
+                                                        className={`routineStream__currentSelectedSuggest ${currentActiveSuggest ? "routineStream__currentSelectedSuggest--haveValue" : ""}`}
+                                                        onClick={() => setShowSuggestContainer(prev => !prev)} >
+                                                        {currentActiveSuggest}
+                                                </div>
+                                                }
                                             </div>
-                                            }
-                                        </div>
-                                        <div className={`routineStream__suggestHourContainer ${!showSuggestContainer ? "routineStream__suggestHourContainer--getHide" : ""}`}>
-                                            {
-                                                showSpendTimeResizable && optionsList.map((el , i) => (
-                                                    <div
-                                                        style={{ animationDelay : `${(i + 1) * 650}ms`}} 
-                                                        onClick={() => selectSuggestHourHandler(el)} key={i} 
-                                                        className={`routineStream__suggestItem ${currentActiveSuggest === el ? "routineStream__suggestItem--active" : ""}`}>
-                                                        <p>{el}</p>
-                                                    </div>
-                                                ))
-                                            }
+                                            <div className={`routineStream__suggestHourContainer ${!showSuggestContainer ? "routineStream__suggestHourContainer--getHide" : ""}`}>
+                                                {
+                                                    showSpendTimeResizable && optionsList.map((el , i) => (
+                                                        <div
+                                                            style={{ animationDelay : `${(i + 1) * 650}ms`}} 
+                                                            onClick={() => selectSuggestHourHandler(el)} key={i} 
+                                                            className={`routineStream__suggestItem ${currentActiveSuggest === el ? "routineStream__suggestItem--active" : ""}`}>
+                                                            <p>{el}</p>
+                                                        </div>
+                                                    ))
+                                                }
+                                            </div>
                                         </div>
                                     </div>
+                                }
+                                <div className={`routineStream__spendHourPercent ${hasTouchOnManualResize || !userDontSetSpentTimeYet ? "routineStream__spendHourPercent--show" : ""}`}>
+                                    <p style={{ opacity : (getFullSpendTime || almostLeaveSpendTime) ? 0 : 1 }}>{userDontSetSpentTimeYet ? "50%" : `${internalSpendTime}%`}</p>
+                                    <p className={`routineStream__spendHourPercent__helperText ${(getFullSpendTime || almostLeaveSpendTime) ? "routineStream__spendHourPercent__helperText--active" : ""}`}>
+                                        {
+                                            getFullSpendTime ? "Done !" : "Leave"
+                                        }
+                                    </p>
                                 </div>
                             </Resizable>
                         <div className="routineStream__name">
