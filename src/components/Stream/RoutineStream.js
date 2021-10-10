@@ -1,9 +1,45 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState , useRef, useLayoutEffect } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Resizable } from "re-resizable";
 import { debounce, generateColor, selfClearTimeout } from "../../utils";
 import StreamResizeTrigger from "./StreamResizeTrigger";
 import useAfterInitialEffect from "../AllWeekSchedule/useAfterInitialEffect";
+import TextareaAutosize from "react-textarea-autosize";
+
+
+const RoutineStreamDesc = ({ isOtherVisionVisible , descValue , descValueChangeHandler , setIsDescFocused }) => {
+    const [isFocused, setIsFocused] = useState(false);
+    const textareaRef = useRef();
+
+    const blurHandler = () => {
+        setIsFocused(false);
+    }
+
+    const focusHandler = () => {
+        setIsFocused(true);
+    }
+
+    useLayoutEffect(()  => {
+        selfClearTimeout(() => {
+            if(isOtherVisionVisible) {
+                textareaRef.current?.focus();
+            }
+        } , 500);
+    } , []);
+
+    return (
+        <div className={`routineStream__desc ${isFocused ? "routineStream__desc--focused" : ""} ${!isOtherVisionVisible ? "routineStream__desc--hide" : ""}`}>
+            <TextareaAutosize
+                onFocus={focusHandler}
+                onBlur={blurHandler}
+                placeholder="What about this Routine ?"
+                value={descValue}
+                onChange={descValueChangeHandler}
+                ref={textareaRef}
+            />
+        </div>
+    )
+}
 
 
 const optionsList = ["Completed" , "Half of it" , "Leave"];
@@ -24,6 +60,7 @@ const RoutineStream = ({
     setIsInOtherVisionToParent,
     setPropHandler,
  }) => {
+
     const [liftedTimeFromAboveBlocks, setLiftedTimeFromAboveBlocks] = useState(null);
     const [isOtherVisionVisible, setIsOtherVisionVisible] = useState(false);
     const [showSpendTimeResizable, setShowSpendTimeResizable] = useState(false);
@@ -33,13 +70,20 @@ const RoutineStream = ({
     const [isInResizing, setIsInResizing] = useState(false);
     const [hasTouchOnManualResize, setHasTouchOnManualResize] = useState(false);
     const [removeSuggestHour, setRemoveSuggestHour] = useState(false);
+    const [descValue, setDescValue] = useState("");
 
+    const [showSpend, setShowSpend] = useState(false);
+
+    const [isFocusedInDescInput, setIsFocusedInDescInput] = useState(false);
+
+    const textareaRef = useRef();
 
     const routineTime = hour.to - hour.from;
 
     const userDontSetSpentTimeYet = internalSpendTime === -1;
     const getFullSpendTime = internalSpendTime === 100;
     const almostLeaveSpendTime = internalSpendTime < 10;
+
 
     useEffect(function calcOverPushFromAboveBlock() {
         const validStream = habitInStream.filter(el => el.name);
@@ -80,6 +124,12 @@ const RoutineStream = ({
         }
     }
 
+    useLayoutEffect(function initialFocusIntoTextarea() {
+        if(isOtherVisionVisible) {
+            textareaRef.current?.focus();
+        }
+    } , [textareaRef , isOtherVisionVisible])
+
     const onResizeStartHandler = () => {
         setHasTouchOnManualResize(true);
         setIsInResizing(true);
@@ -100,6 +150,10 @@ const RoutineStream = ({
     } , 15);
 
 
+    const descValueChangeHandler = ({ target : { value } }) => setDescValue(value);
+
+    const spendTimeHandler = () => setShowSpend(prev => !prev);
+
     useAfterInitialEffect(function syncRoutineWithParentHandler (){
         if(!isInResizing) {
             setPropHandler({ id , propName : "spendTime" , value : internalSpendTime })
@@ -110,15 +164,15 @@ const RoutineStream = ({
         <Draggable draggableId={id} index={index} isDragDisabled>
             {provided => (
                 <div
-                className="routineStream"
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}>
+                    className="routineStream"
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}>
                     <div style={{ backgroundColor : generateColor(`#${color}` , 8) , height : routineTime * 100 }}>
                         <Resizable
                                 minWidth="100%"
-                                minHeight={50}
-                                size={{ height : userDontSetSpentTimeYet ? "50%" : `${internalSpendTime}%` }}
+                                minHeight={showSpend ? 50 : 0}
+                                size={{ height : isOtherVisionVisible ? (userDontSetSpentTimeYet ? "50%" : `${internalSpendTime}%`) : 0 }}
                                 maxHeight="100%"
                                 defaultSize={{ height : "75%" }}
                                 enable={{ bottom : true }}
@@ -128,7 +182,7 @@ const RoutineStream = ({
                                 onResizeStop={onResizeEndHandler}
                                 onResize={onResizeHandler}
                                 style={{ backgroundColor : `#${color}`}}
-                                className={`routineStream__doneUnitResizable ${!isOtherVisionVisible ? "routineStream__doneUnitResizable--hide" : ""} ${showSpendTimeResizable ? "routineStream__doneUnitResizable--showUp" : ""}`}>
+                                className={`routineStream__doneUnitResizable ${!showSpend ? "routineStream__doneUnitResizable--hide" : ""} ${showSpendTimeResizable ? "routineStream__doneUnitResizable--showUp" : ""}`}>
                                 {
                                     spendTime === -1 && !removeSuggestHour && spendTime  && <div className={`routineStream__donePreviewText ${hasTouchOnManualResize ? "routineStream__donePreviewText--getHide" : ""}`}>
                                         <div className="routineStream__donePreviewText__container">
@@ -170,6 +224,14 @@ const RoutineStream = ({
                         <div className="routineStream__name">
                             <p>{name}</p>
                         </div>
+                        <RoutineStreamDesc
+                            spendTimeHandler={spendTimeHandler}
+                            isOtherVisionVisible={isOtherVisionVisible}
+                            textareaRef={textareaRef}
+                            descValue={descValue}
+                            descValueChangeHandler={descValueChangeHandler}
+                            setIsDescFocused={setIsFocusedInDescInput}
+                        />
                         <div style={{ background : generateColor(`#${color}` , 9) }} className={`routineStream__helperFiller ${isOtherVisionVisible ? "routineStream__helperFiller--active" : ""}`}></div>
                         <div className={`routineStream__footer ${isOtherVisionVisible ? "routineStream__footer--otherVision" : ""}`}>
                             <div onClick={toggleOtherVisionHandler} className="routineStream__circle">

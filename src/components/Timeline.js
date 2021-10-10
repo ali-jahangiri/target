@@ -1,7 +1,9 @@
 import { useEffect , useState} from "react";
 
 const Timeline = ({ shouldGetHide }) => {
-    const currentHr = new Date().getHours()
+    const currentHr = new Date().getHours();
+    const currentMin = new Date().getMinutes();
+
     const [position, setPosition] = useState(((currentHr > 0 ? currentHr - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666));
 
     useEffect(() => {
@@ -13,7 +15,11 @@ const Timeline = ({ shouldGetHide }) => {
     } , [])
 
     return (
-        <div style={{ top : position}} className={`timeline ${shouldGetHide ? "timeline--hide" : ""}`} />
+        <div style={{ top : position}} className={`timeline ${shouldGetHide ? "timeline--hide" : ""}`} >
+            <span>
+                <p>{`${currentHr}:${currentMin}`}</p>
+            </span>
+        </div>
     )
 }
 

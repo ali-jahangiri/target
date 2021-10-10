@@ -219,8 +219,8 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
     setIsSidebarOpen((prev) => !prev);
   };
 
-  const detailsShowHandler = (blockId, possibleStep , itemTopDistance) => {
-    if (!isDetailsModeActive) {
+  const detailsShowHandler = (blockId, possibleStep = [] , itemTopDistance) => {
+    if (!isDetailsModeActive && possibleStep.length) {
       setCurrentDetailsModeHabit(blockId);
       setIsTargetStreamReadyToRender(false)
       selfClearTimeout(() => {
@@ -233,11 +233,8 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
         setTimelineDetails({height : possibleStep.length * 100 , topPosition : itemTopDistance });
       } , 500);
     } else {
+
       setIsOverlayInHideProcess(true)
-      selfClearTimeout(() => {
-        setIsOverlayInHideProcess(false)
-        setIsDetailsModeActive(false);
-      } , 800)
       setTimelineDetails({
         height: 0,
         top : 0
@@ -245,6 +242,10 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
       setDetailsTimeline([]);
       setCurrentDetailsModeHabit(null);
       setIsTargetStreamReadyToRender(true)
+      selfClearTimeout(() => {
+        setIsOverlayInHideProcess(false)
+        setIsDetailsModeActive(false);
+      } , 450);
     }
   };
 
@@ -306,8 +307,8 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
           <div id="Container" style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : 5}}>
             {hours.map((el, i) => (
               <TodayHoursRow
-                indexInTimeline={detailsTimeline.includes(el) && detailsTimeline.indexOf(el)}
-                isInTimeLine={detailsTimeline.includes(el)}
+                indexInTimeline={!isOverlayInHideProcess && detailsTimeline.includes(el) && detailsTimeline.indexOf(el)}
+                isInTimeLine={!isOverlayInHideProcess && detailsTimeline.includes(el)}
                 index={el}
                 key={i} 
               />
@@ -324,7 +325,11 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                   {habitInStream.map((el, i) => {
                     if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
                     else if(el.type === "routine") return <RoutineStream 
-                                                              setIsInOtherVisionToParent={detailsShowHandler} 
+                                                              setIsInOtherVisionToParent={(...rest) => {
+                                                                if(!isOverlayInHideProcess) {
+                                                                  detailsShowHandler(...rest)
+                                                                }
+                                                              }} 
                                                               habitInStream={habitInStream} 
                                                               index={i} 
                                                               key={i}
