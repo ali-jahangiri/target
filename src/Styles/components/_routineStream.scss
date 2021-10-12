@@ -31,27 +31,14 @@
     }
 
 
-    &__descFocusHelperOverlay {
-        width: 100%;
-        height: 100%;
-        transition: .3s;
-        position: absolute;
-        z-index: 4;
-        left: 0;
-        top: 0;
-        background-color: transparent;
-
-        &--active {
-            background-color: #000000ab;
-            opacity: 1;
-        }
-    }
-
-
     &__spendTimeTrigger {
-        font-size: 1.1rem;
-        color: $black;
-        margin-top: .2rem;
+        position: absolute;
+        right: 5%;
+        top: 1rem;
+        font-weight: 400;
+        z-index: 5;
+
+
         p {
             cursor: pointer;
         }
@@ -59,9 +46,13 @@
 
     &__desc {
         width: 100%;
+        max-width: 90%;
+        max-height: 70%;
+        overflow: hidden;
+        overflow-y: scroll;
         position: absolute;
         left: 5%;
-        top: 9%;
+        top: 3rem;
         transition: .3s;
         z-index: 5;
 
@@ -85,7 +76,7 @@
             textarea {
                 color: white;
                 &::placeholder {
-                    color: white;
+                    color: rgb(201, 201, 201);
                 }
 
             }
@@ -120,7 +111,7 @@
             opacity: 1;
             height: 2rem;
             width: 2rem;
-            transform: scale(70);
+            transform: scale(90);
         }
 
     }
@@ -299,6 +290,15 @@
         }
     }
 
+
+    &--focusedInDesc {
+        .routineStream {
+            &__helperFiller {
+                backdrop-filter: brightness(0.01) contrast(0.6) ;
+            }
+            
+        }
+    }
 
     &:hover {
         .routineStream {
