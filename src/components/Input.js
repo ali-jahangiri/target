@@ -15,7 +15,7 @@ const Input = ({ placeholder , value , onChange , showLabel , reference , style 
                 ref={reference}
                 className="inputCustom" 
                 placeholder={placeholder} 
-                value={value} 
+                value={value}
                 onChange={({ target : { value } }) => changeHandler(value)}
                 {...rest}
                 />

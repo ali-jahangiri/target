@@ -8,7 +8,13 @@
     user-select: none;
     padding: 20px 40px;
     border: none;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 500;
     outline: none;
+    transition: .3s;
+
+    &:disabled {
+        opacity: .5;
+        cursor: default;
+    }
 }

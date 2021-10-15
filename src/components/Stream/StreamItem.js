@@ -22,8 +22,8 @@ const StreamItem = ({
     resizeHandler, 
     hoursGoNext, 
     setNthChildHandler, 
-    isInDragging, 
-    isInResizing, 
+    isInDragging,
+    isInResizing,
     isInDetailsMode, 
     habitInStream, 
     snapshot , 
@@ -156,7 +156,8 @@ const StreamItem = ({
               {...provided.dragHandleProps}
               className={`streamItem ${isInDragging ? "streamItem--hideResizeTrigger" : ""} ${detailsActive ? "streamItem--overflowHidden" : ""}`}>
                 {
-                  !isNextDayAfterToday && <StreamOverHour 
+                  !isNextDayAfterToday && <StreamOverHour
+                    shouldGetMinHight={isInDragging}
                     setIsInProgress={internalPassingUpCurrentInProgressBlockHandler} 
                     isInDetailsMode={isInDetailsMode} 
                     startPoint={(position + index) * 100} 

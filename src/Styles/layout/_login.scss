@@ -1,34 +1,48 @@
 .login {
     display: flex;
     align-items: center;
-
-
-    & > div {
-        flex: 1;
-    }
+    justify-content: center;
+    height: 100vh;
     
-
     &__header {
         font-size: $desc;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
     }
 
-
-    &__intro {
-        width: 100vw;
-        height: 100vh;
-        background-color: $budGreen;
-        flex: .5 !important;
-    }
 
     &__form {
-        padding: 1rem;
-        width: 70%;
-        margin: 0 auto;
-
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        
         input {
             margin: 1rem 0;
             font-size: 1.2rem;
         }
+    }
+
+    &__errorBox {
+        margin-top: 2rem;
+        background-color: #ff000018;
+        padding: 1rem;
+        color: #ff0000bf;
+    }
+
+    &__googleSignIn {
+        margin-top: 1rem;
+        width: 100%;
+
+        button {
+            margin: 0 auto;
+            background-color: transparent;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
     }
 }

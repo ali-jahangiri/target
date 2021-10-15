@@ -21,7 +21,6 @@
     width: 100%;
     max-height: 100%;
     background: #ffffff8f;
-    // background: linear-gradient(180deg, #ffffffa1, transparent);
     z-index: 9;
     height: 0;
     transition: .25s .1s cubic-bezier(0.215, 0.610, 0.355, 1);
@@ -45,7 +44,7 @@
         left: 50%;
         top: -10px;
         transform: translate(-50% , -50%);
-        transition: .3s .25s;
+        transition: .3s .15s;
         color: rgba(255, 255, 255, 0.562);
         font-weight: 500;
 

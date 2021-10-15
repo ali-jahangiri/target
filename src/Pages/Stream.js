@@ -191,7 +191,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
   }
 
   const dragStartHandler = ({ source }) => {
-    setIsDraggingStart(true);
+    setIsDraggingStart(source.index);
     if (source.droppableId === TODAY_ID || source.droppableId === "injectedTodo") setIsSidebarOpen(false);
   };
 
@@ -348,7 +348,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
                           detailsShowHandler={detailsShowHandler}
                           sidebarClosedByUser={sidebarClosedByUser}
                           isInResizing={isResizeStart}
-                          isInDragging={isDraggingStart}
+                          isInDragging={isDraggingStart === i}
                           setNthChildHandler={setIsResizeStart}
                           setIsSidebarOpen={setIsSidebarOpen}
                           resizeHandler={resizeHandler}

@@ -6,36 +6,30 @@ import TextareaAutosize from "react-textarea-autosize";
 import RoutineStreamSpendTime from "./RoutineStreamSpendTime";
 
 
-const RoutineStreamDesc = ({ isOtherVisionVisible , descValue , descValueChangeHandler , setIsDescFocused }) => {
-    const [isFocused, setIsFocused] = useState(false);
+const RoutineStreamDesc = ({ isOtherVisionVisible , setIsDescFocused , isInSpendTime , isDescFocused , initialValue , syncHandler }) => {
     const textareaRef = useRef();
+    const [value, setValue] = useState(initialValue)
 
     const blurHandler = () => {
-        setIsFocused(false);
         setIsDescFocused(false);
-    }
-
-    const focusHandler = () => {
-        setIsFocused(true);
-        setIsDescFocused(true);
-    }
+        syncHandler(value);
+    };
+    const focusHandler = () => setIsDescFocused(true);
 
     useLayoutEffect(()  => {
         selfClearTimeout(() => {
-            if(isOtherVisionVisible) {
-                textareaRef.current?.focus();
-            }
+            if(isOtherVisionVisible) textareaRef.current?.focus();
         } , 500);
     } , []);
 
     return (
-        <div className={`routineStream__desc ${isFocused ? "routineStream__desc--focused" : ""} ${!isOtherVisionVisible ? "routineStream__desc--hide" : ""}`}>
+        <div className={`routineStream__desc ${isInSpendTime ? "routineStream__desc--getDestroy" : ""} ${isDescFocused ? "routineStream__desc--focused" : ""} ${!isOtherVisionVisible ? "routineStream__desc--hide" : ""}`}>
             <TextareaAutosize
                 onFocus={focusHandler}
                 onBlur={blurHandler}
                 placeholder="What about this Routine ?"
-                value={descValue}
-                onChange={descValueChangeHandler}
+                value={value}
+                onChange={({ target : { value } }) => setValue(value)}
                 ref={textareaRef}
             />
         </div>
@@ -43,6 +37,11 @@ const RoutineStreamDesc = ({ isOtherVisionVisible , descValue , descValueChangeH
 }
 
 
+const showSpendTimePreviewTextHandler = passedSpendTime => {
+    if(passedSpendTime === 100) {
+        return "Completed"
+    }else return `${passedSpendTime}%`
+}
 
 
 const RoutineStream = ({ 
@@ -55,6 +54,7 @@ const RoutineStream = ({
     spendTime = 50,
     setIsInOtherVisionToParent,
     setPropHandler,
+    desc = "",
  }) => {
 
     const [liftedTimeFromAboveBlocks, setLiftedTimeFromAboveBlocks] = useState(null);
@@ -62,19 +62,14 @@ const RoutineStream = ({
     const [showSpendTimeResizable, setShowSpendTimeResizable] = useState(false);
     const [internalSpendTime, setInternalSpendTime] = useState(spendTime);
     const [isInResizing, setIsInResizing] = useState(false);
-    const [descValue, setDescValue] = useState("");
-    
     const [showSpend, setShowSpend] = useState(false);
-
     const [isFocusedInDescInput, setIsFocusedInDescInput] = useState(false);
-
+    
     const textareaRef = useRef();
 
     const routineTime = hour.to - hour.from;
 
     
-
-
     useEffect(function calcOverPushFromAboveBlock() {
         const validStream = habitInStream.filter(el => el.name);
         const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
@@ -83,25 +78,38 @@ const RoutineStream = ({
         setLiftedTimeFromAboveBlocks(pushCountFromAboveBlocks);
     }, [habitInStream, id, index, name]);
 
+
     const toggleOtherVisionHandler = () => {
         setIsOtherVisionVisible(prev => !prev);
         if(isOtherVisionVisible === false) {
             setShowSpendTimeResizable(true);
-            let fromHour = hour.from;
+            let fromHour = hour.from + liftedTimeFromAboveBlocks;
             const toHour = hour.to;
             const currentElementTopPosition = fromHour * 100;
             document.getElementsByClassName('mainContainer')[0].scroll({ top : currentElementTopPosition , behavior : "smooth" });
-            const possibleStep = new Array(toHour - fromHour).fill("").map(() => ++fromHour);
+            const possibleStep = new Array((toHour - fromHour) + liftedTimeFromAboveBlocks).fill("").map(() => ++fromHour);
             setIsInOtherVisionToParent(id , possibleStep , currentElementTopPosition)
         }else {
-            setIsInOtherVisionToParent()
+            setIsInOtherVisionToParent();
+            setShowSpend(false);
             selfClearTimeout(() => {
                 setShowSpendTimeResizable(false)
             } , 350);
         }
     }
 
+
+    const showSpendTrigger = () => {
+        if(!isOtherVisionVisible) {
+            toggleOtherVisionHandler();
+            selfClearTimeout(() => {
+                setShowSpend(true)
+            } , 500);
+        }else setShowSpend(prev => !prev)
+    }
     
+
+    const syncDescHandler = value => setPropHandler({ id , propName : "desc" , value })
 
     useLayoutEffect(function initialFocusIntoTextarea() {
         if(isOtherVisionVisible) {
@@ -109,10 +117,6 @@ const RoutineStream = ({
         }
     } , [textareaRef , isOtherVisionVisible])
 
-
-    const descValueChangeHandler = ({ target : { value } }) => setDescValue(value);
-
-    const spendTimeHandler = () => setShowSpend(prev => !prev);
 
     useAfterInitialEffect(function syncRoutineWithParentHandler (){
         if(!isInResizing) {
@@ -124,7 +128,7 @@ const RoutineStream = ({
         <Draggable draggableId={id} index={index} isDragDisabled>
             {provided => (
                 <div
-                    className={`routineStream ${isFocusedInDescInput ? "routineStream--focusedInDesc" : ""}`}
+                    className={`routineStream ${isOtherVisionVisible ? "routineStream--getHigherStack" : ""} ${isFocusedInDescInput ? "routineStream--focusedInDesc" : ""}`}
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}>
@@ -144,17 +148,19 @@ const RoutineStream = ({
                             <p>{name}</p>
                         </div>
                         <div className="routineStream__spendTimeTrigger">
-                            <p onClick={setShowSpend}>Set Spend Time</p>
+                            <p onClick={showSpendTrigger}>
+                                {!isOtherVisionVisible && internalSpendTime !== -1 ? showSpendTimePreviewTextHandler(spendTime) : !showSpend ? `Set Spend Time${spendTime !== -1 ? `: ${showSpendTimePreviewTextHandler(spendTime)}` : "" }` : "Back"}
+                            </p>
                         </div>
                         <RoutineStreamDesc
-                            spendTimeHandler={spendTimeHandler}
+                            syncHandler={syncDescHandler}
+                            isDescFocused={isFocusedInDescInput}
+                            initialValue={desc}
+                            isInSpendTime={showSpend}
                             isOtherVisionVisible={isOtherVisionVisible}
-                            textareaRef={textareaRef}
-                            descValue={descValue}
-                            descValueChangeHandler={descValueChangeHandler}
                             setIsDescFocused={setIsFocusedInDescInput}
                         />
-                        <div style={{ background : generateColor(`#${color}` , 9) }} className={`routineStream__helperFiller ${isOtherVisionVisible ? "routineStream__helperFiller--active" : ""}`}></div>
+                        <div onClick={() => setShowSpend(false)} style={{ background : generateColor(`#${color}` , 9) }} className={`routineStream__helperFiller ${isOtherVisionVisible ? "routineStream__helperFiller--active" : ""}`}></div>
                         <div className={`routineStream__footer ${isOtherVisionVisible ? "routineStream__footer--otherVision" : ""}`}>
                             <div onClick={toggleOtherVisionHandler} className="routineStream__circle">
                                 <div style={{ backgroundColor : `#${color}` }} />

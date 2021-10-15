@@ -17,7 +17,7 @@
 }
 
 .routineStream {
-    z-index: 999999;
+    z-index: 555;
     position: relative;
     width: 100%;
     min-height: 100px;
@@ -47,13 +47,13 @@
     &__desc {
         width: 100%;
         max-width: 90%;
-        max-height: 70%;
+        max-height: calc(100% - 7rem);
         overflow: hidden;
         overflow-y: scroll;
         position: absolute;
         left: 5%;
         top: 3rem;
-        transition: .3s;
+        transition: all .3s , top .1s 0s;
         z-index: 5;
 
         textarea {
@@ -82,8 +82,15 @@
             }
         }
 
+        &--getDestroy {
+            transition: all .3s , top .3s .5s;
+            top: -100%;
+            opacity: 0;
+        }
+
         &--hide {
             opacity: 0;
+            top: -10%;
         }
     }
 
@@ -298,6 +305,10 @@
             }
             
         }
+    }
+
+    &--getHigherStack {
+        z-index: 99999;
     }
 
     &:hover {
