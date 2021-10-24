@@ -15,6 +15,7 @@ const client = {
               DONE : "Completed!",
               BEGGING : "Beginning",
           },
+          slogan : "Manage your life wisely!"
     },
     menuList : [
         {
