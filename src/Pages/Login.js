@@ -11,8 +11,7 @@ const Login = () => {
                     <p>Target</p>
                 </div>
                 <div className="login__welcome">
-                    <p>
-                        Welcome to Target platform</p>
+                    <p>{client.STATIC.loginWelcome}</p>
                 </div>
                 <div className="login__googleSignIn">
                     <button onClick={singInWithGoogleHandler}>

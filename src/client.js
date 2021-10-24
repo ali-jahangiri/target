@@ -15,7 +15,9 @@ const client = {
               DONE : "Completed!",
               BEGGING : "Beginning",
           },
-          slogan : "Manage your life wisely!"
+          slogan : "Manage your life wisely!",
+          loginWelcome : "Welcome to Target platform",
+          notFoundPageText : "There is no page with this path , Are you lost ?"
     },
     menuList : [
         {
