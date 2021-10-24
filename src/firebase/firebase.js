@@ -36,6 +36,8 @@ const checkAuth = callback => {
   return firebaseAuth.onAuthStateChanged(callback)
 }
 
+export const userId = firebaseAuth.currentUser?.uid;
+
 export {
   db , 
   firebaseAuth ,

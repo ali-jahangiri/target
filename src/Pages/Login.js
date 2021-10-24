@@ -1,16 +1,14 @@
-import Input from "../components/Input"
 import useKeyBaseState from "../Hook/useKeyBaseState";
-
-import Btn from "../components/Btn";
-import { singInWithGoogle , singInWithEmail, firebaseAuth } from "../firebase/firebase";
+import { singInWithGoogle , singInWithEmail } from "../firebase/firebase";
 import { useState } from "react";
 
 const googleIconColors = ["#ea4335" , "#fbbc05" , "#34a853" , "#4285f4" , "#cf412f" , "#fbbc05"];
 
+
+
 const Login = () => {
     const [inputValue , setInputValue] = useKeyBaseState();
     const [haveSomeError, setHaveSomeError] = useState(null)
-
 
     const loginHandler = () => {
         singInWithEmail({ email : inputValue.username , password : inputValue.password })
@@ -37,7 +35,7 @@ const Login = () => {
                     <div className="login__header">
                         <p>Hi There ! </p>
                     </div>
-                    <Input
+                    {/* <Input
                         showLabel
                         mode="dark" 
                         placeholder="User Name" 
@@ -61,7 +59,7 @@ const Login = () => {
                     }
                     <Btn disable={!inputValue?.password || !inputValue?.username} style={{ marginTop : "2rem" , width : "100%" , color : "white" }} onClick={loginHandler}>
                         Click for sing in
-                    </Btn>
+                    </Btn> */}
                     <div className="login__googleSignIn">
                         <button onClick={singInWithGoogleHandler}>
                             <p>Sing in With {"Google".split("").map((el , i) => <span key={i} style={{ color : googleIconColors[i] }}>{el}</span>)}</p>

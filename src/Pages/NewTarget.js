@@ -7,7 +7,7 @@ import HabitListCreator from "../components/HabitListCreator";
 import TargetItemColorPicker from "../components/TargetItemColorPicker";
 
 import { idGenerator } from "../utils";
-import { references } from "../firebase";
+import { firebaseAuth, references } from "../firebase";
 import Loading from "../components/Loading";
 
 const NewTarget = () => {
@@ -25,7 +25,7 @@ const NewTarget = () => {
   const createNewTargetHandler = () => {
     setIsInCreationPend(true);
     const id = idGenerator();
-    references.target.doc(id).set({ ...target })
+    references(firebaseAuth.currentUser.uid).target.doc(id).set({ ...target })
       .then(_ => {
         history.push(`habitPerWeek/${id}`);
       })

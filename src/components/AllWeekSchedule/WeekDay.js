@@ -8,7 +8,7 @@ import useAfterInitialEffect from "./useAfterInitialEffect";
 
 
 const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => {
-    const mostRepeatedColor = filedHabit.sort((a, b) => b.schedule.length - a.schedule.length)[0].color;
+    const mostRepeatedColor = filedHabit.sort((a, b) => b.schedule.length - a.schedule.length)[0]?.color;
     const [shouldControllerGetInitialHide, setShouldControllerGetInitialHide] = useState(false);
     const [isInNewRoutineCreationProcess, setIsInNewRoutineCreationProcess] = useState(false);
     const [isValidToCreateRoutine, setIsValidToCreateRoutine] = useState(false);
@@ -27,8 +27,7 @@ const WeekDay = ({ name , filedHabit , setCurrentDayName , currentDayName }) => 
         })
     } , [name]);
 
-    console.log(routineList);
-
+    
     const cleanUpRoutineCreation = () => {
         setIsInNewRoutineCreationProcess(false);
         setIsInNewRoutineCreationProcess(false);

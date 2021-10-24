@@ -12,8 +12,9 @@ import Alert from "../components/Alert";
 import Timeline from "../components/Timeline";
 
 import { references } from "../firebase";
-import useKeyBaseState from "../Hook/useKeyBaseState";
+
 import PreventUserInteractOverlay from "../components/Stream/PreventUserInteractOverlay";
+import { firebaseAuth } from "../firebase/firebase";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
@@ -58,10 +59,14 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
     setLoading(false)
   }
 
+  const userId = firebaseAuth.currentUser.uid; 
+
   useEffect(function streamInitializer() {
-    references.stream.doc(leanDate).onSnapshot(snapShot => {
+
+
+    references(userId).stream.doc(leanDate).onSnapshot(snapShot => {
       if(snapShot.exists) {
-        references.habitPerWeek
+        references(userId).habitPerWeek
         .get()
         .then(res => {
           let ss = _date(date).add(2 , 'day').format('dddd')
@@ -78,10 +83,10 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
               curr[routine.hour.from] = { ...routine , type : "routine" , hoursGoNext : routine.hour.to - routine.hour.from , spendTime : -1 }
             ))
           }
-          references.stream.doc(leanDate).set({ item : curr })
+          references(userId).stream.doc(leanDate).set({ item : curr })
               .then(_ => {
                 setHabitInStream(curr)
-                references.habitPerWeek
+                references(userId).habitPerWeek
                   .get()
                   .then(res => {
                     let ss = _date(date).add(2 , 'day').format('dddd');
@@ -97,7 +102,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
 
   useEffect(function syncStream () {
     if(!firstTime) {
-      references.stream.doc(leanDate)
+      references(userId).stream.doc(leanDate)
         .update({item : habitInStream})
     }else {
       setIsFirstTme(false)

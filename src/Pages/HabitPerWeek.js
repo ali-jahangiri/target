@@ -5,7 +5,7 @@ import { DragDropContext , Droppable , Draggable } from "react-beautiful-dnd";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import { useEffect } from "react";
-import { references } from "../firebase";
+import { firebaseAuth, references } from "../firebase";
 import Loading from "../components/Loading";
 import client from "../client";
 
@@ -25,13 +25,13 @@ const HabitPerWeek = ({ match , history }) => {
     const comeFromTargetList = history.location.state?.comeFromTargetList;
 
     useEffect(() => {
-        references.target.doc(currentTargetId)
+        references(firebaseAuth.currentUser.uid).target.doc(currentTargetId)
             .get()
             .then(response => {
                 setCurrentTarget(response.data());
                 return response
             }).then(shit => {
-                references.habitPerWeek.doc(currentTargetId)
+                references(firebaseAuth.currentUser.uid).habitPerWeek.doc(currentTargetId)
                 .get()
                 .then(data => {
                     if(data.exists) {
@@ -42,7 +42,7 @@ const HabitPerWeek = ({ match , history }) => {
                         namesOfDaysOfWeek.map(el => base[el.name] = [])
                         setSchedule({...base})
                         const { color , targetName } = shit.data();
-                            references.habitPerWeek.doc(currentTargetId).set({ targetName , color  , schedule : base })
+                            references(firebaseAuth.currentUser.uid).habitPerWeek.doc(currentTargetId).set({ targetName , color  , schedule : base })
                                 .then(_ => setLoading(false))
                     }
                 })
@@ -116,19 +116,19 @@ const HabitPerWeek = ({ match , history }) => {
 
       useEffect(() => {
         if(!loading) {
-            references.habitPerWeek.doc(currentTargetId).update({ targetName : currentTarget.targetName , color : currentTarget.color , schedule })
+            references(firebaseAuth.currentUser.uid).habitPerWeek.doc(currentTargetId).update({ targetName : currentTarget.targetName , color : currentTarget.color , schedule })
         }
       } , [schedule])
 
 
 
-      
+      console.log(currentTarget);
       return (
           <Loading loading={loading}>
             {isReady => {
                 if(isReady) {
                     const haveAnyHabit = !!currentTarget?.habit?.length;
-                        return (
+                    return (
                             <div className="habitPerDay">
                     <Container>
                     <div className={`habitPerDay__header ${!isSidebarOpen ? "habitPerDay__header--minified" : ""}`}>

@@ -33,7 +33,7 @@ const Home = () => {
     } , countOfStreamChange >= 3 ? 2500 : 2000) , [])
 
 
-    const unexpectedGapUnit = 6
+    const unexpectedGapUnit = 0
 
     const scrollHandler = left => {
       containerRef.current?.scroll({ left : left + unexpectedGapUnit , behavior : "smooth"})
@@ -94,7 +94,7 @@ const Home = () => {
                         setIsTargetStreamReadyToRender={setIsTargetStreamReadyToRender}
                         sideBarEnabled={index === currentDay} 
                         date={dateForPassingIntoStream} />
-        }else return null
+        }else return null;
 
     }
 
@@ -124,7 +124,7 @@ const Home = () => {
         <Loading renderImmediately>
             {() => (
                 <div onWheel={onWheelHandler} ref={containerRef} style={{ display : "flex" }} className="mainContainer">
-                    <WelcomeLoading isInLoading={isWelcomeLoadingVisible} /> }
+                    <WelcomeLoading isInLoading={isWelcomeLoadingVisible} />
                     {
                         allMonthDay.map((_ , i) => (
                             <div key={i} className={`__dayContainer ${i === currentDay && false ? "__dayContainer--scrollDisabled" : ""}`}>
@@ -136,7 +136,7 @@ const Home = () => {
                                 </div>
                             </div>
                         ))
-                }
+                    }
                 <Portal>
                     <ScheduleSettingCircle
                         visible={isTargetStreamReadyToRender}
@@ -151,7 +151,5 @@ const Home = () => {
         </Loading>
     )
 }
-
-
 
 export default Home;
