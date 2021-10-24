@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import { selfClearTimeout } from "../utils";
 
-const WelcomeLoading = ({ isInLoading }) => {
+const HomeWelcome = () => {
     const [isInDestroyProcess, setIsInDestroyProcess] = useState(false);
     const [shouldGetDestroy, setShouldGetDestroy] = useState(false);
-
+    
     useEffect(() => {
-        if(!isInLoading) {
-            setIsInDestroyProcess(true);
-            selfClearTimeout(() => {
-                setIsInDestroyProcess(false);
-                setShouldGetDestroy(true)
-            } , 2000)
-        }
-    } , [isInLoading])
+        selfClearTimeout(() => setIsInDestroyProcess(true) , 1900);
+
+        selfClearTimeout(() => {
+            setIsInDestroyProcess(false);
+            setShouldGetDestroy(true);
+        } , 3900);
+    } , [])
 
     if(!shouldGetDestroy) {
         return <div className={`welcomeLoading ${isInDestroyProcess ? "welcomeLoading--destroy" : ""}`}>
@@ -27,4 +26,4 @@ const WelcomeLoading = ({ isInLoading }) => {
 
 
 
-export default WelcomeLoading;
+export default HomeWelcome;

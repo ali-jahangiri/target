@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import client from "../client";
 import WeekDay from "../components/AllWeekSchedule/WeekDay";
-import Loading from "../components/Loading";
+import Menu from "../components/Menu";
 import { findFilledStreamWeekDay, requests, selfClearTimeout } from "../utils";
 
 const AllWeekSchedule = () => {
@@ -29,7 +29,7 @@ const AllWeekSchedule = () => {
         } , 300)
     }
 
-    return <Loading loading={loading}>
+    return <Menu loading={loading}>
         {isReady => isReady && (
             <div className="allWeekSchedule">
                 <div className={`allWeekSchedule__flasher ${isInDaySwitchProcess ? "allWeekSchedule__flasher--visible" : ""}`} />
@@ -43,7 +43,7 @@ const AllWeekSchedule = () => {
                 }
             </div>
         )}
-    </Loading>
+    </Menu>
 }
 
 

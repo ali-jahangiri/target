@@ -8,7 +8,7 @@ import TargetItemColorPicker from "../components/TargetItemColorPicker";
 
 import { idGenerator } from "../utils";
 import { firebaseAuth, references } from "../firebase";
-import Loading from "../components/Loading";
+import Menu from "../components/Menu";
 
 const NewTarget = () => {
   const [target, setTarget] = useState({});
@@ -32,7 +32,7 @@ const NewTarget = () => {
   }
 
   return (
-    <Loading renderImmediately>
+    <Menu renderImmediately>
       {_ => (
         <div className="newTarget" >
         <div className="newTarget__container">
@@ -57,7 +57,7 @@ const NewTarget = () => {
         </div>
       </div>
       )}
-    </Loading>
+    </Menu>
   );
 };
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { firebaseAuth } from "../../firebase";
+import { onAuthChange } from "../../firebase/firebase";
 import { Login } from "../../Pages";
 
 
@@ -8,7 +8,7 @@ const AuthGuard = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        firebaseAuth.onAuthStateChanged(authState => {
+        onAuthChange(authState => {
             setLoading(false);
             setIsLoggedIn(authState);
         })

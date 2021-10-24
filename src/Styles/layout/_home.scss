@@ -1,0 +1,33 @@
+.home {
+    overflow-x: hidden;
+    background-color: black;
+    display: flex;
+    
+    &__day {
+        min-width: 100vw;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &__animeHelperContainer {
+            width: 95%;
+            height: 100%;
+            display: flex;
+            position: relative;
+            transition: .2s .7s cubic-bezier(0.55, 0.085, 0.68, 0.53);
+            
+            &--active {
+                width: 100%;
+                height: 100%;
+            }
+
+            &--deActive {
+                transition-delay: 0 !important;
+                width: 70%;
+                height: 70%;
+                opacity: .5;
+            }
+        }
+    }
+}

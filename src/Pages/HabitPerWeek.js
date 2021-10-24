@@ -6,8 +6,8 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import { useEffect } from "react";
 import { firebaseAuth, references } from "../firebase";
-import Loading from "../components/Loading";
 import client from "../client";
+import Menu from "../components/Menu";
 
 
 const namesOfDaysOfWeek = client.STATIC.DAY_OF_WEEK.map(el => ({ name : el , id : idGenerator() }))
@@ -124,7 +124,7 @@ const HabitPerWeek = ({ match , history }) => {
 
       console.log(currentTarget);
       return (
-          <Loading loading={loading}>
+          <Menu loading={loading}>
             {isReady => {
                 if(isReady) {
                     const haveAnyHabit = !!currentTarget?.habit?.length;
@@ -233,7 +233,7 @@ const HabitPerWeek = ({ match , history }) => {
                     </Container>
                 </div>)}
             }}
-        </Loading>   
+        </Menu>   
     )
 }
 

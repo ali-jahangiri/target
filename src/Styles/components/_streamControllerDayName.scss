@@ -1,0 +1,30 @@
+.streamControllerDayName {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+    transition: all .3s , font-size .1s 0s;
+
+    & > div {
+        display: flex;
+        align-items: center;
+
+        p {
+            // day number
+            &:first-child {
+                font-weight: bold;
+                margin-right: 10px;
+            }
+        }
+    }
+
+    &--inActive {
+        top: 10%;
+        left: 100%;
+        transform: translate(-120% , -50%);
+        font-size: 1.8rem;
+    }
+}

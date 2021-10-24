@@ -64,13 +64,6 @@ const stream = {
     }
 }
 
-const connectionObserver = {
-    connect(callback) {
-        references().connection.onSnapshot(snapshot => callback(makeValidSnapshotData(snapshot)))
-    }
-}
-
-
 const commends = {
     reminder : {
         setReminder(streamId , newReminder) {
@@ -144,7 +137,6 @@ const requests =  {
     target,
     habitPerWeek,
     stream,
-    connectionObserver,
     commends,
     routine,
 }

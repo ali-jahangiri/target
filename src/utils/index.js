@@ -116,6 +116,21 @@ export const hourValueChecker = (value , des , toHr , from) => {
   else return value
 }
 
+
+export const currentDateName = (currentMonth , currentDay) => {
+  const now = _date();
+  const allMonthDay = now.clone().add(currentMonth - 1 , "M").daysInMonth();
+  
+  const month = now.clone().add(currentMonth - 1 , "M").format("MMMM");
+  const day = _date(`${now.year()}/${now.month() + 1 + (currentMonth - 1)}/${currentDay + (allMonthDay === 31 ? 1 : 2)}`).format('dddd')
+
+  
+  return {
+    month,
+    day
+  }
+}
+
 export {
   requests
 }

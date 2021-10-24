@@ -1,0 +1,54 @@
+.streamControllerNavigator {
+    position: absolute;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    bottom: -150%;
+    transition: .3s;
+
+    &__reset {
+        svg { transition: .3s; }
+
+        &:hover {
+            
+            svg {
+                transform: rotate(-180deg);
+            }
+        }
+    }
+
+    button {
+        transition: .3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        opacity: 0;
+
+        &:disabled {
+            opacity: .5;
+            cursor: default;
+            &:hover {
+                background-color: transparent;
+            }
+        }
+    }
+
+    &--active {
+        bottom: 0;
+
+        button {
+            opacity: 1;
+            transform: translateY(0%) !important;
+            &:hover {
+                background-color: #706353;
+            }
+        }
+    }
+}

@@ -6,7 +6,7 @@ import MenuItem from "./MenuItem";
 
 
 
-const Loading = ({ children , loading , renderImmediately , symbolPosition }) => {
+const Menu = ({ children , loading , renderImmediately , symbolPosition }) => {
     const [isReadyToRenderChildren, setIsReadyToRenderChildren] = useState(false);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const [currentBgColor, setCurrentBgColor] = useState("3A6351")
@@ -71,4 +71,4 @@ const Loading = ({ children , loading , renderImmediately , symbolPosition }) =>
 }
 
 
-export default Loading;
+export default Menu;

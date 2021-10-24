@@ -19,30 +19,13 @@ const firebaseAuth = firebase.auth();
 const singInWithGoogle = async () => {
   const provider = new firebase.auth.GoogleAuthProvider()
   return await firebaseAuth.signInWithPopup(provider);
-  // window.location.reload();
 }
 
-const singInWithEmail = ({ email , password }) => {
-  return firebaseAuth.createUserWithEmailAndPassword(email , password)
-      .then(res => res)
-}
-
-const logInWithEmail = ({ email , password }) => {
-  return firebaseAuth.signInWithEmailAndPassword(email , password)
-    .then(res => res)
-}
-
-const checkAuth = callback => {
-  return firebaseAuth.onAuthStateChanged(callback)
-}
-
-export const userId = firebaseAuth.currentUser?.uid;
+const onAuthChange = callback => firebaseAuth.onAuthStateChanged(callback)
 
 export {
   db , 
   firebaseAuth ,
   singInWithGoogle,
-  checkAuth,
-  singInWithEmail,
-  logInWithEmail
+  onAuthChange,
 };

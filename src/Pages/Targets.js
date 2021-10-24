@@ -1,5 +1,5 @@
 import Header from "../components/Header"
-import Loading from "../components/Loading";
+import Menu from "../components/Menu";
 import TargetBox from "../components/TargetBox";
 import TargetCreateNewOne from "../components/TargetCreateNewOne";
 import useFetcher from "../Hook/useFetcher";
@@ -9,7 +9,7 @@ const Targets = () => {
     const { data , loading } = useFetcher(req => req.target.getTargetList, [])
 
     return (
-        <Loading loading={loading}>
+        <Menu loading={loading}>
             {isReady => {
                 if(isReady) return (
                     <div className="target">
@@ -26,7 +26,7 @@ const Targets = () => {
                 );
                 }
             }
-        </Loading>
+        </Menu>
     )
 }   
 

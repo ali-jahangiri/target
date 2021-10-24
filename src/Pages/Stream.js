@@ -62,8 +62,7 @@ const Stream = ({ date , sideBarEnabled , setIsTargetStreamReadyToRender , isDis
   const userId = firebaseAuth.currentUser.uid; 
 
   useEffect(function streamInitializer() {
-
-
+    setIsFirstTme(true);
     references(userId).stream.doc(leanDate).onSnapshot(snapShot => {
       if(snapShot.exists) {
         references(userId).habitPerWeek
