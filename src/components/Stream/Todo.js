@@ -5,8 +5,8 @@ import TodoInput from "./TodoInput";
 import { selfClearTimeout } from "../../utils";
 import ReminderPlayground from "../Reminder/ReminderPlayground";
 import NotePlayground from "../NotePlayground";
+import client from "../../client";
 
-const command = ['note' , 'reminder'];
 
 const dynamicPlayground = rest => ({
     note : <NotePlayground {...rest} />,
@@ -14,7 +14,14 @@ const dynamicPlayground = rest => ({
 })
 
 
-const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setInputValue , inputValue }) => {
+const Todo = ({ 
+    index,
+    setToFullScreen,
+    isInFullScreen,
+    leanDate,
+    setInputValue,
+    inputValue,
+}) => {
     const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
     const [completedHash, setCompletedHash] = useState(false);
     
@@ -53,7 +60,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setInputVa
     const interpolateSubmitHandler = (e) => {
         e.preventDefault();
         if(inputValue && inputValue?.slice(1) && !completedHash){
-            const haveHelperInterpolateCommand = command.find(el => el.includes(inputValue.slice(1)));
+            const haveHelperInterpolateCommand = client.STATIC.command.find(el => el.includes(inputValue.slice(1)));
             if(haveHelperInterpolateCommand && inputValue?.slice(1) !== haveHelperInterpolateCommand) {
                 const leftCharacter = haveHelperInterpolateCommand.split("").filter((_ , i) => i + 1 >= inputValue.length)
                 let currentIndex = 0;
@@ -99,7 +106,7 @@ const Todo = ({ index , setToFullScreen , isInFullScreen , leanDate , setInputVa
                     <form onSubmit={interpolateSubmitHandler}>
                         <div>
                             {
-                                hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!inputValue.slice(1) ? command.find(el => el.startsWith(inputValue.slice(1)) && el.includes(inputValue.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < inputValue.length ? "white" : "grey" }}>{el}</span>) : 'Write your commend ...'}</p>
+                                hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!inputValue.slice(1) ? client.STATIC.command.find(el => el.startsWith(inputValue.slice(1)) && el.includes(inputValue.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < inputValue.length ? "white" : "grey" }}>{el}</span>) : 'Write your commend ...'}</p>
                             }
                                 <TodoInput value={inputValue} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
                             {

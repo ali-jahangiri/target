@@ -1,17 +1,5 @@
 import { idGenerator } from ".";
 
-class Todo {
-    constructor(todo) {
-        return {
-            id : idGenerator(),
-            name : todo,
-            color : "988989",
-            hoursGoNext: 1,
-        }
-    }
-}
-
-
 class Note {
     constructor() {
         return {
@@ -33,8 +21,57 @@ class Reminder {
     }
 }
 
+class StreamItem {
+    constructor(color , name) {
+        return {
+            color ,
+            name,
+            id : idGenerator(),
+            hoursGoNext: 1,
+            type : "plain"
+        }
+    }
+}
+
+class EmptyStreamItem {
+    constructor() {
+        return {
+            name : null,
+            id : idGenerator(),
+            hoursGoNext: 1,
+        }
+    }
+}
+
+class StreamRoutine {
+    constructor(hour) {
+        return {
+            name : null,
+            id : idGenerator(),
+            type : "routine",
+            spendTime : -1,
+            hoursGoNext : hour.to - hour.from,
+        }
+    }
+}
+
+class StreamTodo {
+    constructor(todoTitle) {
+        return {
+            id : idGenerator(),
+            name : todoTitle,
+            color : "988989",
+            type : "todo",
+            hoursGoNext: 1,
+        }
+    }
+}
+
 export {
-    Todo,
+    StreamTodo,
     Note,
     Reminder,
+    StreamItem,
+    StreamRoutine,
+    EmptyStreamItem,
 }

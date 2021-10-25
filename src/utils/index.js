@@ -2,6 +2,7 @@
 import requests from './requests';
 import dayjs from "dayjs";
 import jalaliday from "jalaliday";
+import { StreamItem, StreamRoutine, StreamTodo, Todo } from './modules';
 dayjs.extend(jalaliday)
 
 export const generateColor = (color, fade) => {
@@ -129,6 +130,57 @@ export const currentDateName = (currentMonth , currentDay) => {
     month,
     day
   }
+}
+
+
+export const createNewStreamItem = (habitInStreamArray , todayHabitArray , insertIndex , draggableId) => {
+  const clonedArray = [...habitInStreamArray];
+  const haveSomeValidStreamItemInThisIndex = clonedArray[insertIndex].name;
+  
+  const { color , item } = todayHabitArray.find(el => el.item.find(el => el.id === draggableId));
+  const name = item.find(el => el.id === draggableId).name; 
+  const newStreamItemModel = new StreamItem(color, name)
+
+  if (!haveSomeValidStreamItemInThisIndex) {
+    clonedArray[insertIndex] = newStreamItemModel;
+    return clonedArray;
+  } else {
+    clonedArray.splice(insertIndex, 0, newStreamItemModel);
+    return clonedArray;
+  }
+
+}
+
+export const createNewTodo = (streamListArray , insertIndex , todoTitle) => {
+  const clone = [...streamListArray];
+  const haveSomeValidStreamItemInThisIndex = clone[insertIndex].name;
+  const newTodoModel = new StreamTodo(todoTitle);
+
+  if (!haveSomeValidStreamItemInThisIndex) {
+    clone[insertIndex] = newTodoModel;
+    return clone;
+  } else {
+    clone.splice(insertIndex, 0, newTodoModel);
+    return clone;
+  }
+}
+
+
+export const createDateHabitList = (allHabitList , currentDate) => {
+  return allHabitList.map(el => ({ color : el.color , item : el.schedule[currentDate] })).filter(el => el.item?.length)
+}
+
+export const injectRoutineToDateStream = (streamList = [] , routineModel) => {
+  const clonedStreamList = [...streamList];
+  routineModel.list?.map(routine => clonedStreamList[routine.hour.from] = new StreamRoutine(routine.hour));
+  return clonedStreamList;
+}
+
+export const reorderStreamItem = (streamItem , destination , source) => {
+  const streamItemListClone = [...streamItem];
+  const [removed] = streamItemListClone.splice(source , 1);
+  streamItemListClone.splice(destination, 0, removed);
+  return streamItemListClone;
 }
 
 export {

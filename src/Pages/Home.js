@@ -94,8 +94,7 @@ const Home = () => {
                         isDisable={isPreviousDay}
                         isNextDayAfterToday={isNextDayAfterToday}
                         setIsTargetStreamReadyToRender={setIsTargetStreamReadyToRender}
-                        sideBarEnabled={index === currentDay} 
-                        date={dateForPassingIntoStream} />
+                        date={dateForPassingIntoStream.split("/").join('')} />
         }else return null;
 
     }

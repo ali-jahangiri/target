@@ -1,20 +1,19 @@
 import firebase from "firebase";
+import { createDateHabitList, injectRoutineToDateStream, _date } from ".";
 
 import { firebaseAuth, references as pureReference } from "../firebase"
-import { Note } from "./modules";
+import { Note , EmptyStreamItem } from "./modules";
 
 const makeValidSnapshotData = snapshot => snapshot.docs?.map(el => ({ id : el.id , ...el.data() }));
 
 const requestWrapper = requestCallback => {
-    return new Promise((resolve , reject) => {
+    return new Promise((resolve) => {
         return requestCallback(resolve)
     })
 }
 
 
-const references = () => {
-    return pureReference(firebaseAuth.currentUser.uid)
-}
+const references = () => pureReference(firebaseAuth.currentUser.uid)
 
 const target = {
     getTargetList(callback){
@@ -41,7 +40,6 @@ const target = {
 
 const habitPerWeek = {
     getEntireSchedule(callback) {
-        // return requestWrapper(resolve => references().habitPerWeek.onSnapshot(snapshot => ))  
         references().habitPerWeek.onSnapshot(snapshot => callback(makeValidSnapshotData(snapshot)))  
     },
     deleteEntireSchedule(targetId) {
@@ -51,16 +49,44 @@ const habitPerWeek = {
 
 
 const stream = {
-    deleteStream(streamId) {
-        requestWrapper(resolve => references().stream.doc(streamId).delete().then(resolve))
+    // deleteStream(streamId) {
+    //     requestWrapper(resolve => references().stream.doc(streamId).delete().then(resolve))
+    // },
+    // setStreamDetails(streamId , details) {
+    //     return requestWrapper(resolve => references().stream.doc(streamId).update({
+    //         desc : details
+    //     }).then(resolve))
+    // },
+    // getStreamDetails(streamId) {
+    //     return requestWrapper(resolve => references().stream.doc(streamId).get().then(res => resolve(res.data()?.desc || "")))
+    // }
+    initializer(date , callback = () => ({ streamItem : [] , todayHabit : [] })) {
+        references().habitPerWeek
+            .get()
+            .then(({ docs }) => {
+                let currentDateDayName = _date(date).add(2 , 'day').format('dddd');
+                const currentDateHabitList = createDateHabitList(docs.map(el => el.data()) , currentDateDayName);
+
+                references().stream.doc(date).onSnapshot(snapShot => {
+                    if(snapShot.exists) {
+                        callback({ streamItem : snapShot.data().item , todayHabit : currentDateHabitList })
+                    }else {
+                        requests.routine.getRoutineList(currentDateDayName , response => {
+                            const hours = new Array(24).fill().map((_, i) => i + 1);
+                            const dayStreamItemList = hours.map((_) => new EmptyStreamItem());
+                            
+                            const newDayStreamAfterRoutineInjection = injectRoutineToDateStream(dayStreamItemList , response)
+                            
+                            references().stream.doc(date).set({ item : newDayStreamAfterRoutineInjection })
+                                .then(() => callback({ streamItem : newDayStreamAfterRoutineInjection , todayHabit : currentDateHabitList }))
+                        })
+                    }
+                })
+            })
     },
-    setStreamDetails(streamId , details) {
-        return requestWrapper(resolve => references().stream.doc(streamId).update({
-            desc : details
-        }).then(resolve))
-    },
-    getStreamDetails(streamId) {
-        return requestWrapper(resolve => references().stream.doc(streamId).get().then(res => resolve(res.data()?.desc || "")))
+    sync(date , newHabitInStream) {
+        references().stream.doc(date)
+            .update({item : newHabitInStream})
     }
 }
 

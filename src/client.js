@@ -9,6 +9,7 @@ const client = {
             "پنج‌شنبه",
             "جمعه",
           ],
+          command : ['note' , 'reminder'],
           overHourMessage : {
               ALMOST : "Almost Done!",
               HALF : "Pass The Half",
