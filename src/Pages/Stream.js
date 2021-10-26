@@ -12,11 +12,12 @@ import Alert from "../components/Alert";
 import Timeline from "../components/Timeline";
 
 import PreventUserInteractOverlay from "../components/Stream/PreventUserInteractOverlay";
+import StreamSideBarOverlayHelper from "../components/Stream/StreamSidebarOveflayHelper";
 
 // Static variables
 const hours = new Array(24).fill().map((_, i) => i + 1);
 const TODAY_ID = "todayHabit";
-
+const INJECTED_TODO = "injectedTodo";
 
 const AfterAllChildRenderSetter = ({ setAllChildRender }) => {
   useEffect(() => setAllChildRender(true) , []);
@@ -105,20 +106,22 @@ const Stream = ({
     // }
     
     if (source.droppableId === TODAY_ID) return reorderHandler(destination, source);
-    if(draggableId === "injectedTodo") return todoInjectionHandler(destination, source);
+    if(draggableId === INJECTED_TODO) return todoInjectionHandler(destination, source);
 
     setStreamItem(prev => createNewStreamItem(prev , todayHabit , destination.index, draggableId));
   };
 
-  const todoInjectionHandler = destination => 
+  const todoInjectionHandler = destination => {
     setStreamItem(prev => createNewTodo(prev , destination.index , injectedTodo));
+  }
 
   const reorderHandler = (destination, source) => 
     setStreamItem(reorderStreamItem(streamItem , destination.index , source.index));
 
   const dragStartHandler = ({ source }) => {
-    setIsInDragging(source.index);
-    if (source.droppableId === TODAY_ID || source.droppableId === "injectedTodo") setIsSidebarVisible(false);
+    console.log('draggingIndex' , source.index);
+    setIsInDragging(true);
+    if (source.droppableId === TODAY_ID || source.droppableId === INJECTED_TODO) setIsSidebarVisible(false);
   };
 
   
@@ -198,7 +201,7 @@ const Stream = ({
           const currentTimelinePosition = ((currentHour > 0 ? currentHour - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666);
           selfClearTimeout(() => {
               mainParentContainerRef.scrollTo({ top : currentTimelinePosition ,  behavior : "smooth" });
-              setInitialHelperScrollGetCompleted(true)
+              setInitialHelperScrollGetCompleted(true);
             } , 1500);
         }
       }
@@ -210,7 +213,7 @@ const Stream = ({
   return loading ? <div className="today__loadingScreen" /> : (
     <div className="today">
         { isToday && <Timeline shouldGetHide={currentDetailsModeHabit} /> }
-        { isDisable && <PreventUserInteractOverlay protectFrom={mainContainerRef.current} /> }
+        <StreamSideBarOverlayHelper isSidebarVisible={isSidebarVisible} /> 
         {
           shouldOverlayGetVisible && <div  className="helperOverlay" />
         }
@@ -245,9 +248,7 @@ const Stream = ({
                     if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
                     else if(el.type === "routine") 
                       return <RoutineStream 
-                                setIsInOtherVisionToParent={(...rest) => {
-                                  if(!isOverlayInHideProcess) detailsShowHandler(...rest)
-                                }} 
+                                setIsInOtherVisionToParent={(...rest) => !isOverlayInHideProcess && detailsShowHandler(...rest)} 
                                 habitInStream={streamItem} 
                                 index={i} 
                                 key={i}
@@ -266,7 +267,7 @@ const Stream = ({
                           detailsShowHandler={detailsShowHandler}
                           sidebarClosedByUser={sidebarClosedByUser}
                           isInResizing={isResizeStart}
-                          isInDragging={isInDragging === i}
+                          isInDragging={isInDragging}
                           setNthChildHandler={setIsResizeStart}
                           setIsSidebarOpen={setIsSidebarVisible}
                           resizeHandler={resizeHandler}

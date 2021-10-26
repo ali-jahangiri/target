@@ -1,0 +1,18 @@
+.sidebarOverlayHelper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 2400px;
+    background-color: #000000c0;
+    z-index: 999;
+    transition: .3s;
+    
+    &--show {
+        opacity: 1;
+    }
+
+    &--getHide {
+        opacity: 0;
+    }
+}
