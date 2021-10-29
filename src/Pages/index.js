@@ -1,7 +1,6 @@
 import Home from "./Home";
 import Targets from "./Targets";
 import NewTarget from "./NewTarget";
-import Stream from "./Stream";
 import ErrorPage from "./ErrorPage";
 import Profile from "./Profile";
 import NotFound from "./NotFound";
@@ -13,8 +12,7 @@ import AllWeekSchedule from "./AllWeekSchedule";
 export { 
     Home , 
     Targets , 
-    NewTarget , 
-    Stream as Today ,
+    NewTarget ,
     ErrorPage , 
     NotFound , 
     DevPlayground,  

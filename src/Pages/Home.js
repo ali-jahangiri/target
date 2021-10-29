@@ -3,7 +3,7 @@ import { useCallback, useEffect, useLayoutEffect , useRef , useState } from "rea
 import { debounce , _date } from "../utils";
 
 import StreamController from "../components/StreamController";
-import Stream from "./Stream";
+import Stream from "../components/Stream/Stream";
 import Portal from "../Providers/Portal/Portal";
 import Menu from "../components/Menu";
 import HomeWelcome from "../components/HomeWelcome";

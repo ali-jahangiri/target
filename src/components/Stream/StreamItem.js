@@ -10,6 +10,7 @@ import StreamResizeTrigger from "./StreamResizeTrigger";
 import WritableDetails from "./WritableDetails";
 import { selfClearTimeout } from "../../utils";
 import StreamOverHour from "./StreamOverHour";
+import client from "../../client";
 
 const StreamItem = ({ 
     detailsShowHandler, 
@@ -100,8 +101,7 @@ const StreamItem = ({
         const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
         const hh = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
   
-        document.getElementsByClassName('mainContainer')[0]
-                .scroll({ top : (index + hh) * 100 , behavior : "smooth" })
+        client.nodeRef.home().scroll({ top : (index + hh) * 100 , behavior : "smooth" })
   
         let start = index + hh;
         const end = start + hoursGoNext;

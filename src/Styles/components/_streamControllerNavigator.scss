@@ -18,6 +18,12 @@
                 transform: rotate(-180deg);
             }
         }
+
+        &:disabled {
+            svg {
+                transform: rotate(0deg);
+            }
+        }
     }
 
     button {

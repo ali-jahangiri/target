@@ -4,6 +4,7 @@ import { generateColor, selfClearTimeout } from "../../utils";
 import useAfterInitialEffect from "../AllWeekSchedule/useAfterInitialEffect";
 import TextareaAutosize from "react-textarea-autosize";
 import RoutineStreamSpendTime from "./RoutineStreamSpendTime";
+import client from "../../client";
 
 
 const RoutineStreamDesc = ({ isOtherVisionVisible , setIsDescFocused , isInSpendTime , isDescFocused , initialValue , syncHandler }) => {
@@ -86,7 +87,7 @@ const RoutineStream = ({
             let fromHour = hour.from + liftedTimeFromAboveBlocks;
             const toHour = hour.to;
             const currentElementTopPosition = fromHour * 100;
-            document.getElementsByClassName('mainContainer')[0].scroll({ top : currentElementTopPosition , behavior : "smooth" });
+            client.nodeRef.home().scroll({ top : currentElementTopPosition , behavior : "smooth" });
             const possibleStep = new Array((toHour - fromHour) + liftedTimeFromAboveBlocks).fill("").map(() => ++fromHour);
             setIsInOtherVisionToParent(id , possibleStep , currentElementTopPosition)
         }else {

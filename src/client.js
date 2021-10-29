@@ -18,7 +18,13 @@ const client = {
           },
           slogan : "Manage your life wisely!",
           loginWelcome : "Welcome to Target platform",
-          notFoundPageText : "There is no page with this path , Are you lost ?"
+          notFoundPageText : "There is no page with this path , Are you lost ?",
+          INJECTED_TODO : "injectedTodo",
+          TODAY_ID : "todayHabit",
+          hours : new Array(24).fill().map((_, i) => i + 1)
+    },
+    nodeRef : {
+        home : () => document.querySelector(".home")
     },
     menuList : [
         {

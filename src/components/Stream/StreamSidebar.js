@@ -23,9 +23,6 @@ const StreamSidebar = ({
   const [isInFullScreen, setIsInFullScreen] = useState(false);
   const [todoInputValue, setTodoInputValue] = useState("");
   
-  const sidebarContainerRef = useRef();
-
-
   useEffect(() => {
     if(isInDragging) setInjectedTodo(todoInputValue);
   } , [todoInputValue , isInDragging]);
@@ -58,7 +55,6 @@ const StreamSidebar = ({
             {isInStreamDetailsMode ? <FiLock color="rgb(82, 82, 82)" /> : <FiChevronLeft color="rgb(82, 82, 82)" />}
           </div>
           <div 
-            ref={sidebarContainerRef}
             className="streamSidebar__habitDirectory">
             <Droppable isDropDisabled droppableId={HABIT_LIST_ID}>
               {provided => (

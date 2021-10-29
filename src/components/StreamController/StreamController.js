@@ -21,13 +21,11 @@ const StreamController = ({
 
     return (
         <div 
+            className={`streamController ${visible ? "streamController--visible" : ""} ${isActive ? "streamController--active" : ""}`}
             onMouseEnter={() => setIsHoverInNavigationCircle(true)} 
             onMouseLeave={() => setIsHoverInNavigationCircle(false)} 
             onClick={() => setIsActive(prev => !prev)}
-            style={{ 
-                transition: `all .3s cubic-bezier(1, 0, 0, 1) , bottom .3s ${transitionDelay}s`
-             }}
-            className={`streamController ${visible ? "streamController--visible" : ""} ${isActive ? "streamController--active" : ""}`}>
+            style={{ transition: `all .3s cubic-bezier(1, 0, 0, 1) , bottom .3s ${transitionDelay}s` }}>
             <StreamControllerDayName 
                 currentDay={currentDay}
                 currentMonth={currentMonth}

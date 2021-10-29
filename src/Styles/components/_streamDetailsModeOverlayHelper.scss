@@ -1,27 +1,4 @@
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-
-@keyframes growWidthTimeLine {
-    from {
-        width: 0;
-    }
-
-    to {
-        width: 100px;
-    }
-
-}
-
-
-.helperOverlay {
+.streamDetailsModeOverlayHelper {
     width: 100%;
     height: 2400px;
     position: absolute;
@@ -74,58 +51,5 @@
             opacity: 0 !important;
             background-color: #00000000 !important;
         }
-    }
-}
-
-
-.today {
-    user-select: none;
-    width: 100%;
-    position: relative;
-    height: 100vh;
-
-    &__loadingScreen {
-        width: 100vw;
-        height: 100vh;
-        background: $black;
-    }
-
-
-    &__preventUserInteractOverlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #ffffff54;
-        z-index: 999;
-        transition: .3s;
-        
-        &--pressed {
-            background-color: transparent;
-        }
-    }
-    
-    &__droppableContainer {
-        max-height: 2400px;
-        background: white;
-        overflow: hidden;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        padding-left: 180px;
-        
-    }
-
-}
-#Container {
-    ::-webkit-scrollbar {
-        display: none !important;
-    }
-}
-#Container2 {
-    ::-webkit-scrollbar {
-        display: none !important;
     }
 }
