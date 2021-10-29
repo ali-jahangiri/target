@@ -1,9 +1,8 @@
 import useFrequentlyState from "../Hook/useFrequentlyState"
 import { colors, generateColor } from "../utils"
-import { LinkPlayground, TextPlayground } from "./ToolBoxPlayground";
-import DescriptionPlayground from "./ToolBoxPlayground/DescriptionPlayground";
-import ImagePlayground from "./ToolBoxPlayground/ImagePlayground";
-
+import { LinkPlayground , TextPlayground} from "./CommandsPlayground/Note/ToolBoxPlayground";
+import DescriptionPlayground from "./CommandsPlayground/Note/ToolBoxPlayground/DescriptionPlayground";
+import ImagePlayground from "./CommandsPlayground/Note/ToolBoxPlayground/ImagePlayground";
 
 
 const Image = () => {

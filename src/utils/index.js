@@ -183,6 +183,23 @@ export const reorderStreamItem = (streamItem , destination , source) => {
   return streamItemListClone;
 }
 
+export const fillInputValueWithCommend = (targetCommend = "" , currentFilledValue = "" , setInputValue , afterCompleteFill) => {
+  const leftCharacter = targetCommend.split("").filter((_ , i) => i + 1 >= currentFilledValue.length);
+
+  let currentIndex = 0;
+  let newValue = currentFilledValue;
+  
+  let timer = setInterval(() => {
+      newValue += leftCharacter[currentIndex];
+      setInputValue(newValue);
+      ++currentIndex;
+      if(!leftCharacter[currentIndex]) {
+          afterCompleteFill(newValue);
+          clearInterval(timer);
+      }
+  } , 30)
+}
+
 export {
   requests
 }

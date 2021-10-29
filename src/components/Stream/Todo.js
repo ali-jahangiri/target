@@ -1,20 +1,15 @@
 import { useState , useEffect } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import TodoInput from "./TodoInput";
-
 import { selfClearTimeout } from "../../utils";
-import ReminderPlayground from "../Reminder/ReminderPlayground";
-import NotePlayground from "../NotePlayground";
 import client from "../../client";
+import TodoForm from "./TodoForm";
+import Commands from "./Commands";
 
 
-const dynamicPlayground = rest => ({
-    note : <NotePlayground {...rest} />,
-    reminder : <ReminderPlayground {...rest} />,
-})
 
 
-const Todo = ({ 
+const Todo = ({
+    isSidebarOpen,
     index,
     setToFullScreen,
     isInFullScreen,
@@ -22,133 +17,76 @@ const Todo = ({
     setInputValue,
     inputValue,
 }) => {
-    const [hashtagInterpolate , setHashtagInterpolate] = useState(false);
-    const [completedHash, setCompletedHash] = useState(false);
-    
-    const [flashDestroy, setFlashDestroy] = useState(false);
+    // NOTE complete hash state mean we have a completed and valid comment string in input and we trigger and open the bounded commend
 
+    const [inputValueContainsHash , setInputValueContainsHash] = useState(false);
+    const [haveCompletedHash, setHaveCompleteHash] = useState(false);
     const [innerPlaygroundController, setInnerPlaygroundController] = useState({ callback : () => {} , label : "", closeTriggerConvertedTextTo : "Close" , overwriteCloseTriggerCallback : () => {} });
+
     
-    const onChange = ({ target : { value = "" } }) => {
-        setInputValue(value);
-        setInputValue(value)
-        setCompletedHash(false)
-        if(value.startsWith("#")) {
-            setHashtagInterpolate(true)
-            selfClearTimeout(() => {
-                setFlashDestroy(true);
-            } , 800)
-        }
-        else {
-            setHashtagInterpolate(false)
-            setFlashDestroy(false)
-        }
-
-        if(!value && isInFullScreen) setToFullScreen(false)
-    }
-
-    const closeHandler = () => {
+    const clearStatesHandler = () => {
         setToFullScreen(false);
         setInputValue("");
         setInputValue("")
-        setHashtagInterpolate("");
-        setCompletedHash(false);
+        setInputValueContainsHash("");
+        setHaveCompleteHash(false);
     }
 
-    const haveInterpolateValue = !!inputValue.slice(1) 
+    const closeHandler = () => clearStatesHandler();
+
     
-    const interpolateSubmitHandler = (e) => {
-        e.preventDefault();
-        if(inputValue && inputValue?.slice(1) && !completedHash){
-            const haveHelperInterpolateCommand = client.STATIC.command.find(el => el.includes(inputValue.slice(1)));
-            if(haveHelperInterpolateCommand && inputValue?.slice(1) !== haveHelperInterpolateCommand) {
-                const leftCharacter = haveHelperInterpolateCommand.split("").filter((_ , i) => i + 1 >= inputValue.length)
-                let currentIndex = 0;
-                let newVale = inputValue
-                
-                let timer = setInterval(() => {
-                    newVale += leftCharacter[currentIndex]
-                    setInputValue(newVale)
-                    ++currentIndex;
-                    if(!leftCharacter[currentIndex]) {
-                        setCompletedHash(true);
-                        clearInterval(timer)
-                    }
-                } , 30)
-                
-            }else if(inputValue?.slice(1) === haveHelperInterpolateCommand) {
-                setCompletedHash(true);
-            }
-        }
-    }
 
-    useEffect(() => {
-        if(completedHash) {
-            const currentInterpolatorName = inputValue.slice(1);
-            if(currentInterpolatorName === "note") setToFullScreen(100)
-            else setToFullScreen(50)
-        }
-    } , [completedHash]);
-
+    useEffect(function clearStatesFromSidebarClose() {
+        if(!isSidebarOpen) selfClearTimeout(clearStatesHandler , 300);
+    } , [isSidebarOpen]);
 
     return (
-    <Draggable 
-        isDragDisabled={!!hashtagInterpolate || !inputValue}
-        draggableId="injectedTodo" 
-        index={index}>
-        {provided => (
-            <div 
-                className={`todoInjector ${isInFullScreen ? "todoInjector--inFullMode" : ""}`}
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps} >
-                <div  className="todoInjector__container">
-                    <form onSubmit={interpolateSubmitHandler}>
-                        <div>
-                            {
-                                hashtagInterpolate && <p style={{ color : !haveInterpolateValue && "grey" }} className="todoInjector__helperPlayground"><span style={{ color : "white" }}>#</span>{!!inputValue.slice(1) ? client.STATIC.command.find(el => el.startsWith(inputValue.slice(1)) && el.includes(inputValue.slice(1)))?.split('').map((el , i) => <span key={i} style={{ color : i + 1 < inputValue.length ? "white" : "grey" }}>{el}</span>) : 'Write your commend ...'}</p>
-                            }
-                                <TodoInput value={inputValue} onChange={onChange} hashtagInterpolate={hashtagInterpolate} />
-                            {
-                                (!flashDestroy && hashtagInterpolate) && <span className="todoInjector__flash"></span>
-                            }
-                            <div className={`todoInjector__dragHandHelper ${inputValue && !completedHash ? "todoInjector__dragHandHelper--active" : ""}`}>
-                                <div>
-                                    <div />
-                                    <div />
-                                    <div />
-                                </div>
-                                <div>
-                                    <div />
-                                    <div />
-                                    <div />
+        <Draggable 
+            isDragDisabled={!!inputValueContainsHash || !inputValue}
+            draggableId={client.STATIC.INJECTED_TODO} 
+            index={index} >
+                {provided => (
+                    <div 
+                        className={`todoInjector ${isInFullScreen ? "todoInjector--inFullMode" : ""}`}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps} >
+                        <div className="todoInjector__container">
+                            <div className="todoInjector__row">
+                                <TodoForm
+                                    haveCompletedHash={haveCompletedHash}
+                                    setHaveCompleteHash={setHaveCompleteHash}
+                                    inputValue={inputValue}
+                                    setInputValue={setInputValue}
+                                    inputValueContainsHash={inputValueContainsHash}
+                                    setInputValueContainsHash={setInputValueContainsHash}
+                                    isInFullScreen={isInFullScreen}
+                                    setToFullScreen={setToFullScreen}
+                                    isSidebarOpen={isSidebarOpen}
+                                />
+                                <div className="todoInjector__controller">
+                                    {
+                                        innerPlaygroundController.label && haveCompletedHash && <div className="todoInjector__helperController">
+                                            <p onClick={innerPlaygroundController.callback}>{innerPlaygroundController.label}</p>
+                                        </div>
+                                    }
+                                    <div className={`todoInjector__closeTrigger ${haveCompletedHash ? "todoInjector__closeTrigger--active" : ""}`}>
+                                        <p onClick={() => {
+                                            if(innerPlaygroundController?.overwriteCloseTriggerCallback) {
+                                                innerPlaygroundController?.overwriteCloseTriggerCallback()
+                                            }else closeHandler();
+                                        }}>{innerPlaygroundController.closeTriggerConvertedTextTo || "Close"}</p>
+                                    </div>
                                 </div>
                             </div>
-                            
-                        </div>
-                        <div className="todoInjector__controller">
                             {
-                                innerPlaygroundController.label && completedHash && <div className="todoInjector__helperController">
-                                    <p onClick={innerPlaygroundController.callback}>{innerPlaygroundController.label}</p>
-                                </div>
+                                !!haveCompletedHash && <Commands date={leanDate} targetCommend={inputValue.slice(1)} setInnerPlaygroundController={setInnerPlaygroundController} />
                             }
-                            <div className={`todoInjector__closeTrigger ${completedHash ? "todoInjector__closeTrigger--active" : ""}`}>
-                                <p onClick={() => {
-                                    if(innerPlaygroundController?.overwriteCloseTriggerCallback) {
-                                        innerPlaygroundController?.overwriteCloseTriggerCallback()
-                                    }else closeHandler()
-                                }}>{innerPlaygroundController.closeTriggerConvertedTextTo || "Close"}</p>
-                            </div>
                         </div>
-                    </form>
-                    {
-                        !!completedHash && dynamicPlayground({ setInnerPlaygroundController , leanDate })[inputValue.slice(1)]
-                    }
-                </div>
-            </div>
-            )
-        }
-    </Draggable>
+                    </div>
+                    )
+                }
+        </Draggable>
     )
 }
 

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import useKeyBaseState from "../Hook/useKeyBaseState";
 import TextareaAutosize from "react-textarea-autosize";
-import { debounce, requests, selfClearTimeout } from "../utils";
-import { DescBlock, ImageBlock, LinkBlock, TextBlock } from "./ElementBlock"
-import NewNoteThing from "./NewNoteThing";
+import useKeyBaseState from "../../../Hook/useKeyBaseState";
+import { debounce, requests, selfClearTimeout } from "../../../utils";
+import { DescBlock, ImageBlock, LinkBlock, TextBlock } from "./Elements"
+import NewNoteThing from "../../NewNoteThing";
 
 const blocksClone = ({ key , ...rest }) => ({
     text : <TextBlock {...rest} key={key} />,
@@ -12,7 +12,7 @@ const blocksClone = ({ key , ...rest }) => ({
     link : <LinkBlock {...rest} key={key} />
 })
 
-const NotePlayground = ({ setInnerPlaygroundController , leanDate }) => {
+const NotePlayground = ({ setInnerPlaygroundController , date }) => {
     const [content , setContent] = useKeyBaseState();
     const [loading, setLoading] = useState(true);
     const [isInEditMode, setIsInEditMode] = useState(false);
@@ -96,7 +96,7 @@ const NotePlayground = ({ setInnerPlaygroundController , leanDate }) => {
 
     
     useEffect(function contentInitializer() {
-        requests.commends.note.initializeNote(leanDate)
+        requests.commends.note.initializeNote(date)
             .then(res => {
                 setContent(() => res)
                 selfClearTimeout(() => setLoading(false) , 250);
@@ -105,7 +105,7 @@ const NotePlayground = ({ setInnerPlaygroundController , leanDate }) => {
 
     const debouncedSynced = useCallback(debounce(passedSyncedContent => {
         if(!isFirstRender.current) {
-            requests.commends.note.syncNote(leanDate,passedSyncedContent)
+            requests.commends.note.syncNote(date,passedSyncedContent)
         }
         if(isFirstRender.current) isFirstRender.current = false
     } , 500) , []);

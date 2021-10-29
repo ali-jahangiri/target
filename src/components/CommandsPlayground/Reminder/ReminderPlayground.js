@@ -1,24 +1,22 @@
-import useKeyBaseState from "../../Hook/useKeyBaseState";
-import Input from "../Input";
+import useKeyBaseState from "../../../Hook/useKeyBaseState";
+import Input from "../../Input";
 import ReminderDesc from "./ReminderDesc";
 import ReminderTimePicker from "./ReminderTimePicker";
 
-import requests from "../../utils/requests";
+import requests from "../../../utils/requests";
 import { useEffect, useState } from "react";
-import { selfClearTimeout } from "../../utils";
+import { selfClearTimeout } from "../../../utils";
 import ReminderListDirectory from "./ReminderListDirectory";
-import { Reminder } from "../../utils/modules";
+import { Reminder } from "../../../utils/modules";
 
-const ReminderPlayground = ({ leanDate }) => {
+const ReminderPlayground = ({ date }) => {
     const [data , setData] = useKeyBaseState({ title : "" ,  desc : "" , time : { min : 0 , hr : 12 }});
     const [wasReminderSet, setWasReminderSet] = useState(false);
     const [reminderList, setReminderList] = useState(null);
 
     useEffect(() => {
-        requests.commends.reminder.getReminderList(leanDate , setReminderList)
+        requests.commends.reminder.getReminderList(date , setReminderList)
     } , []);
-
-    console.log(reminderList);
     
     const titleInputChange = value => {
         setData("title" , value);
@@ -27,7 +25,7 @@ const ReminderPlayground = ({ leanDate }) => {
 
     const createReminderHandler = () => {
         const { title , desc , time } = data;
-        requests.commends.reminder.setReminder(leanDate , new Reminder(title , desc , time) )
+        requests.commends.reminder.setReminder(date , new Reminder(title , desc , time) )
             .then(() => {
                 setWasReminderSet(true);
                 setData({});

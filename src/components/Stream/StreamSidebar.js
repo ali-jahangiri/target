@@ -15,7 +15,6 @@ const StreamSidebar = ({
   sideBarHandler, 
   todayHabit, 
   date, 
-  setShouldOverlayGetVisible, 
   setInjectedTodo, 
   isInDragging, 
   leanedHabitInStream = [],
@@ -27,11 +26,6 @@ const StreamSidebar = ({
     if(isInDragging) setInjectedTodo(todoInputValue);
   } , [todoInputValue , isInDragging]);
   
-  useLayoutEffect(() => {
-    if(isInFullScreen) {
-      setShouldOverlayGetVisible(true);
-    }else setShouldOverlayGetVisible(false);
-  } , [isInFullScreen])
   
   const internalSideBarCloseHandler = () => {
     sideBarHandler();
@@ -63,6 +57,7 @@ const StreamSidebar = ({
                     leanedHabitInStream={leanedHabitInStream} 
                     todayHabit={todayHabit} />
                   <Todo
+                    isSidebarOpen={isSidebarOpen}
                     setInputValue={setTodoInputValue}
                     inputValue={todoInputValue}
                     leanDate={date}

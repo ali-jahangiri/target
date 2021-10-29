@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { createNewStreamItem, createNewTodo, deepClone, reorderStreamItem, requests, selfClearTimeout, _date } from "../../utils";
+import { createNewStreamItem, createNewTodo, deepClone, reorderStreamItem, requests, selfClearTimeout } from "../../utils";
 import RoutineStream from "./RoutineStream";
 import { EmptyHabitBlock , StreamItem, StreamSidebar} from ".";
 import TodayHoursRow from "../TodayHoursRow";
@@ -182,7 +182,7 @@ const Stream = ({
 
   
   useEffect(function scrollToActiveBlockHandler() {
-    if(isToday) {
+    if(isToday && !loading) {
       if(!initialHelperScrollGetCompleted) {
         const currentHour = new Date().getHours();
         const mainParentContainerRef = parentNodeRef.current;
@@ -284,7 +284,6 @@ const Stream = ({
               leanedHabitInStream={streamItem.filter(el => el.name)}
               isInDragging={isInDragging}
               date={date}
-              setShouldOverlayGetVisible={setShouldOverlayGetVisible}
               isInStreamDetailsMode={currentDetailsModeHabit}
               injectedTodo={injectedTodo}
               isSidebarOpen={isSidebarVisible}

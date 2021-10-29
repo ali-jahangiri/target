@@ -1,14 +1,21 @@
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
+import { selfClearTimeout } from "../../utils";
 
-const TodoInput = ({ value , onChange , hashtagInterpolate }) => {
+const TodoInput = ({ value , onChange , hashtagInterpolate , shouldFocus }) => {
     const inputRef = useRef();
 
-    return <input 
+    useLayoutEffect(() => {
+        if(shouldFocus) {
+            selfClearTimeout(() => inputRef.current.focus() , 2500);
+        }
+    } , [shouldFocus]);
+
+    return <input
                 className={`todoInjector__input ${hashtagInterpolate ? "todoInjector__input--interpolate" : ""}`} 
                 placeholder={`Write something`} 
                 value={value} 
                 ref={inputRef}
-                onChange={onChange} />
+                onChange={({ target : { value } }) => onChange(value)} />
 }
 
 

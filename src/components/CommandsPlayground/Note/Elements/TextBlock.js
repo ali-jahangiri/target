@@ -2,8 +2,6 @@ import TextareaAutosize from "react-textarea-autosize";
 import BlockWrapper from "./BlockWrapper";
 
 const TextBlock = ({ value , isInEditMode , editContentHandler , removeContentHandler }) => {
-    
-
     return (
         <BlockWrapper
             blockType="text"

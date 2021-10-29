@@ -21,7 +21,11 @@ const client = {
           notFoundPageText : "There is no page with this path , Are you lost ?",
           INJECTED_TODO : "injectedTodo",
           TODAY_ID : "todayHabit",
-          hours : new Array(24).fill().map((_, i) => i + 1)
+          hours : new Array(24).fill().map((_, i) => i + 1),
+          commendScreenSize : {
+              note : 100,
+              reminder : 50
+          }
     },
     nodeRef : {
         home : () => document.querySelector(".home")

@@ -1,4 +1,4 @@
-import { addZeroToAboveTenNumber } from "../../utils";
+import { addZeroToAboveTenNumber } from "../../../utils";
 
 const ReminderItem = ({ title , desc , time , id , removeHandler }) => {
     return (
