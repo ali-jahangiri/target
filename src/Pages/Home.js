@@ -15,7 +15,7 @@ const Home = () => {
 
 
     const [countOfStreamChange, setCountOfStreamChange] = useState(0);
-    const [isTargetStreamReadyToRender, setIsTargetStreamReadyToRender] = useState(false);
+    const [isStreamControllerVisible, setIsStreamControllerVisible] = useState(false);
     const [hoveringOnNavigatorCircle, setHoveringOnNavigatorCircle] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(1);
     const [currentDay, setCurrentDay] = useState(currentLeftPosition.current / window.innerWidth);
@@ -66,7 +66,7 @@ const Home = () => {
 
     useLayoutEffect(function scrollToCurrentDayHandlerInInitial () {
         containerRef.current?.scroll({ left : currentLeftPosition.current + unexpectedGapUnit })
-    } , [isTargetStreamReadyToRender]);
+    } , [isStreamControllerVisible]);
 
     useEffect(function delayOfShowUpStreamAfterScrollHandler () {
         if(countOfStreamChange >= 3) setStreamShowUpDelay(3)
@@ -93,7 +93,7 @@ const Home = () => {
                         isToday={isToday}
                         isDisable={isPreviousDay}
                         isNextDayAfterToday={isNextDayAfterToday}
-                        setIsTargetStreamReadyToRender={setIsTargetStreamReadyToRender}
+                        setIsStreamControllerVisible={setIsStreamControllerVisible}
                         date={dateForPassingIntoStream.split("/").join('')} />
         }else return null;
 
@@ -118,7 +118,7 @@ const Home = () => {
                     }
                 <Portal>
                     <StreamController
-                        visible={isTargetStreamReadyToRender}
+                        visible={isStreamControllerVisible}
                         goToday={comeBackToTodayHandler}
                         currentDay={currentDay + 1}
                         setIsHoverInNavigationCircle={setHoveringOnNavigatorCircle}

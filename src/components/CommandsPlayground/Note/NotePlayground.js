@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import useKeyBaseState from "../../../Hook/useKeyBaseState";
-import { debounce, requests, selfClearTimeout } from "../../../utils";
+import { debounce, requests } from "../../../utils";
 import { DescBlock, ImageBlock, LinkBlock, TextBlock } from "./Elements"
 import NewNoteThing from "../../NewNoteThing";
+import useAfterInitialEffect from "../../AllWeekSchedule/useAfterInitialEffect";
 
 const blocksClone = ({ key , ...rest }) => ({
     text : <TextBlock {...rest} key={key} />,
@@ -18,8 +19,6 @@ const NotePlayground = ({ setInnerPlaygroundController , date }) => {
     const [isInEditMode, setIsInEditMode] = useState(false);
     const [haveAnyChangeInEditMode, setHaveAnyChangeInEditMode] = useState(false);
     const [tempContent, setTempContent] = useState({ thingList : [] });
-
-    const isFirstRender = useRef(true);
 
     const addThingToNoteTreeHandler = (thingType , thingValue) => {
         setContent(prev => ({
@@ -98,20 +97,17 @@ const NotePlayground = ({ setInnerPlaygroundController , date }) => {
     useEffect(function contentInitializer() {
         requests.commends.note.initializeNote(date)
             .then(res => {
-                setContent(() => res)
-                selfClearTimeout(() => setLoading(false) , 250);
+                setContent(() => res);
+                setLoading(false);
             })
     } , []);
 
     const debouncedSynced = useCallback(debounce(passedSyncedContent => {
-        if(!isFirstRender.current) {
-            requests.commends.note.syncNote(date,passedSyncedContent)
-        }
-        if(isFirstRender.current) isFirstRender.current = false
+        requests.commends.note.syncNote(date,passedSyncedContent);
     } , 500) , []);
 
 
-    useEffect(() => debouncedSynced(content) , [content]);
+    useAfterInitialEffect(() => debouncedSynced(content) , [content]);
 
     const dynamicThingList = isInEditMode ? tempContent?.thingList : content.thingList
 

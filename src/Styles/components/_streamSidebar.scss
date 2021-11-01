@@ -1,7 +1,6 @@
 .streamSidebar {
     height: 90vh;
     position: fixed;
-    z-index: 99999999;
     right: 2%;
     top: 2%;
     width: 30vw;
@@ -24,6 +23,26 @@
         position: relative;
         z-index: 75;
     }
+
+    &__closeTrigger {
+        position: absolute;
+        top: 50%;
+        transform: translateX(-50%);
+        left: -15%;
+        padding: 15px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+        transition: .3s;
+
+        &--flipped {
+            transform: rotate(180deg);
+        }
+
+    }
+
 
     &--full {
         width: 75vw;
@@ -51,22 +70,7 @@
 
     }
 
-    &__closeTrigger {
-        position: absolute;
-        top: 50%;
-        transform: translateX(-50%);
-        left: -15%;
-        padding: 15px;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        user-select: none;
-        transition: .3s;
-
-        &--flipped {
-            transform: rotate(180deg);
-        }
-
+    &--fade {
+        // opacity: 0;
     }
 }

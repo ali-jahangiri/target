@@ -1,19 +1,17 @@
+@keyframes testOtherThings {
+    from {
+        min-width: 0vh;
+    }
+    to {
+        min-width: calc(100vw - 180px);
+    }
+}
 .sliderHabitBlock {
 
     &__habitItem {
         cursor: pointer;
         user-select: none;
-        
-        &--leftRotate {
-            transform: rotate(-10deg) !important;
-        }
-
-        &--rightRotate {
-            transform: rotate(10deg) !important;
-        }
-
        
-
         &__container {
             transition: .3s transform;
             height: 100px;
@@ -52,6 +50,10 @@
                         color: black !important;
                     }
                 }
+            }
+
+            &--getFull {
+                animation: testOtherThings .3s forwards alternate .5s;
             }
         }
     }

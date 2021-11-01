@@ -1,12 +1,11 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { FiChevronLeft, FiLock } from "react-icons/fi";
+import client from "../../client";
 import { selfClearTimeout } from "../../utils";
 import StreamSidebarBlockItemsContainer from "./StreamSidebarBlockItemsContainer";
 
 import Todo from "./Todo";
-
-const HABIT_LIST_ID = "fromHabitList";
 
 
 const StreamSidebar = ({ 
@@ -36,13 +35,13 @@ const StreamSidebar = ({
 
   useEffect(function todoInputValueCleanupAfterCreation() {
     if(leanedHabitInStream.some(el => el.name === todoInputValue)) setTodoInputValue("");
-  } , [isInDragging, leanedHabitInStream, todoInputValue])
+  } , [isInDragging, leanedHabitInStream, todoInputValue]);
 
 
   return (
         <div 
-          style={{ width : isInFullScreen ? `${isInFullScreen}vw` : "30vw" }} 
-          className={`streamSidebar ${isInFullScreen ? "streamSidebar--full" : ""} streamSidebar--${isSidebarOpen ? "open" : "close"} ${isInStreamDetailsMode ? "streamSidebar--lock" : ""}`}>
+          style={{ width : isInFullScreen ? `${isInFullScreen}vw` : "30vw" , zIndex : 999 }} 
+          className={`streamSidebar ${isInFullScreen ? "streamSidebar--full" : ""} streamSidebar--${isSidebarOpen ? typeof isSidebarOpen === 'string' ? "fade" : "open" : "close"} ${isInStreamDetailsMode ? "streamSidebar--lock" : ""}`}>
             <div
             onClick={() => !isInStreamDetailsMode && internalSideBarCloseHandler()}
             className={`streamSidebar__closeTrigger ${isSidebarOpen ? "streamSidebar__closeTrigger--flipped" : ""}`}>
@@ -50,12 +49,13 @@ const StreamSidebar = ({
           </div>
           <div 
             className="streamSidebar__habitDirectory">
-            <Droppable isDropDisabled droppableId={HABIT_LIST_ID}>
+            <Droppable isDropDisabled droppableId={client.STATIC.HABIT_LIST_ID}>
               {provided => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   <StreamSidebarBlockItemsContainer 
                     leanedHabitInStream={leanedHabitInStream} 
-                    todayHabit={todayHabit} />
+                    todayHabit={todayHabit}
+                  />
                   <Todo
                     isSidebarOpen={isSidebarOpen}
                     setInputValue={setTodoInputValue}

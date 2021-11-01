@@ -6,7 +6,7 @@ const TodoInput = ({ value , onChange , hashtagInterpolate , shouldFocus }) => {
 
     useLayoutEffect(() => {
         if(shouldFocus) {
-            selfClearTimeout(() => inputRef.current.focus() , 2500);
+            selfClearTimeout(() => inputRef.current.focus() , 800);
         }
     } , [shouldFocus]);
 

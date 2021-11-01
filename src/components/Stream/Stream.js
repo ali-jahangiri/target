@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, useTouchSensor } from "react-beautiful-dnd";
 import { createNewStreamItem, createNewTodo, deepClone, reorderStreamItem, requests, selfClearTimeout } from "../../utils";
 import RoutineStream from "./RoutineStream";
 import { EmptyHabitBlock , StreamItem, StreamSidebar} from ".";
@@ -12,16 +12,19 @@ import StreamDetailsModeOverlayHelper from "./StreamDetailsModeOverlayHelper";
 import PreventOverlayDisableStream from "./PreventOverlayDisableStream";
 
 
-const { TODAY_ID , INJECTED_TODO , hours } = client.STATIC;
+const { TODAY_ID , INJECTED_TODO , hours , HABIT_LIST_ID } = client.STATIC;
 
-const AfterAllChildRenderSetter = ({ setAllChildRender }) => {
-  useEffect(() => setAllChildRender(true) , []);
+const AfterAllChildRenderSettled = ({ setAllChildRender , showControllerHandler }) => {
+  useEffect(() => {
+    setAllChildRender(true);
+    showControllerHandler(true);
+  } , []);
   return null
 }
 
 const Stream = ({ 
   date ,
-  setIsTargetStreamReadyToRender ,
+  setIsStreamControllerVisible ,
   isDisable ,
   isNextDayAfterToday,
   parentNodeRef ,
@@ -51,31 +54,25 @@ const Stream = ({
   const mainContainerRef = useRef();
   const deleteTimeoutRef = useRef();
 
-
-  const finishLoadingHandler = () => {
-    setIsTargetStreamReadyToRender(true);
-    setLoading(false)
-  }
-
   useEffect(function streamInitializer() {
     setIsFirstRender(true);
     requests.stream.initializer(date , ({ streamItem , todayHabit }) => {
       setStreamItem(streamItem);
       setTodayHabit(todayHabit);
-      finishLoadingHandler();
+      setLoading(false)
     })
   } , [date]);
 
   useEffect(function syncStream () {
-    if(!isFirstRender) requests.stream.sync(date , streamItem)
+    if(!isFirstRender) requests.stream.sync(date , streamItem);
     else setIsFirstRender(false)
   } , [streamItem])
 
   useEffect(() => {
     if(isSidebarVisible && !loading) {
-      setIsTargetStreamReadyToRender(false);
+      setIsStreamControllerVisible(false);
     }else if(!loading){
-      setIsTargetStreamReadyToRender(true);
+      setIsStreamControllerVisible(true);
     }
   } , [isSidebarVisible])
 
@@ -113,9 +110,9 @@ const Stream = ({
   const reorderHandler = (destination, source) => 
     setStreamItem(reorderStreamItem(streamItem , destination.index , source.index));
 
-  const dragStartHandler = ({ source }) => {
+  const dragStartHandler = ({ source : { droppableId } }) => {
     setIsInDragging(true);
-    if (source.droppableId === TODAY_ID || source.droppableId === INJECTED_TODO) setIsSidebarVisible(false);
+    if(droppableId === HABIT_LIST_ID) sideBarHandler();
   };
 
   
@@ -134,7 +131,7 @@ const Stream = ({
 
   const sideBarHandler = () => {
     setSidebarClosedByUser(true);
-    setIsSidebarVisible((prev) => {
+    setIsSidebarVisible(prev => {
       if(!prev) setShouldOverlayGetVisible(true);
       else if(shouldOverlayGetVisible) setShouldOverlayGetVisible(false);
       return !prev
@@ -144,7 +141,7 @@ const Stream = ({
   const detailsShowHandler = (blockId, possibleStep = [] , itemTopDistance) => {
     if (!isDetailsModeActive && possibleStep.length) {
       setCurrentDetailsModeHabit(blockId);
-      setIsTargetStreamReadyToRender(false)
+      setIsStreamControllerVisible(false)
       selfClearTimeout(() => {
         setDetailsTimeline(possibleStep);
         const scroll = client.nodeRef.home().scrollTop;
@@ -163,7 +160,7 @@ const Stream = ({
       });
       setDetailsTimeline([]);
       setCurrentDetailsModeHabit(null);
-      setIsTargetStreamReadyToRender(true)
+      setIsStreamControllerVisible(true)
       selfClearTimeout(() => {
         setIsOverlayInHideProcess(false)
         setIsDetailsModeActive(false);
@@ -215,82 +212,84 @@ const Stream = ({
         <StreamOverlayHelper 
           visible={shouldOverlayGetVisible && !isInDragging}
           onClose={() => sideBarHandler()} />
-      <DragDropContext onDragStart={dragStartHandler} onDragEnd={dragEndHandler} >
-        <div ref={mainContainerRef} id="Container2" className={`todayHoursRow__container ${isInDragging || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
-          <div id="Container" style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : 5}}>
-            {hours.map((el, i) => (
-              <TodayHoursRow
-                indexInTimeline={!isOverlayInHideProcess && detailsTimeline.includes(el) && detailsTimeline.indexOf(el)}
-                isInTimeLine={!isOverlayInHideProcess && detailsTimeline.includes(el)}
-                index={el}
-                key={i} 
-              />
-            ))}
-          </div>
+        <DragDropContext onDragStart={dragStartHandler} onDragEnd={dragEndHandler} >
+          <div ref={mainContainerRef} id="Container2" className={`todayHoursRow__container ${isInDragging || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
+            <div id="Container" style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : 5}}>
+              {hours.map((el, i) => (
+                <TodayHoursRow
+                  indexInTimeline={!isOverlayInHideProcess && detailsTimeline.includes(el) && detailsTimeline.indexOf(el)}
+                  isInTimeLine={!isOverlayInHideProcess && detailsTimeline.includes(el)}
+                  index={el}
+                  key={i} 
+                />
+              ))}
+            </div>
 
-          <Droppable droppableId={TODAY_ID}>
-            {(provided , snapshot) => {
-              return (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className="stream__droppableContainer">
-                      {streamItem.map((el, i) => {
-                        if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
-                        else if(el.type === "routine") 
-                          return <RoutineStream 
-                                    setIsInOtherVisionToParent={(...rest) => !isOverlayInHideProcess && detailsShowHandler(...rest)} 
-                                    habitInStream={streamItem} 
-                                    index={i} 
-                                    key={i}
-                                    setPropHandler={setRoutinePropertiesHandler}
-                                    {...el} />
-                        else return (
-                            <StreamItem
-                              isNextDayAfterToday={isNextDayAfterToday}
-                              addToActiveBlockHandler={addToActiveBlockHandler}
-                              leanDate={date}
-                              deleteTimeoutRef={deleteTimeoutRef}
-                              snapshot={snapshot}
-                              setCurrentItemInDeleteProcess={setCurrentItemInDeleteProcess}
-                              currentItemInDeleteProcess={currentItemInDeleteProcess}
-                              isInDetailsMode={currentDetailsModeHabit === el.id ? true : false}
-                              detailsShowHandler={detailsShowHandler}
-                              sidebarClosedByUser={sidebarClosedByUser}
-                              isInResizing={isResizeStart}
-                              isInDragging={isInDragging}
-                              setNthChildHandler={setIsResizeStart}
-                              setIsSidebarOpen={setIsSidebarVisible}
-                              resizeHandler={resizeHandler}
-                              index={i}
-                              hoursGoNext={el.hoursGoNext}
-                              id={el.id}
-                              color={el?.color}
-                              habitName={el.name}
-                              key={el.id}
-                              habitInStream={streamItem}
-                              setHabitInStream={setStreamItem}
-                            />
-                          );
-                      })}
-                      <AfterAllChildRenderSetter setAllChildRender={setAllChildrenGetRender} />
-                      {provided.placeholder}
-                </div>
-              )
-            }}
-          </Droppable>
-        </div>
-        <StreamSidebar
-              leanedHabitInStream={streamItem.filter(el => el.name)}
-              isInDragging={isInDragging}
-              date={date}
-              isInStreamDetailsMode={currentDetailsModeHabit}
-              injectedTodo={injectedTodo}
-              isSidebarOpen={isSidebarVisible}
-              setInjectedTodo={setInjectedTodo}
-              sideBarHandler={sideBarHandler}
-              todayHabit={todayHabit} />
-      </DragDropContext>
+            <Droppable droppableId={TODAY_ID}>
+              {(provided , snapshot) => {
+                return (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="stream__droppableContainer">
+                        {streamItem.map((el, i) => {
+                          if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
+                          else if(el.type === "routine") 
+                            return <RoutineStream 
+                                      setIsInOtherVisionToParent={(...rest) => !isOverlayInHideProcess && detailsShowHandler(...rest)} 
+                                      habitInStream={streamItem} 
+                                      index={i} 
+                                      key={i}
+                                      setPropHandler={setRoutinePropertiesHandler}
+                                      {...el} />
+                          else return (
+                              <StreamItem
+                                isNextDayAfterToday={isNextDayAfterToday}
+                                addToActiveBlockHandler={addToActiveBlockHandler}
+                                leanDate={date}
+                                deleteTimeoutRef={deleteTimeoutRef}
+                                snapshot={snapshot}
+                                setCurrentItemInDeleteProcess={setCurrentItemInDeleteProcess}
+                                currentItemInDeleteProcess={currentItemInDeleteProcess}
+                                isInDetailsMode={currentDetailsModeHabit === el.id ? true : false}
+                                detailsShowHandler={detailsShowHandler}
+                                sidebarClosedByUser={sidebarClosedByUser}
+                                isInResizing={isResizeStart}
+                                isInDragging={isInDragging}
+                                setNthChildHandler={setIsResizeStart}
+                                setIsSidebarOpen={setIsSidebarVisible}
+                                resizeHandler={resizeHandler}
+                                index={i}
+                                hoursGoNext={el.hoursGoNext}
+                                id={el.id}
+                                color={el?.color}
+                                habitName={el.name}
+                                key={el.id}
+                                habitInStream={streamItem}
+                                setHabitInStream={setStreamItem}
+                              />
+                            );
+                        })}
+                        <AfterAllChildRenderSettled 
+                          showControllerHandler={setIsStreamControllerVisible} 
+                          setAllChildRender={setAllChildrenGetRender} />
+                        {provided.placeholder}
+                  </div>
+                )
+              }}
+            </Droppable>
+          </div>
+          <StreamSidebar
+                leanedHabitInStream={streamItem.filter(el => el.name)}
+                isInDragging={isInDragging}
+                date={date}
+                isInStreamDetailsMode={currentDetailsModeHabit}
+                injectedTodo={injectedTodo}
+                isSidebarOpen={isSidebarVisible}
+                setInjectedTodo={setInjectedTodo}
+                sideBarHandler={sideBarHandler}
+                todayHabit={todayHabit} />
+        </DragDropContext>
     </div>
   )
 };

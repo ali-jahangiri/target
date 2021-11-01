@@ -15,6 +15,8 @@ const TodoForm = ({
     isSidebarOpen ,
 }) => {
     const [flashDestroy, setFlashDestroy] = useState(false);
+
+
     const inputValueChangeHandler = value => {
         setInputValue(value);
         
@@ -39,7 +41,7 @@ const TodoForm = ({
         const leanedCommendFormInputValue = inputValue?.slice(1);
 
         if(inputValue && leanedCommendFormInputValue && !haveCompletedHash){
-            const haveHelperInterpolateCommand = client.STATIC.command.find(el => el.includes(leanedCommendFormInputValue));
+            const haveHelperInterpolateCommand = client.STATIC.command.find(el => el.startsWith(leanedCommendFormInputValue));
             if(haveHelperInterpolateCommand) {
                 if(leanedCommendFormInputValue !== haveHelperInterpolateCommand) {
                     // if user don't type entire of commend , we help to fill input with target commend 
@@ -71,7 +73,6 @@ const TodoForm = ({
                     (!flashDestroy && inputValueContainsHash) && <span className="todoInjector__flash"></span>
                 }
                 <div className={`todoInjector__dragHandHelper ${inputValue && !inputValueContainsHash ? "todoInjector__dragHandHelper--active" : ""}`} />
-                
             </div>
         </form>
     )

@@ -2,7 +2,8 @@
 import requests from './requests';
 import dayjs from "dayjs";
 import jalaliday from "jalaliday";
-import { StreamItem, StreamRoutine, StreamTodo, Todo } from './modules';
+import { StreamItem, StreamRoutine, StreamTodo } from './modules';
+
 dayjs.extend(jalaliday)
 
 export const generateColor = (color, fade) => {
@@ -11,26 +12,6 @@ export const generateColor = (color, fade) => {
 
 export const idGenerator = () => {
   return Math.random().toString(36).substr(2, 9);
-};
-
-export const habitForTodayExtractor = (habits) => {
-  // TODO change static name of day
-  return habits
-    .reduce((acc, res) => {
-      return [
-        ...acc,
-        ...res.habit
-          .filter((el) => el.day === "شنبه")
-          .map((habit) =>
-            habit.habit.map((el) => ({
-              name: el.name,
-              color: res.color,
-              id: el.id,
-            }))
-          ),
-      ];
-    }, [])
-    .flat();
 };
 
 export function debounce(func, wait, immediate) {
@@ -68,22 +49,6 @@ export const selfClearInterval = (callback , timeout) => {
   }
 }
 
-export const fetchLooper = snapshot => 
-  snapshot.docs.map((el) => ({ ...el.data() }))
-
-let 
-persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g],
-arabicNumbers  = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
-export const fixNumbers = function (str) {
-  if(typeof str === 'string')  {
-    for(var i=0; i<10; i++)    {
-      str = str.replace(persianNumbers[i], i).replace(arabicNumbers[i], i);
-    }
-  }
-  return str;
-};
-
-
 export const _date = (targetDate) => dayjs(targetDate).calendar("jalali").locale('fa')
 
 export const colors = ['345B63' , "D4ECDD" , "C36839" , "5F7A61" , "3E2C41" , "C3BA85" , "FFB740" , "C2B8A3" , "402218" , "D44000" , "536162" , "AC0D0D" , "7868E6", "BFB051" , "F3F4ED"]
@@ -95,7 +60,7 @@ export const getRandomItem = (array = []) => {
 export const deepClone = data => JSON.parse(JSON.stringify(data));
 
 export const addZeroToAboveTenNumber = number => {
-  return +number < 10 ? `0${number}` : number
+  return +number < 10 ? `0${number}` : number;
 }
 
 
@@ -108,6 +73,9 @@ export const calcAllHabitForDay = dayHabitList => {
     return acc + res.schedule.length
  } , 0)
 }
+
+export const makeValidSnapshotData = snapshot => snapshot.docs?.map(el => ({ id : el.id , ...el.data() }));
+export const requestWrapper = requestCallback => new Promise(resolve => requestCallback(resolve))
 
 
 export const hourValueChecker = (value , des , toHr , from) => {

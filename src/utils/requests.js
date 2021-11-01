@@ -1,19 +1,13 @@
 import firebase from "firebase";
-import { createDateHabitList, injectRoutineToDateStream, _date } from ".";
+import { createDateHabitList, injectRoutineToDateStream, makeValidSnapshotData, requestWrapper, _date } from ".";
+import { firebaseAuth, references as pureReference } from "../firebase";
 
-import { firebaseAuth, references as pureReference } from "../firebase"
 import { Note , EmptyStreamItem } from "./modules";
 
-const makeValidSnapshotData = snapshot => snapshot.docs?.map(el => ({ id : el.id , ...el.data() }));
-
-const requestWrapper = requestCallback => {
-    return new Promise((resolve) => {
-        return requestCallback(resolve)
-    })
-}
 
 
-const references = () => pureReference(firebaseAuth.currentUser.uid)
+
+const references = () => pureReference(firebaseAuth.currentUser.uid);
 
 const target = {
     getTargetList(callback){
