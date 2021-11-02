@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { createDateHabitList, injectRoutineToDateStream, makeValidSnapshotData, requestWrapper, _date } from ".";
+import { createDateHabitList, deepClone, injectRoutineToDateStream, makeValidSnapshotData, requestWrapper, _date } from ".";
 import { firebaseAuth, references as pureReference } from "../firebase";
 
 import { Note , EmptyStreamItem } from "./modules";
@@ -55,6 +55,7 @@ const stream = {
         return requestWrapper(resolve => references().stream.doc(streamId).get().then(res => resolve(res.data()?.desc || "")))
     },
     initializer(date , callback = () => ({ streamItem : [] , todayHabit : [] })) {
+        console.log('get again run');
         references().habitPerWeek
             .get()
             .then(({ docs }) => {
@@ -66,13 +67,17 @@ const stream = {
                         callback({ streamItem : snapShot.data().item , todayHabit : currentDateHabitList })
                     }else {
                         requests.routine.getRoutineList(currentDateDayName , response => {
-                            const hours = new Array(24).fill().map((_, i) => i + 1);
-                            const dayStreamItemList = hours.map((_) => new EmptyStreamItem());
+                            // const hours = new Array(24).fill().map((_, i) => i + 1);
+                            // const dayStreamItemList = hours.map((_) => new EmptyStreamItem());
+                            // const newDayStreamAfterRoutineInjection = injectRoutineToDateStream(dayStreamItemList , response)
+                            const layout = [
+                                {i: 'a', x: 0, y: 0, w: 12, h: 1 , minW: 1 , maxW : 12 },
+                                {i: 'b', x: 1, y: 0, w: 12, h: 1, minW: 1 , maxW : 12},
+                                {i: 'c', x: 2, y: 0, w: 12, h: 1 , minW: 1 , maxW : 12},
+                            ];
                             
-                            const newDayStreamAfterRoutineInjection = injectRoutineToDateStream(dayStreamItemList , response)
-                            
-                            references().stream.doc(date).set({ item : newDayStreamAfterRoutineInjection })
-                                .then(() => callback({ streamItem : newDayStreamAfterRoutineInjection , todayHabit : currentDateHabitList }))
+                            references().stream.doc(date).set({ item : layout })
+                                .then(() => callback({ streamItem : layout , todayHabit : currentDateHabitList }))
                         })
                     }
                 })

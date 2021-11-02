@@ -70,22 +70,32 @@ import { colors , getRandomItem , idGenerator } from "../utils";
 // eslint-disable-next-line import/no-anonymous-default-export
 export default () => {
   const layout = [
-    {i: 'a', x: 0, y: 0, w: 12, h: 1 , minW: 12 , maxW : 12},
-    {i: 'b', x: 1, y: 0, w: 12, h: 1, minW: 12 , maxW : 12},
-    {i: 'c', x: 4, y: 0, w: 12, h: 1 , minW: 12 , maxW : 12},
-    ...new Array(21).fill("").map((el , i) => ({ i : idGenerator() , x: 4, y: 0, w: 12, h: 1 , minW: 12 , maxW : 12 , type : 'empty' }))
+    {i: 'a', x: 0, y: 0, w: 12, h: 1 , minW: 5 , maxW : 12},
+    {i: 'b', x: 1, y: 0, w: 12, h: 1, minW: 5 , maxW : 12},
+    ...new Array(21).fill("").map((el , i) => ({ i : idGenerator() , x: 4, y: 0, w: 12, h: 1 , minW: 12 , maxW : 12 , type : 'empty' })),
+    
+    {i: 'c', x: 4, y: 0, w: 12, h: 1 , minW: 5 , maxW : 12},
   ];
   return (
-    <ReactGridLayout 
-      className="layout" 
-      layout={layout} 
-      cols={12} 
-      rowHeight={100} 
-      width={window.innerWidth}
-      margin={[0 , 0]}>
-      {
-              layout.map((el , i) => el.type === "empty" ?<div style={{ width : "100%" , height : 100 }}></div> : <div key={el.i}  style={{background : el.type === "empty" ? "white" : `#${getRandomItem(colors)}` , userSelect : "none" }}>{i}{i}</div>)
-            }
-    </ReactGridLayout>
+    <div style={{ display : 'flex'  }}>
+      <div style={{ width : "10%" }}>
+        {
+          new Array(24).fill('').map((el , i) => <div style={{ display : "flex" , alignItems : "center" , justifyContent : "center" , height : 100}} key={i}>{i + 1}</div>)
+        }
+      </div>
+      <div style={{ width : "90%" }}>
+        <ReactGridLayout 
+        className="layout" 
+        layout={layout} 
+        cols={12} 
+        rowHeight={100}
+        width={window.innerWidth - 130}
+        margin={[0 , 0]}>
+        {
+                layout.map((el , i) => el.type === "empty" ?<div key={el.i} style={{ width : "100%" , height : 100 }}></div> : <div key={el.i}  style={{background : el.type === "empty" ? "white" : `#${getRandomItem(colors)}` , userSelect : "none" }}></div>)
+              }
+      </ReactGridLayout>
+      </div>
+    </div>
   )
 }

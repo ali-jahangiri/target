@@ -9,6 +9,20 @@
 }
 
 
-.HANA {
-    background-color: red;
+.layout {
+    width: 100%;
+
+}
+
+.react-grid-item.react-grid-placeholder {
+    background-color: $grey !important;
+    z-index: -2;
+}
+
+
+.TestHandler {
+    width: 100px;
+    height: .5rem;
+    background-color: black;
+    
 }
