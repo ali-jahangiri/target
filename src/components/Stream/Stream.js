@@ -1,10 +1,11 @@
 import ReactGridLayout from "react-grid-layout";
-import { colors, deepClone, getRandomItem, requests } from "../../utils";
+import { colors, deepClone, getRandomItem, idGenerator, requests } from "../../utils";
 import React from "react";
 import StreamHour from "./StreamHour";
 import { useState } from "react";
 import { useEffect } from "react";
 import StreamSidebar from "./StreamSidebar";
+import StreamItem from "./StreamItem";
 
 
 // const { TODAY_ID , INJECTED_TODO , hours , HABIT_LIST_ID } = client.STATIC;
@@ -285,9 +286,10 @@ const Stream = ({
   // )
 
   
+  const [preventCollision, setPreventCollision] = useState(true)
+
   useEffect(function streamInitializer() {
     setIsFirstRender(true);
-    console.log(todayHabit);
     requests.stream.initializer(date , ({ streamItem , todayHabit }) => {
       setStreamItem(streamItem);
       setTodayHabit(todayHabit);
@@ -295,8 +297,25 @@ const Stream = ({
     })
   } , [date]);
 
+
   const onStreamItemChange = newStreamList => {
     requests.stream.sync(date , deepClone(newStreamList));
+  }
+
+  const onDrop = (_, layoutItem) => {
+    console.log('render');
+    setPreventCollision(true);
+
+    setStreamItem(prev => [...deepClone(prev) , {...deepClone(layoutItem) , i : idGenerator()}])
+  }
+
+  const dropStartHandler = () => {
+    console.log('should');
+    setPreventCollision(false)
+  }
+
+  if(isToday) {
+    console.log(preventCollision);
   }
 
   return loading ? <div>Loading</div> : (
@@ -312,18 +331,23 @@ const Stream = ({
           onResizeStop={onStreamItemChange}
           onDragStop={onStreamItemChange}
           rowHeight={100}
-          // resizeHandle={props => <TER {...props} />}
+          onDrop={onDrop}
           verticalCompact={false}
           maxRows={24}
-          preventCollision={true}
+          preventCollision={false}
+          isDroppable={true}
           width={(90 / 100) * window.innerWidth}
           margin={[0 , 0]}>
+              {/* streamItem.map((el , i) => <StreamItem color={getRandomItem(colors)} key={el.i} {...el} />) */}
           {
-            streamItem.map((el) => <div key={el.i} style={{background : `#${getRandomItem(colors)}` , userSelect : "none" }}></div>)
+            streamItem.map((el) => <div className="streamItem" key={el.i} style={{background : `#${getRandomItem(colors)}` , userSelect : "none" }}>
+              {/* <StreamItem  /> */}
+            </div>)
           }
         </ReactGridLayout>
       </div>
-      {/* <StreamSidebar
+      <StreamSidebar
+          dropStartHandler={dropStartHandler}
           leanedHabitInStream={streamItem.filter(el => el.name)}
           isInDragging={false}
           date={date}
@@ -332,7 +356,7 @@ const Stream = ({
           isSidebarOpen={isSidebarVisible}
           setInjectedTodo={setInjectedTodo}
           sideBarHandler={sideBarHandler}
-          todayHabit={todayHabit} /> */}
+          todayHabit={todayHabit} />
     </div>
   )
 };

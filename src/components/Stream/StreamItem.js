@@ -206,12 +206,27 @@
 
 import React from "react";
 
-const StreamItem = React.forwardRef((props, ref) => {
+const StreamItem = ({ name }) => {
   return (
-    <div ref={ref} {...props}>
-
+    <div>
+      <div className={`streamItem__innerContainer ${false ? "streamItem__innerContainer--setUp" : ""}`} >
+        <p>{name}</p>
+        <div className="streamItem__detailsModeCtaContainer">
+        {/* <div
+          onClick={showDetailsHandler}
+          className={`streamItem__detailsTrigger ${isInDetailsMode? "streamItem__detailsTrigger--rotate": ""}`} >
+          <FiMoreHorizontal />
+        </div> */}
+        {/* <div onClick={closeHandler} className={`determiner ${isInDetailsMode ? "determiner--active" : ""}`} >
+          <div className="visible">
+            <CgClose />
+          </div>
+        </div> */}
+      </div>
+      </div>
+      {/* {isInDetailsMode && <WritableDetails streamId={leanDate} isInCloseProcess={isDetailsInCloseProcess} />} */}
     </div>
   )
-})
+}
 
 export default StreamItem;

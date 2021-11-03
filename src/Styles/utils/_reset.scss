@@ -32,6 +32,8 @@
     width: 4rem !important;
     height: 2rem;
     position: relative;
+    transition: .3s .1s;
+    opacity: 0;
 
     &::after {
         border-right: 2px solid rgba(0, 0, 0, 0.1); 

@@ -1,0 +1,11 @@
+import React from "react";
+import { colors, getRandomItem } from "../../utils";
+
+const StreamItemDirectory = React.forwardRef((props , ref) => {
+    console.log(props);
+    return (
+        props.items.map((el) => <div key={el.i} style={{background : `#${getRandomItem(colors)}` , userSelect : "none" }}></div>)
+    )
+})
+
+export default StreamItemDirectory;

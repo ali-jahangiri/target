@@ -13,6 +13,7 @@ const StreamSidebar = ({
   isInStreamDetailsMode, 
   sideBarHandler, 
   todayHabit, 
+  dropStartHandler,
   date, 
   setInjectedTodo, 
   isInDragging, 
@@ -37,7 +38,7 @@ const StreamSidebar = ({
     if(leanedHabitInStream.some(el => el.name === todoInputValue)) setTodoInputValue("");
   } , [isInDragging, leanedHabitInStream, todoInputValue]);
 
-
+  
   return (
         <div 
           style={{ width : isInFullScreen ? `${isInFullScreen}vw` : "30vw" , zIndex : 999 }} 
@@ -49,13 +50,15 @@ const StreamSidebar = ({
           </div>
           <div 
             className="streamSidebar__habitDirectory">
-            <Droppable isDropDisabled droppableId={client.STATIC.HABIT_LIST_ID}>
-              {provided => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  <StreamSidebarBlockItemsContainer 
+              <StreamSidebarBlockItemsContainer
+                    dropStartHandler={dropStartHandler}
                     leanedHabitInStream={leanedHabitInStream} 
                     todayHabit={todayHabit}
                   />
+            {/* <Droppable isDropDisabled droppableId={client.STATIC.HABIT_LIST_ID}>
+              {provided => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  
                   <Todo
                     isSidebarOpen={isSidebarOpen}
                     setInputValue={setTodoInputValue}
@@ -68,7 +71,7 @@ const StreamSidebar = ({
                   {provided.placeholder}
                 </div>
               )}
-            </Droppable>
+            </Droppable> */}
           </div>
         </div>
     )

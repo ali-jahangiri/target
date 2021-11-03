@@ -1,224 +1,233 @@
-@keyframes growWidth {
-    from {
-        width: 389px;
-    }
-    to {
-        width: 1200px;
-    }
-}
+// @keyframes growWidth {
+//     from {
+//         width: 389px;
+//     }
+//     to {
+//         width: 1200px;
+//     }
+// }
 
 
-@keyframes getUp {
-    from {
-        height: 0;
-        opacity: 1;
-    }
-    to {
-        height: 100%;
-        opacity: 0;
-    }
-}
+// @keyframes getUp {
+//     from {
+//         height: 0;
+//         opacity: 1;
+//     }
+//     to {
+//         height: 100%;
+//         opacity: 0;
+//     }
+// }
 
-@keyframes getCollapse {
-    from {
-        height: 100%;
-    }
-    to {
-        height: 0%;
-    }
-}
+// @keyframes getCollapse {
+//     from {
+//         height: 100%;
+//     }
+//     to {
+//         height: 0%;
+//     }
+// }
 
 
-.habitMainContainer {
-    transition: .3s  , margin-bottom .3s .2s;
-    z-index: 555;
-    min-width: 100% !important;
+// .habitMainContainer {
+//     transition: .3s  , margin-bottom .3s .2s;
+//     z-index: 555;
+//     min-width: 100% !important;
     
 
-    &:hover {
+//     &:hover {
         
-        .streamResizeTrigger  {
-            opacity: 1;
-        }
-    }
+//         .streamResizeTrigger  {
+//             opacity: 1;
+//         }
+//     }
 
-    &--inDetailsMode {
-        z-index: 50000000;
-        overflow: hidden;
-    }
-}
-.streamItem {
-    height: 100%;
-    user-select: none;
-    width: 100%;
+//     &--inDetailsMode {
+//         z-index: 50000000;
+//         overflow: hidden;
+//     }
+// }
+// .streamItem {
+//     height: 100%;
+//     user-select: none;
+//     width: 100%;
     
 
 
 
 
-    &__detailsModeCtaContainer {
-        display: flex;
-        align-items: center;
+//     &__detailsModeCtaContainer {
+//         display: flex;
+//         align-items: center;
 
-        & > div {
-            margin: 0 .3rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            transition: .3s;
-            cursor: pointer;
+//         & > div {
+//             margin: 0 .3rem;
+//             display: flex;
+//             align-items: center;
+//             justify-content: center;
+//             width: 60px;
+//             height: 60px;
+//             transition: .3s;
+//             cursor: pointer;
 
-            &:hover {
-                background-color: white !important; 
-            }
-        }
+//             &:hover {
+//                 background-color: white !important; 
+//             }
+//         }
 
 
-        &__deleteTrigger {
-            position: absolute;
-        }
+//         &__deleteTrigger {
+//             position: absolute;
+//         }
 
-        .determiner {
-            width: 0;
-            padding: 0;
-            position: relative;
-            overflow: hidden;
-            transition: .3s;
-            opacity: 0;
+//         .determiner {
+//             width: 0;
+//             padding: 0;
+//             position: relative;
+//             overflow: hidden;
+//             transition: .3s;
+//             opacity: 0;
 
-            &>div {
-                position: absolute;
-                top: -100%;
-                transform: translateY(-50%);
-                transition: .3s;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
+//             &>div {
+//                 position: absolute;
+//                 top: -100%;
+//                 transform: translateY(-50%);
+//                 transition: .3s;
+//                 display: flex;
+//                 justify-content: center;
+//                 align-items: center;
+//             }
             
-            & .visible {
-                transition: .3s;
-                top: 50% !important;
-            }
+//             & .visible {
+//                 transition: .3s;
+//                 top: 50% !important;
+//             }
 
             
-            svg {
-                width: 60px;
-            }
+//             svg {
+//                 width: 60px;
+//             }
             
-            &--active {
-                width: 60px;
-                opacity: 1;
+//             &--active {
+//                 width: 60px;
+//                 opacity: 1;
 
-            }
-        }
-    }
+//             }
+//         }
+//     }
 
-    & + div {
-        height: 25px;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        z-index: 9999;
+//     & + div {
+//         height: 25px;
+//         position: absolute;
+//         bottom: 0;
+//         left: 0;
+//         width: 100%;
+//         z-index: 9999;
 
-        &>div {
-            transition: .3s;
+//         &>div {
+//             transition: .3s;
+//             opacity: 1;
+//             height: 0px !important;
+//         }
+
+//     }
+
+//     &--hideResizeTrigger {
+//         &+div {
+//             &>div {
+//                 opacity: 0;
+//             }
+
+//         }
+//     }
+
+
+//     &--overflowHidden {
+//         overflow: hidden;
+//     }
+
+//     &__detailsTrigger {
+//         transition: transform .3s 1.5s, background .3s 0s !important;
+
+//         &--rotate {
+//             transform: rotate(90deg);
+//         }
+
+//     }
+
+//     &__innerContainer {
+//         display: flex;
+//         justify-content: space-between;
+//         align-items: center;
+//         position: absolute;
+//         width: 95%;
+//         left: 50%;
+//         top: 50%;
+//         transform: translateX(-50%) translateY(-50%);
+//         transition: .3s .8s;
+//         z-index: 9;
+
+//         p {
+//             transition: .3s;
+//             font-weight: 400;
+//         }
+
+//         &--setUp {
+//             top: 0% !important;
+//             transform: translateX(-50%);
+//             p {
+//                 font-weight: 500;
+//             }
+//         }
+//     }
+
+
+//     &__container {
+//         height: 100%;
+//         padding: 0 2rem;
+//         position: relative;
+//         overflow: hidden;
+//         transition: background-color .3s;
+
+//         &::after {
+//             content: "";
+//             width: 100%;
+//             height: 0;
+//             position: absolute;
+//             left: 0;
+//             bottom: 0;
+//             z-index: 55;
+//             background: linear-gradient(0deg, white, #fafafa77);
+//             transition: .9s;
+//         }
+
+//         &--delete {
+//             animation: getCollapse .2s 3s forwards alternate;
+//             cursor: pointer;
+//             background-color: $red !important;
+
+//             // Text helper style
+//             & > div {
+//                 display: flex;
+//                 height: 100%;
+//                 justify-content: center;
+//                 align-items: center;
+//             }
+            
+//             // Red Overlay
+//             &::after {
+//                 transition: 4.5s linear;
+//                 height: 100%;
+//             }
+//         }
+//     }
+// }
+
+.streamItem {
+    
+    &:hover {
+        .react-resizable-handle {
             opacity: 1;
-            height: 0px !important;
-        }
-
-    }
-
-    &--hideResizeTrigger {
-        &+div {
-            &>div {
-                opacity: 0;
-            }
-
-        }
-    }
-
-
-    &--overflowHidden {
-        overflow: hidden;
-    }
-
-    &__detailsTrigger {
-        transition: transform .3s 1.5s, background .3s 0s !important;
-
-        &--rotate {
-            transform: rotate(90deg);
-        }
-
-    }
-
-    &__innerContainer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: absolute;
-        width: 95%;
-        left: 50%;
-        top: 50%;
-        transform: translateX(-50%) translateY(-50%);
-        transition: .3s .8s;
-        z-index: 9;
-
-        p {
-            transition: .3s;
-            font-weight: 400;
-        }
-
-        &--setUp {
-            top: 0% !important;
-            transform: translateX(-50%);
-            p {
-                font-weight: 500;
-            }
-        }
-    }
-
-
-    &__container {
-        height: 100%;
-        padding: 0 2rem;
-        position: relative;
-        overflow: hidden;
-        transition: background-color .3s;
-
-        &::after {
-            content: "";
-            width: 100%;
-            height: 0;
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            z-index: 55;
-            background: linear-gradient(0deg, white, #fafafa77);
-            transition: .9s;
-        }
-
-        &--delete {
-            animation: getCollapse .2s 3s forwards alternate;
-            cursor: pointer;
-            background-color: $red !important;
-
-            // Text helper style
-            & > div {
-                display: flex;
-                height: 100%;
-                justify-content: center;
-                align-items: center;
-            }
-            
-            // Red Overlay
-            &::after {
-                transition: 4.5s linear;
-                height: 100%;
-            }
         }
     }
 }

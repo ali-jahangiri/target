@@ -1,10 +1,8 @@
 import firebase from "firebase";
-import { createDateHabitList, deepClone, injectRoutineToDateStream, makeValidSnapshotData, requestWrapper, _date } from ".";
+import { createDateHabitList, makeValidSnapshotData, requestWrapper, _date } from ".";
 import { firebaseAuth, references as pureReference } from "../firebase";
 
-import { Note , EmptyStreamItem } from "./modules";
-
-
+import { Note } from "./modules";
 
 
 const references = () => pureReference(firebaseAuth.currentUser.uid);
@@ -55,7 +53,6 @@ const stream = {
         return requestWrapper(resolve => references().stream.doc(streamId).get().then(res => resolve(res.data()?.desc || "")))
     },
     initializer(date , callback = () => ({ streamItem : [] , todayHabit : [] })) {
-        console.log('get again run');
         references().habitPerWeek
             .get()
             .then(({ docs }) => {
