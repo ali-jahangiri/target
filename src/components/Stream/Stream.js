@@ -284,8 +284,10 @@ const Stream = ({
   //   </div>
   // )
 
+  
   useEffect(function streamInitializer() {
     setIsFirstRender(true);
+    console.log(todayHabit);
     requests.stream.initializer(date , ({ streamItem , todayHabit }) => {
       setStreamItem(streamItem);
       setTodayHabit(todayHabit);
@@ -310,11 +312,11 @@ const Stream = ({
           onResizeStop={onStreamItemChange}
           onDragStop={onStreamItemChange}
           rowHeight={100}
-          resizeHandle={props => <TER {...props} />}
+          // resizeHandle={props => <TER {...props} />}
           verticalCompact={false}
           maxRows={24}
           preventCollision={true}
-          width={window.innerWidth - 130}
+          width={(90 / 100) * window.innerWidth}
           margin={[0 , 0]}>
           {
             streamItem.map((el) => <div key={el.i} style={{background : `#${getRandomItem(colors)}` , userSelect : "none" }}></div>)
