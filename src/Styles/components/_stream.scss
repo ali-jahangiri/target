@@ -67,10 +67,12 @@
     display: flex;
     background-color: white;
 
-
     &__hour {
         width: 10%;
     }
 
+    &__items {
+        min-width: 90%;
+    }
 
 }

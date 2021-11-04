@@ -1,13 +1,15 @@
-import ReactGridLayout from "react-grid-layout";
-import { colors, deepClone, getRandomItem, idGenerator, requests } from "../../utils";
+import ReactGridLayout, { WidthProvider } from "react-grid-layout";
+import { colors, deepClone, getRandomItem, idGenerator, requests, selfClearTimeout } from "../../utils";
 import React from "react";
 import StreamHour from "./StreamHour";
 import { useState } from "react";
 import { useEffect } from "react";
 import StreamSidebar from "./StreamSidebar";
 import StreamItem from "./StreamItem";
+import { useCallback } from "react";
+import { useRef } from "react";
 
-
+const EnhancedGridLayout = WidthProvider(ReactGridLayout);
 // const { TODAY_ID , INJECTED_TODO , hours , HABIT_LIST_ID } = client.STATIC;
 
 // const AfterAllChildRenderSettled = ({ setAllChildRender , showControllerHandler }) => {
@@ -286,7 +288,10 @@ const Stream = ({
   // )
 
   
-  const [preventCollision, setPreventCollision] = useState(true)
+  // const [preventCollision, setPreventCollision] = useState(true);
+
+  
+  const [test, setTest] = useState(null);
 
   useEffect(function streamInitializer() {
     setIsFirstRender(true);
@@ -297,26 +302,20 @@ const Stream = ({
     })
   } , [date]);
 
-
   const onStreamItemChange = newStreamList => {
     requests.stream.sync(date , deepClone(newStreamList));
   }
 
   const onDrop = (_, layoutItem) => {
-    console.log('render');
-    setPreventCollision(true);
-
+    console.log(layoutItem)
+    console.log(test);
     setStreamItem(prev => [...deepClone(prev) , {...deepClone(layoutItem) , i : idGenerator()}])
   }
+    
+  console.log(test , "test");
 
-  const dropStartHandler = () => {
-    console.log('should');
-    setPreventCollision(false)
-  }
+  const dropStartHandler = () => {}
 
-  if(isToday) {
-    console.log(preventCollision);
-  }
 
   return loading ? <div>Loading</div> : (
     <div className="stream">
@@ -324,7 +323,7 @@ const Stream = ({
         <StreamHour />
       </div>
       <div className="stream__items"> 
-        <ReactGridLayout
+        <EnhancedGridLayout
           className="layout"
           layout={streamItem}
           cols={4}
@@ -332,21 +331,23 @@ const Stream = ({
           onDragStop={onStreamItemChange}
           rowHeight={100}
           onDrop={onDrop}
+          compactType={null}
           verticalCompact={false}
           maxRows={24}
-          preventCollision={false}
+          useCSSTransforms
+          preventCollision={true}
           isDroppable={true}
-          width={(90 / 100) * window.innerWidth}
+          width={(60 / 100) * window.innerWidth}
           margin={[0 , 0]}>
-              {/* streamItem.map((el , i) => <StreamItem color={getRandomItem(colors)} key={el.i} {...el} />) */}
           {
             streamItem.map((el) => <div className="streamItem" key={el.i} style={{background : `#${getRandomItem(colors)}` , userSelect : "none" }}>
               {/* <StreamItem  /> */}
             </div>)
           }
-        </ReactGridLayout>
+        </EnhancedGridLayout>
       </div>
       <StreamSidebar
+          setTempDetails={setTest}
           dropStartHandler={dropStartHandler}
           leanedHabitInStream={streamItem.filter(el => el.name)}
           isInDragging={false}

@@ -67,14 +67,14 @@ const stream = {
                             // const hours = new Array(24).fill().map((_, i) => i + 1);
                             // const dayStreamItemList = hours.map((_) => new EmptyStreamItem());
                             // const newDayStreamAfterRoutineInjection = injectRoutineToDateStream(dayStreamItemList , response)
-                            const layout = [
-                                {i: 'a', x: 0, y: 0, w: 12, h: 1 , minW: 1 , maxW : 12 },
-                                {i: 'b', x: 1, y: 0, w: 12, h: 1, minW: 1 , maxW : 12},
-                                {i: 'c', x: 2, y: 0, w: 12, h: 1 , minW: 1 , maxW : 12},
-                            ];
+                            // const layout = [
+                            //     {i: 'a', x: 0, y: 0, w: 12, h: 1 , minW: 1 , maxW : 12 },
+                            //     {i: 'b', x: 1, y: 0, w: 12, h: 1, minW: 1 , maxW : 12},
+                            //     {i: 'c', x: 2, y: 0, w: 12, h: 1 , minW: 1 , maxW : 12},
+                            // ];
                             
-                            references().stream.doc(date).set({ item : layout })
-                                .then(() => callback({ streamItem : layout , todayHabit : currentDateHabitList }))
+                            references().stream.doc(date).set({ item : [] })
+                                .then(() => callback({ streamItem : [] , todayHabit : currentDateHabitList }))
                         })
                     }
                 })

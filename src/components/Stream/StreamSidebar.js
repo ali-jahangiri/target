@@ -10,6 +10,7 @@ import Todo from "./Todo";
 
 const StreamSidebar = ({ 
   isSidebarOpen, 
+  setTempDetails,
   isInStreamDetailsMode, 
   sideBarHandler, 
   todayHabit, 
@@ -51,6 +52,7 @@ const StreamSidebar = ({
           <div 
             className="streamSidebar__habitDirectory">
               <StreamSidebarBlockItemsContainer
+                    setTempDetails={setTempDetails}
                     dropStartHandler={dropStartHandler}
                     leanedHabitInStream={leanedHabitInStream} 
                     todayHabit={todayHabit}
