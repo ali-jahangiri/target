@@ -1,13 +1,12 @@
 import ReactGridLayout, { WidthProvider } from "react-grid-layout";
-import { colors, deepClone, getRandomItem, idGenerator, requests, selfClearTimeout } from "../../utils";
+import { colors, currentDateName, deepClone, getRandomItem, idGenerator, requests, selfClearTimeout } from "../../utils";
 import React from "react";
 import StreamHour from "./StreamHour";
 import { useState } from "react";
 import { useEffect } from "react";
 import StreamSidebar from "./StreamSidebar";
 import StreamItem from "./StreamItem";
-import { useCallback } from "react";
-import { useRef } from "react";
+
 
 const EnhancedGridLayout = WidthProvider(ReactGridLayout);
 // const { TODAY_ID , INJECTED_TODO , hours , HABIT_LIST_ID } = client.STATIC;
@@ -288,11 +287,6 @@ const Stream = ({
   // )
 
   
-  // const [preventCollision, setPreventCollision] = useState(true);
-
-  
-  const [test, setTest] = useState(null);
-
   useEffect(function streamInitializer() {
     setIsFirstRender(true);
     requests.stream.initializer(date , ({ streamItem , todayHabit }) => {
@@ -302,20 +296,56 @@ const Stream = ({
     })
   } , [date]);
 
-  const onStreamItemChange = newStreamList => {
-    requests.stream.sync(date , deepClone(newStreamList));
+  const onStreamItemChange = (newStreamList) => {
+    const deepCloned = deepClone(streamItem.map(el => ({ details : el.details , layout : newStreamList.find(item => item.i === el.details.i) })));
+    requests.stream.sync(date , deepCloned);
   }
 
-  const onDrop = (_, layoutItem) => {
-    console.log(layoutItem)
-    console.log(test);
-    setStreamItem(prev => [...deepClone(prev) , {...deepClone(layoutItem) , i : idGenerator()}])
+  const onDrop = (_, layout , e) => {
+    const details = JSON.parse(e.dataTransfer.getData("details"));
+    setStreamItem(prev => {
+      const endResult = [...deepClone(prev) , { details , layout : {...layout , i : details.i} }];
+      requests.stream.sync(date , deepClone(endResult));
+      return endResult;
+    })
   }
-    
-  console.log(test , "test");
 
-  const dropStartHandler = () => {}
 
+  if(isToday) {
+    console.log(streamItem?.map(el => el.layout));
+  }
+  
+  useEffect(() => {
+    if(streamItem?.length && isToday) {
+      const allInvolvedRow = streamItem.map(el => el.layout.y);
+        if(streamItem.some(el => el.layout.x !== 0 && allInvolvedRow.filter(item => item === el.layout.y).length === 1)) {
+          const result = deepClone(streamItem).map(item => {
+          const haveOnlyInOneRow = allInvolvedRow.filter(el => el === item.layout.y).length === 1;
+          if(haveOnlyInOneRow) return ({details : item.details , layout : {...item.layout , x : 0}})
+            else return item
+          })
+          requests.stream.sync(date , result)
+        }else {
+            // const endResult = streamItem.map(el => {
+            //   const currentEventRow = streamItem.find(item => item.layout.y === el.layout.y).layout.y;
+            //   const allBlockInThisRow = streamItem.filter(item => item.layout.y === currentEventRow)
+            //   if(allBlockInThisRow.length >= 2 && allBlockInThisRow.length < 4) {
+            //     const sortedRowItem = deepClone(allBlockInThisRow).sort((a , b) => a.layout.x - b.layout.x);
+            //     return {
+            //       details : el.details,
+            //       layout : {
+            //         ...el.layout,
+            //         x : sortedRowItem.findIndex(item => item.details.i === el.details.i)
+            //       }
+            //     }
+            //   }else return el;
+            // });
+            // requests.stream.sync(date , endResult)
+        }
+      }
+  } , [streamItem , isToday])
+
+  // console.log(streamItem);
 
   return loading ? <div>Loading</div> : (
     <div className="stream">
@@ -325,30 +355,30 @@ const Stream = ({
       <div className="stream__items"> 
         <EnhancedGridLayout
           className="layout"
-          layout={streamItem}
+          layout={streamItem?.map(el => el.layout)}
           cols={4}
           onResizeStop={onStreamItemChange}
           onDragStop={onStreamItemChange}
           rowHeight={100}
           onDrop={onDrop}
-          compactType={null}
-          verticalCompact={false}
+          compactType={"horizontal"}
           maxRows={24}
           useCSSTransforms
-          preventCollision={true}
+          preventCollision={false}
           isDroppable={true}
-          width={(60 / 100) * window.innerWidth}
+          width={(65 / 100) * window.innerWidth}
           margin={[0 , 0]}>
           {
-            streamItem.map((el) => <div className="streamItem" key={el.i} style={{background : `#${getRandomItem(colors)}` , userSelect : "none" }}>
-              {/* <StreamItem  /> */}
+            streamItem.map(({ details }) => <div 
+                                    className="streamItem" 
+                                    key={details.i} 
+                                    style={{background : `#${details.color}`}}>
+              <StreamItem {...details} />
             </div>)
           }
         </EnhancedGridLayout>
       </div>
       <StreamSidebar
-          setTempDetails={setTest}
-          dropStartHandler={dropStartHandler}
           leanedHabitInStream={streamItem.filter(el => el.name)}
           isInDragging={false}
           date={date}

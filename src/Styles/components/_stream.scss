@@ -66,13 +66,15 @@
 .stream {
     display: flex;
     background-color: white;
+    user-select: none;
+
 
     &__hour {
-        width: 10%;
+        width: 15%;
     }
 
     &__items {
-        min-width: 90%;
+        min-width: 85%;
     }
 
 }

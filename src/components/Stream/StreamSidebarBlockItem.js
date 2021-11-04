@@ -1,13 +1,11 @@
-import { deepClone, idGenerator } from "../../utils";
+import { idGenerator } from "../../utils";
 
-const StreamSidebarBlockItem = ({ color , name , alreadyUse , isInDragging , dropStartHandler , setTempDetails}) => {
+const StreamSidebarBlockItem = ({ color , name , alreadyUse , isInDragging}) => {
     return <div 
         draggable={true} 
         unselectable="on"
         onDragStart={e => {
-            setTempDetails(deepClone({ name , color , id : idGenerator() }))
-            dropStartHandler(false, { name , color });
-            e.dataTransfer.setData("text/plain", "")}
+            e.dataTransfer.setData("details", JSON.stringify({name , color , i : idGenerator()}))}
         } 
         style={{backgroundColor: `#${color || "dcdcdc"}`}}
         className={`sliderHabitBlock__habitItem__container droppable-element ${isInDragging ? "sliderHabitBlock__habitItem__container--getFull" : ""}`}>

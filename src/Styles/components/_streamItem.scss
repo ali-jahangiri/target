@@ -155,31 +155,7 @@
 
 //     }
 
-//     &__innerContainer {
-//         display: flex;
-//         justify-content: space-between;
-//         align-items: center;
-//         position: absolute;
-//         width: 95%;
-//         left: 50%;
-//         top: 50%;
-//         transform: translateX(-50%) translateY(-50%);
-//         transition: .3s .8s;
-//         z-index: 9;
-
-//         p {
-//             transition: .3s;
-//             font-weight: 400;
-//         }
-
-//         &--setUp {
-//             top: 0% !important;
-//             transform: translateX(-50%);
-//             p {
-//                 font-weight: 500;
-//             }
-//         }
-//     }
+    
 
 
 //     &__container {
@@ -224,7 +200,34 @@
 // }
 
 .streamItem {
-    
+
+    &__innerContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: absolute;
+        width: 95%;
+        left: 50%;
+        top: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        transition: .3s .8s;
+        z-index: 9;
+
+        p {
+            transition: .3s;
+            font-weight: 400;
+        }
+
+        &--setUp {
+            top: 0% !important;
+            transform: translateX(-50%);
+            p {
+                font-weight: 500;
+            }
+        }
+    }
+
+
     &:hover {
         .react-resizable-handle {
             opacity: 1;

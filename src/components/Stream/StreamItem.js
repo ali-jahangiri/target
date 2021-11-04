@@ -208,7 +208,7 @@ import React from "react";
 
 const StreamItem = ({ name }) => {
   return (
-    <div>
+    <div className="streamItem">
       <div className={`streamItem__innerContainer ${false ? "streamItem__innerContainer--setUp" : ""}`} >
         <p>{name}</p>
         <div className="streamItem__detailsModeCtaContainer">

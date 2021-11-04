@@ -36,7 +36,7 @@
     opacity: 0;
 
     &::after {
-        border-right: 2px solid rgba(0, 0, 0, 0.1); 
-        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        border-right: 2px solid #00000005 !important; 
+        border-bottom: 2px solid #00000005 !important;
     }
 }
