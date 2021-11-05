@@ -1,10 +1,10 @@
 import React, { useEffect, useState , useRef, useLayoutEffect } from "react";
-import { Draggable } from "react-beautiful-dnd";
 import { generateColor, selfClearTimeout } from "../../utils";
 import useAfterInitialEffect from "../AllWeekSchedule/useAfterInitialEffect";
 import TextareaAutosize from "react-textarea-autosize";
 import RoutineStreamSpendTime from "./RoutineStreamSpendTime";
 import client from "../../client";
+import StreamOverHour from "./StreamOverHour";
 
 
 const RoutineStreamDesc = ({ isOtherVisionVisible , setIsDescFocused , isInSpendTime , isDescFocused , initialValue , syncHandler }) => {
@@ -46,7 +46,7 @@ const showSpendTimePreviewTextHandler = passedSpendTime => {
 
 
 const RoutineStream = ({ 
-    id , 
+    i , 
     color , 
     name , 
     hour ,
@@ -56,8 +56,12 @@ const RoutineStream = ({
     setIsInOtherVisionToParent,
     setPropHandler,
     desc = "",
+    layout,
+    isToday,
+    addToActiveBlockHandler,
  }) => {
-    
+
+
     const [liftedTimeFromAboveBlocks, setLiftedTimeFromAboveBlocks] = useState(null);
     const [isOtherVisionVisible, setIsOtherVisionVisible] = useState(false);
     const [showSpendTimeResizable, setShowSpendTimeResizable] = useState(false);
@@ -89,7 +93,7 @@ const RoutineStream = ({
             const currentElementTopPosition = fromHour * 100;
             client.nodeRef.home().scroll({ top : currentElementTopPosition , behavior : "smooth" });
             const possibleStep = new Array((toHour - fromHour) + liftedTimeFromAboveBlocks).fill("").map(() => ++fromHour);
-            setIsInOtherVisionToParent(id , possibleStep , currentElementTopPosition)
+            setIsInOtherVisionToParent(i , possibleStep , currentElementTopPosition)
         }else {
             setIsInOtherVisionToParent();
             setShowSpend(false);
@@ -110,7 +114,7 @@ const RoutineStream = ({
     }
     
 
-    const syncDescHandler = value => setPropHandler({ id , propName : "desc" , value })
+    const syncDescHandler = value => setPropHandler({ id: i , propName : "desc" , value })
 
     // useLayoutEffect(function initialFocusIntoTextarea() {
     //     if(isOtherVisionVisible) {
@@ -124,6 +128,11 @@ const RoutineStream = ({
     //         setPropHandler({ id , propName : "spendTime" , value : internalSpendTime })
     //     }
     // } , [internalSpendTime , isInResizing]);
+
+    const internalPassingUpCurrentInProgressBlockHandler = shouldAddBlockToList => {
+        if(shouldAddBlockToList) addToActiveBlockHandler(shouldAddBlockToList);
+    }
+
 
     return (
         <div
@@ -161,9 +170,9 @@ const RoutineStream = ({
                     <div onClick={toggleOtherVisionHandler} className="routineStream__circle">
                         <div style={{ backgroundColor : `#${color}` }} />
                     </div>
-                    <div className="routineStream__time">
+                    {/* <div className="routineStream__time">
                         <p>From <span>{hour.from + 1}</span> To <span>{hour.to + 1}</span></p>
-                    </div>
+                    </div> */}
                     {/* {
                         !!liftedTimeFromAboveBlocks && <div className="routineStream__timeLiftAlert">
                             <p>Delayed for <span>{liftedTimeFromAboveBlocks} hour{liftedTimeFromAboveBlocks > 1 && "s"}</span></p>
@@ -171,6 +180,14 @@ const RoutineStream = ({
                     } */}
                 </div>
             </div>
+            {
+                isToday && <StreamOverHour
+                    setIsInProgress={internalPassingUpCurrentInProgressBlockHandler} 
+                    isInDetailsMode={false} 
+                    startPoint={layout.y * 100} 
+                    endPoint={(layout.y + layout.h) * 100}
+                />
+            }
         </div>
     )
 }

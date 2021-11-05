@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { createDateHabitList, makeValidSnapshotData, requestWrapper, _date } from ".";
+import { createDateHabitList, injectRoutineToDateStream, makeValidSnapshotData, requestWrapper, _date } from ".";
 import { firebaseAuth, references as pureReference } from "../firebase";
 
 import { Note } from "./modules";
@@ -64,8 +64,7 @@ const stream = {
                         callback({ streamItem : snapShot.data().item , todayHabit : currentDateHabitList })
                     }else {
                         requests.routine.getRoutineList(currentDateDayName , response => {
-                            // const newDayStreamAfterRoutineInjection = injectRoutineToDateStream(response);
-                            const newDayStreamAfterRoutineInjection = []
+                            const newDayStreamAfterRoutineInjection = injectRoutineToDateStream(response);
                             references().stream.doc(date).set({ item : newDayStreamAfterRoutineInjection })
                                 .then(() => callback({ streamItem : newDayStreamAfterRoutineInjection , todayHabit : currentDateHabitList }))
                         })

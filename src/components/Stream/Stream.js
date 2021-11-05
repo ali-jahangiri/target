@@ -24,7 +24,7 @@ const DynamicStreamItem = ({
 
   return <div className="stream__wrapper">
     {{
-      routine : <RoutineStream {...details} />,
+      routine : <RoutineStream addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} {...details} />,
       habit : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
       todo  : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
     }[type]}
@@ -232,10 +232,16 @@ const Stream = ({
         const currentHour = new Date().getHours();
         
         if(activeBlockList.length) {
-          const currentlyInProgressBlock = activeBlockList.find(el => el.isInDoing);
           // if we have some block witch currently is open and we should focus on that , we scroll to that item
-          if(currentDetailsModeHabit) {
-            window.scrollTo({ top : currentlyInProgressBlock.startPointPosition * 100 , behavior : "smooth" })
+          const currentlyInProgressBlockStartPoint = (() => {
+            if(activeBlockList.length >= 2) {
+              const sortedInProgressList = deepClone(activeBlockList).sort((a , b) => a.startPointPosition - b.startPointPosition);
+              return sortedInProgressList[0].startPointPosition;
+            }else return activeBlockList.find(el => el.isInDoing)?.startPointPosition;
+          })();
+          
+          if(currentlyInProgressBlockStartPoint) {
+            window.scrollTo({ top : currentlyInProgressBlockStartPoint * 100 , behavior : "smooth" })
           }else {
             // else if we don't have active stream block , then we should scroll to nearest item current hour for get ready to start item
             const sortedActiveList = deepClone(activeBlockList).sort((a , b) => a.startPointPosition - b.startPointPosition).sort((_ , b) => b.startPointPosition - currentHour);
