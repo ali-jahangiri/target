@@ -1,40 +1,27 @@
-import ReactGridLayout, { WidthProvider } from "react-grid-layout";
-import { colors, currentDateName, deepClone, getRandomItem, idGenerator, requests, selfClearTimeout } from "../../utils";
-import React from "react";
+import { useState , useEffect} from "react";
+import ReactGridLayout from "react-grid-layout";
+import { deepClone, requests } from "../../utils";
 import StreamHour from "./StreamHour";
-import { useState } from "react";
-import { useEffect } from "react";
 import StreamSidebar from "./StreamSidebar";
 import StreamItem from "./StreamItem";
+import Timeline from "../Timeline";
+import StreamOverlayHelper from "./StreamOverlayHelper";
+import RoutineStream from "./RoutineStream";
 
-
-const EnhancedGridLayout = WidthProvider(ReactGridLayout);
-// const { TODAY_ID , INJECTED_TODO , hours , HABIT_LIST_ID } = client.STATIC;
-
-// const AfterAllChildRenderSettled = ({ setAllChildRender , showControllerHandler }) => {
-//   useEffect(() => {
-//     setAllChildRender(true);
-//     showControllerHandler(true);
-//   } , []);
-//   return null
-// }
-
-const Box = ({ children , ref , ...rest }) => {
-  return (
-    <div ref={ref} {...rest} className='TestHandler react-resizable-handle '>
-    </div>
-  )
+const DynamicStreamItem = ({ 
+    type , 
+    details , 
+    isToday , 
+    isInDragging ,
+    layout,
+    addToActiveBlockHandler,
+}) => {
+  return {
+    routine : <RoutineStream {...details} />,
+    habit : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
+    todo  : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
+  }[type]
 }
-
-const TER = React.forwardRef(({ children, ...props }, ref) => {
-  
-  return (
-    <Box ref={ref} {...props} >
-      {children}
-    </Box>
-  )
-})
-
 
 const Stream = ({ 
   date ,
@@ -48,97 +35,25 @@ const Stream = ({
   const [streamItem, setStreamItem] = useState(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [todayHabit, setTodayHabit] = useState([]);
+  const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
+  const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
+  const [isInDragging, setIsInDragging] = useState(false);
+  const [isOneStreamItemInDragging, setIsOneStreamItemInDragging] = useState(false);
+  const [injectedTodo, setInjectedTodo] = useState("")
+  
   // const [currentItemInDeleteProcess, setCurrentItemInDeleteProcess] = useState(false);
-  // const [isInDragging, setIsInDragging] = useState(false);
   // const [isResizeStart, setIsResizeStart] = useState(false);
-  const [sidebarClosedByUser, setSidebarClosedByUser] = useState(false);
   // const [isDetailsModeActive, setIsDetailsModeActive] = useState(false);
   // const [detailsTimeline, setDetailsTimeline] = useState([]);
   // const [timelineDetails , setTimelineDetails] = useState({})
-  const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
-  const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
   // const [isOverlayInHideProcess, setIsOverlayInHideProcess] = useState(false);
-  const [injectedTodo, setInjectedTodo] = useState("")
-  const [isFirstRender, setIsFirstRender] = useState(true);
 
-  // const [activeBlockList, setActiveBlockList] = useState([]);
+  const [activeBlockList, setActiveBlockList] = useState([]);
   // const [allChildrenGetRender, setAllChildrenGetRender] = useState(false);
   // const [initialHelperScrollGetCompleted, setInitialHelperScrollGetCompleted] = useState(false);
     
   // const mainContainerRef = useRef();
   // const deleteTimeoutRef = useRef();
-
-  
-
-  // useEffect(() => {
-  //   if(isSidebarVisible && !loading) {
-  //     setIsStreamControllerVisible(false);
-  //   }else if(!loading){
-  //     setIsStreamControllerVisible(true);
-  //   }
-  // } , [isSidebarVisible])
-
-
-  // const dragEndHandler = ({ source, destination, draggableId }) => {
-  //   setIsInDragging(false);
-  //   if (!isSidebarVisible && !sidebarClosedByUser) {
-  //     selfClearTimeout(() => setIsSidebarVisible(true) , 500);
-  //   }
-    
-  //   // delete process
-  //   // if (!destination || destination.index > 23) {
-  //   //   let needToAssign = true;
-  //   //   let timer = setTimeout(() => {
-  //   //     setHabitInStream(prev => prev.map(el => el.id === draggableId ? { id : idGenerator() , name : null , hoursGoNext : 1 } : el))
-  //   //     deleteTimeoutRef.current = null;
-  //   //     setCurrentItemInDeleteProcess(null)
-  //   //     needToAssign = false
-  //   //     clearTimeout(timer);
-  //   //   } , 4000);
-  //   //   if(needToAssign) deleteTimeoutRef.current = timer;
-  //   //   return;
-  //   // }
-    
-  //   if (source.droppableId === TODAY_ID) return reorderHandler(destination, source);
-  //   if(draggableId === INJECTED_TODO) return todoInjectionHandler(destination, source);
-
-  //   setStreamItem(prev => createNewStreamItem(prev , todayHabit , destination.index, draggableId));
-  // };
-
-  // const todoInjectionHandler = destination => {
-  //   setStreamItem(prev => createNewTodo(prev , destination.index , injectedTodo));
-  // }
-
-  // const reorderHandler = (destination, source) => 
-  //   setStreamItem(reorderStreamItem(streamItem , destination.index , source.index));
-
-  // const dragStartHandler = ({ source : { droppableId } }) => {
-  //   setIsInDragging(true);
-  //   if(droppableId === HABIT_LIST_ID) sideBarHandler();
-  // };
-
-  
-  
-  // const resizeHandler = ({ height, index }) => {
-  //   if (streamItem[index].hoursGoNext + index === 24) {
-  //     Alert.warning("your habit cannot cross over today hours");
-  //     return;
-  //   }
-  //   const wasUnderValidH = height <= 0 && streamItem[index].hoursGoNext === 1 ? true : false;
-  //   if (height && !wasUnderValidH) {
-  //     let floatedHours = Math.round(height >= 100 ? height / 100 : height / 100);
-  //     setStreamItem(prev => prev.map((el, i) => i === index ? { ...el, hoursGoNext: el.hoursGoNext + floatedHours } : el ));
-  //   }
-  // };
-
-  const sideBarHandler = () => {
-    setSidebarClosedByUser(true);
-    setIsSidebarVisible(prev => {
-      if(!prev) setShouldOverlayGetVisible(true);
-      else if(shouldOverlayGetVisible) setShouldOverlayGetVisible(false);
-      return !prev
-    });
-  };
 
   // const detailsShowHandler = (blockId, possibleStep = [] , itemTopDistance) => {
   //   if (!isDetailsModeActive && possibleStep.length) {
@@ -170,14 +85,14 @@ const Stream = ({
   //   }
   // };
 
-  // const addToActiveBlockHandler = newActiveBlock => {
-  //   setActiveBlockList(prev => [...prev , newActiveBlock]);
-  // }
+  const addToActiveBlockHandler = newActiveBlock => {
+    setActiveBlockList(prev => [...prev , newActiveBlock]);
+  }
 
 
-  // const setRoutinePropertiesHandler = ({ id , propName , value }) => {
-  //   setStreamItem(prev => prev.map(el => el.id === id ? ({...el , [propName] : value}) : el));
-  // }
+  const setRoutinePropertiesHandler = ({ id , propName , value }) => {
+    setStreamItem(prev => prev.map(el => el.id === id ? ({...el , [propName] : value}) : el));
+  }
 
   
   // useEffect(function scrollToActiveBlockHandler() {
@@ -208,25 +123,10 @@ const Stream = ({
 
   // return loading ? <div className="stream__loadingScreen" /> : (
   //   <div className="stream">
-  //       { isToday && <Timeline shouldGetHide={currentDetailsModeHabit} /> }
   //       { isDetailsModeActive !== false && <StreamDetailsModeOverlayHelper isInDestroy={isOverlayInHideProcess} timelineDetails={timelineDetails} /> }
   //       { isDisable && <PreventOverlayDisableStream protectFrom={mainContainerRef.current} /> }
-  //       <StreamOverlayHelper 
-  //         visible={shouldOverlayGetVisible && !isInDragging}
-  //         onClose={() => sideBarHandler()} />
-  //       <DragDropContext onDragStart={dragStartHandler} onDragEnd={dragEndHandler} >
-  //         <div ref={mainContainerRef} id="Container2" className={`todayHoursRow__container ${isInDragging || isResizeStart? "todayHoursRow__container--rowInHover": ""}`} >
-  //           <div id="Container" style={{ position: "relative", zIndex: currentDetailsModeHabit ? 50000 : 5}}>
-  //             {hours.map((el, i) => (
-  //               <TodayHoursRow
-  //                 indexInTimeline={!isOverlayInHideProcess && detailsTimeline.includes(el) && detailsTimeline.indexOf(el)}
-  //                 isInTimeLine={!isOverlayInHideProcess && detailsTimeline.includes(el)}
-  //                 index={el}
-  //                 key={i} 
-  //               />
-  //             ))}
-  //           </div>
-
+  //       
+  //       
   //           <Droppable droppableId={TODAY_ID}>
   //             {(provided , snapshot) => {
   //               return (
@@ -286,9 +186,21 @@ const Stream = ({
   //   </div>
   // )
 
+  const sideBarHandler = () => {
+    setIsSidebarVisible(prev => {
+      if(!prev) {
+        setShouldOverlayGetVisible(true)
+        setIsStreamControllerVisible(false);
+      }
+      else if(shouldOverlayGetVisible) {
+        setShouldOverlayGetVisible(false);
+        setIsStreamControllerVisible(true);
+      };
+      return !prev
+    });
+  };
   
   useEffect(function streamInitializer() {
-    setIsFirstRender(true);
     requests.stream.initializer(date , ({ streamItem , todayHabit }) => {
       setStreamItem(streamItem);
       setTodayHabit(todayHabit);
@@ -297,6 +209,7 @@ const Stream = ({
   } , [date]);
 
   const onStreamItemChange = (newStreamList) => {
+    setIsOneStreamItemInDragging(null);
     const deepCloned = deepClone(streamItem.map(el => ({ details : el.details , layout : newStreamList.find(item => item.i === el.details.i) })));
     requests.stream.sync(date , deepCloned);
   }
@@ -307,22 +220,31 @@ const Stream = ({
       const endResult = [...deepClone(prev) , { details , layout : {...layout , i : details.i} }];
       requests.stream.sync(date , deepClone(endResult));
       return endResult;
-    })
+    });
+    setIsInDragging(false);
+    setShouldOverlayGetVisible(false);
+    setIsStreamControllerVisible(true);
   }
 
 
-  if(isToday) {
-    console.log(streamItem?.map(el => el.layout));
+  const draggingHandler = () => {
+    setIsInDragging(true);
+    setIsSidebarVisible(false)
   }
+
   
+  useEffect(function setControllerVisibility() {
+    if(!loading) setIsStreamControllerVisible(true);
+  } , [loading])
+
   useEffect(() => {
     if(streamItem?.length && isToday) {
       const allInvolvedRow = streamItem.map(el => el.layout.y);
         if(streamItem.some(el => el.layout.x !== 0 && allInvolvedRow.filter(item => item === el.layout.y).length === 1)) {
           const result = deepClone(streamItem).map(item => {
-          const haveOnlyInOneRow = allInvolvedRow.filter(el => el === item.layout.y).length === 1;
-          if(haveOnlyInOneRow) return ({details : item.details , layout : {...item.layout , x : 0}})
-            else return item
+            const haveOnlyInOneRow = allInvolvedRow.filter(el => el === item.layout.y).length === 1;
+            if(haveOnlyInOneRow) return ({details : item.details , layout : {...item.layout , x : 0}})
+              else return item
           })
           requests.stream.sync(date , result)
         }else {
@@ -345,42 +267,59 @@ const Stream = ({
       }
   } , [streamItem , isToday])
 
-  // console.log(streamItem);
 
-  return loading ? <div>Loading</div> : (
+
+  return loading ? <div className="stream__loadingScreen" /> : (
     <div className="stream">
+      { isToday && <Timeline shouldGetHide={currentDetailsModeHabit} /> }
+      <StreamOverlayHelper
+          visible={shouldOverlayGetVisible && !isInDragging}
+          onClose={sideBarHandler} />
       <div className="stream__hour">
         <StreamHour />
       </div>
       <div className="stream__items"> 
-        <EnhancedGridLayout
+        <ReactGridLayout
           className="layout"
           layout={streamItem?.map(el => el.layout)}
-          cols={4}
           onResizeStop={onStreamItemChange}
           onDragStop={onStreamItemChange}
-          rowHeight={100}
+          onDrag={(_ , targetItem) => !isOneStreamItemInDragging && setIsOneStreamItemInDragging(targetItem.i)}
           onDrop={onDrop}
-          compactType={"horizontal"}
+          cols={4}
+          rowHeight={100}
           maxRows={24}
+          compactType={"horizontal"}
           useCSSTransforms
           preventCollision={false}
-          isDroppable={true}
-          width={(65 / 100) * window.innerWidth}
-          margin={[0 , 0]}>
+          isDroppable
+          isBounded
+          width={(85 / 100) * window.innerWidth}
+          margin={[0 , 0]}
+        >
           {
-            streamItem.map(({ details }) => <div 
-                                    className="streamItem" 
-                                    key={details.i} 
-                                    style={{background : `#${details.color}`}}>
-              <StreamItem {...details} />
-            </div>)
+            streamItem.map(({ details , layout }) => (
+              <div 
+                className="streamItem" 
+                key={details.i} 
+                style={{background : `#${details.color}`}}>
+                  <DynamicStreamItem
+                    // addToActiveBlockHandler={addToActiveBlockHandler}
+                    addToActiveBlockHandler={() => {}}
+                    layout={layout}
+                    isInDragging={details.i === isOneStreamItemInDragging}
+                    type={details.type}
+                    isToday={isToday}
+                    details={details} />
+              </div>
+            ))
           }
-        </EnhancedGridLayout>
+        </ReactGridLayout>
       </div>
       <StreamSidebar
           leanedHabitInStream={streamItem.filter(el => el.name)}
-          isInDragging={false}
+          isInDragging={isInDragging}
+          setIsInDragging={draggingHandler}
           date={date}
           isInStreamDetailsMode={currentDetailsModeHabit}
           injectedTodo={injectedTodo}

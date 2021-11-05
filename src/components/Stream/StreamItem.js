@@ -125,12 +125,6 @@
 //       clearTimeout(deleteTimeoutRef.current)
 //       setCurrentItemInDeleteProcess(null);
 //     }
-
-//     const internalPassingUpCurrentInProgressBlockHandler = (shouldAddBlockToList) => {
-//       if(shouldAddBlockToList) {
-//         addToActiveBlockHandler(shouldAddBlockToList);
-//       }
-//     }
   
 //     return (
 //       <Draggable isDragDisabled={isInDetailsMode} draggableId={id} index={index}>
@@ -204,9 +198,17 @@
 
 //   export default StreamItem
 
-import React from "react";
 
-const StreamItem = ({ name }) => {
+import StreamOverHour from "./StreamOverHour";
+
+const StreamItem = ({ name , isToday , isInDragging , layout , addToActiveBlockHandler }) => {
+  
+  const internalPassingUpCurrentInProgressBlockHandler = (shouldAddBlockToList) => {
+    if(shouldAddBlockToList) {
+      addToActiveBlockHandler(shouldAddBlockToList);
+    }
+  }
+
   return (
     <div className="streamItem">
       <div className={`streamItem__innerContainer ${false ? "streamItem__innerContainer--setUp" : ""}`} >
@@ -224,6 +226,14 @@ const StreamItem = ({ name }) => {
         </div> */}
       </div>
       </div>
+      {
+          isToday && <StreamOverHour
+            shouldGetMinHight={isInDragging}
+            setIsInProgress={internalPassingUpCurrentInProgressBlockHandler} 
+            isInDetailsMode={false} 
+            startPoint={layout.y * 100} 
+            endPoint={(layout.y + layout.h) * 100} />
+        }
       {/* {isInDetailsMode && <WritableDetails streamId={leanDate} isInCloseProcess={isDetailsInCloseProcess} />} */}
     </div>
   )

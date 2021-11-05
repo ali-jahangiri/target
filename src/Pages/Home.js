@@ -104,15 +104,15 @@ const Home = () => {
         <Menu renderImmediately>
             {() => (
                 <div onWheel={onWheelHandler} ref={containerRef} className="home">
-                    {/* <HomeWelcome /> */}
+                    <HomeWelcome />
                     {
                         allMonthDay.map((_ , i) => (
                             <div key={i} className="home__day">
-                                {/* <div
+                                <div
                                     style={{ transitionDelay : `${streamShowUpDelay}s` }}
                                     className={`home__day__animeHelperContainer ${i === currentDay  ? "home__day__animeHelperContainer--active" : "home__day__animeHelperContainer--deActive"}`}>
-                                </div> */}
                                     {renderStreamChecker(i)}
+                                </div>
                             </div>
                         ))
                     }

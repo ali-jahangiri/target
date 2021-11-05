@@ -26,11 +26,7 @@
 //     position: relative;
 //     height: 100vh;
 
-//     &__loadingScreen {
-//         width: 100vw;
-//         height: 100vh;
-//         background: $black;
-//     }
+    
 
 //     &__invalidHabitBlock {
 //         height: 100px;
@@ -67,6 +63,13 @@
     display: flex;
     background-color: white;
     user-select: none;
+    width: 100%;
+
+    &__loadingScreen {
+        width: 100vw;
+        height: 100vh;
+        background: $black;
+    }
 
 
     &__hour {

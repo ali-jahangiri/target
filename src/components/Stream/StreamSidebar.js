@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { Droppable } from "react-beautiful-dnd";
 import { FiChevronLeft, FiLock } from "react-icons/fi";
-import client from "../../client";
 import { selfClearTimeout } from "../../utils";
 import StreamSidebarBlockItemsContainer from "./StreamSidebarBlockItemsContainer";
 
@@ -13,6 +11,7 @@ const StreamSidebar = ({
   isInStreamDetailsMode, 
   sideBarHandler, 
   todayHabit, 
+  setIsInDragging,
   date, 
   setInjectedTodo, 
   isInDragging, 
@@ -50,14 +49,12 @@ const StreamSidebar = ({
           <div 
             className="streamSidebar__habitDirectory">
               <StreamSidebarBlockItemsContainer
+                    setIsInDragging={setIsInDragging}
                     leanedHabitInStream={leanedHabitInStream} 
                     todayHabit={todayHabit}
                   />
-            {/* <Droppable isDropDisabled droppableId={client.STATIC.HABIT_LIST_ID}>
-              {provided => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  
                   <Todo
+                    setIsInDragging={setIsInDragging}
                     isSidebarOpen={isSidebarOpen}
                     setInputValue={setTodoInputValue}
                     inputValue={todoInputValue}
@@ -66,10 +63,6 @@ const StreamSidebar = ({
                     setToFullScreen={setIsInFullScreen}
                     index={todayHabit.length} 
                   />
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable> */}
           </div>
         </div>
     )

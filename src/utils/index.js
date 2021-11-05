@@ -138,10 +138,22 @@ export const createDateHabitList = (allHabitList , currentDate) => {
   return allHabitList.map(el => ({ color : el.color , item : el.schedule[currentDate] })).filter(el => el.item?.length)
 }
 
-export const injectRoutineToDateStream = (streamList = [] , routineModel) => {
-  const clonedStreamList = [...streamList];
-  routineModel.list?.map(routine => clonedStreamList[routine.hour.from] = new StreamRoutine(routine.hour));
-  return clonedStreamList;
+export const injectRoutineToDateStream = (routineModel = []) => {
+  return routineModel?.list ? routineModel.list.map(routine => ({
+    layout : {
+      y : routine.hour.from,
+      x : 0,
+      w : 1,
+      h : routine.hour.to - routine.hour.from,
+      static : true,
+      i : routine.id
+    },
+    details : {
+      i: routine.id,
+      type : "routine",
+      ...routine
+    }
+  })) : [];
 }
 
 export const reorderStreamItem = (streamItem , destination , source) => {
@@ -166,6 +178,16 @@ export const fillInputValueWithCommend = (targetCommend = "" , currentFilledValu
           clearInterval(timer);
       }
   } , 30)
+}
+
+export const percentTextValueHandler = percent => {
+  if(percent <= 20) return "Already started";
+  else if(percent <= 37) return "Cross the initial section";
+  else if(percent <= 50) return "Reach the half";
+  else if(percent <= 75) return "Pass the half";
+  else if(percent <= 87) return "Cross the final section";
+  else if(percent <= 95) return "Almost Done";
+  else return "Completed"
 }
 
 export {

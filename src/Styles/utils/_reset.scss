@@ -12,6 +12,8 @@
 .layout {
     min-width: 100%;
     min-height: 100%;
+    z-index: 9;
+    max-height: 2400px;
 }
 
 .react-grid-item.react-grid-placeholder {
@@ -39,4 +41,9 @@
         border-right: 2px solid #00000005 !important; 
         border-bottom: 2px solid #00000005 !important;
     }
+}
+
+
+.react-grid-item {
+    // zindex
 }

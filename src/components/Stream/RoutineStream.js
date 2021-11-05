@@ -57,7 +57,7 @@ const RoutineStream = ({
     setPropHandler,
     desc = "",
  }) => {
-
+    
     const [liftedTimeFromAboveBlocks, setLiftedTimeFromAboveBlocks] = useState(null);
     const [isOtherVisionVisible, setIsOtherVisionVisible] = useState(false);
     const [showSpendTimeResizable, setShowSpendTimeResizable] = useState(false);
@@ -66,18 +66,18 @@ const RoutineStream = ({
     const [showSpend, setShowSpend] = useState(false);
     const [isFocusedInDescInput, setIsFocusedInDescInput] = useState(false);
     
-    const textareaRef = useRef();
+    // const textareaRef = useRef();
 
     const routineTime = hour.to - hour.from;
 
     
-    useEffect(function calcOverPushFromAboveBlock() {
-        const validStream = habitInStream.filter(el => el.name);
-        const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
-        const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
-        const pushCountFromAboveBlocks = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
-        setLiftedTimeFromAboveBlocks(pushCountFromAboveBlocks);
-    }, [habitInStream, id, index, name]);
+    // useEffect(function calcOverPushFromAboveBlock() {
+    //     const validStream = habitInStream.filter(el => el.name);
+    //     const targetStreamForSelectIndex = validStream.findIndex(el => el.id === id);
+    //     const pureArrayBeforeCurrentSelectedStream = [...validStream].splice(0 , targetStreamForSelectIndex)
+    //     const pushCountFromAboveBlocks = pureArrayBeforeCurrentSelectedStream.reduce((acc , res) => acc + res.hoursGoNext , 0) - pureArrayBeforeCurrentSelectedStream.length;
+    //     setLiftedTimeFromAboveBlocks(pushCountFromAboveBlocks);
+    // }, [habitInStream, id, index, name]);
 
 
     const toggleOtherVisionHandler = () => {
@@ -112,73 +112,66 @@ const RoutineStream = ({
 
     const syncDescHandler = value => setPropHandler({ id , propName : "desc" , value })
 
-    useLayoutEffect(function initialFocusIntoTextarea() {
-        if(isOtherVisionVisible) {
-            textareaRef.current?.focus();
-        }
-    } , [textareaRef , isOtherVisionVisible])
+    // useLayoutEffect(function initialFocusIntoTextarea() {
+    //     if(isOtherVisionVisible) {
+    //         textareaRef.current?.focus();
+    //     }
+    // } , [textareaRef , isOtherVisionVisible])
 
 
-    useAfterInitialEffect(function syncRoutineWithParentHandler (){
-        if(!isInResizing) {
-            setPropHandler({ id , propName : "spendTime" , value : internalSpendTime })
-        }
-    } , [internalSpendTime , isInResizing]);
+    // useAfterInitialEffect(function syncRoutineWithParentHandler (){
+    //     if(!isInResizing) {
+    //         setPropHandler({ id , propName : "spendTime" , value : internalSpendTime })
+    //     }
+    // } , [internalSpendTime , isInResizing]);
 
     return (
-        <Draggable draggableId={id} index={index} isDragDisabled>
-            {provided => (
-                <div
-                    className={`routineStream ${isOtherVisionVisible ? "routineStream--getHigherStack" : ""} ${isFocusedInDescInput ? "routineStream--focusedInDesc" : ""}`}
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}>
-                    <div style={{ backgroundColor : generateColor(`#${color}` , 8) , height : routineTime * 100 }}>
-                        <RoutineStreamSpendTime
-                            routineTime={routineTime}
-                            isOtherVisionVisible={isOtherVisionVisible}
-                            setInternalSpendTime={setInternalSpendTime}
-                            internalSpendTime={internalSpendTime}
-                            setIsInResizing={setIsInResizing}
-                            color={color}
-                            showSpend={showSpend}
-                            showSpendTimeResizable={showSpendTimeResizable}
-                            spendTime={spendTime}
-                        />
-                        <div className="routineStream__name">
-                            <p>{name}</p>
-                        </div>
-                        <div className="routineStream__spendTimeTrigger">
-                            <p onClick={showSpendTrigger}>
-                                {!isOtherVisionVisible && internalSpendTime !== -1 ? showSpendTimePreviewTextHandler(spendTime) : !showSpend ? `Set Spend Time${spendTime !== -1 ? `: ${showSpendTimePreviewTextHandler(spendTime)}` : "" }` : "Back"}
-                            </p>
-                        </div>
-                        <RoutineStreamDesc
-                            syncHandler={syncDescHandler}
-                            isDescFocused={isFocusedInDescInput}
-                            initialValue={desc}
-                            isInSpendTime={showSpend}
-                            isOtherVisionVisible={isOtherVisionVisible}
-                            setIsDescFocused={setIsFocusedInDescInput}
-                        />
-                        <div onClick={() => setShowSpend(false)} style={{ background : generateColor(`#${color}` , 9) }} className={`routineStream__helperFiller ${isOtherVisionVisible ? "routineStream__helperFiller--active" : ""}`}></div>
-                        <div className={`routineStream__footer ${isOtherVisionVisible ? "routineStream__footer--otherVision" : ""}`}>
-                            <div onClick={toggleOtherVisionHandler} className="routineStream__circle">
-                                <div style={{ backgroundColor : `#${color}` }} />
-                            </div>
-                            <div className="routineStream__time">
-                                <p>From <span>{hour.from + 1}</span> To <span>{hour.to + 1}</span></p>
-                            </div>
-                            {
-                                !!liftedTimeFromAboveBlocks && <div className="routineStream__timeLiftAlert">
-                                    <p>Delayed for <span>{liftedTimeFromAboveBlocks} hour{liftedTimeFromAboveBlocks > 1 && "s"}</span></p>
-                                </div>
-                            }
-                        </div>
-                    </div>
+        <div
+            className={`routineStream ${isOtherVisionVisible ? "routineStream--getHigherStack" : ""} ${isFocusedInDescInput ? "routineStream--focusedInDesc" : ""}`}>
+            <div style={{ backgroundColor : generateColor(`#${color}` , 8) , height : routineTime * 100 }}>
+                {/* <RoutineStreamSpendTime
+                    routineTime={routineTime}
+                    isOtherVisionVisible={isOtherVisionVisible}
+                    setInternalSpendTime={setInternalSpendTime}
+                    internalSpendTime={internalSpendTime}
+                    setIsInResizing={setIsInResizing}
+                    color={color}
+                    showSpend={showSpend}
+                    showSpendTimeResizable={showSpendTimeResizable}
+                    spendTime={spendTime}
+                /> */}
+                <div className="routineStream__name">
+                    <p>{name}</p>
                 </div>
-            )}
-        </Draggable>
+                <div className="routineStream__spendTimeTrigger">
+                    <p onClick={showSpendTrigger}>
+                        {!isOtherVisionVisible && internalSpendTime !== -1 ? showSpendTimePreviewTextHandler(spendTime) : !showSpend ? `Set Spend Time${spendTime !== -1 ? `: ${showSpendTimePreviewTextHandler(spendTime)}` : "" }` : "Back"}
+                    </p>
+                </div>
+                <RoutineStreamDesc
+                    syncHandler={syncDescHandler}
+                    isDescFocused={isFocusedInDescInput}
+                    initialValue={desc}
+                    isInSpendTime={showSpend}
+                    isOtherVisionVisible={isOtherVisionVisible}
+                    setIsDescFocused={setIsFocusedInDescInput}
+                />
+                <div onClick={() => setShowSpend(false)} style={{ background : generateColor(`#${color}` , 9) }} className={`routineStream__helperFiller ${isOtherVisionVisible ? "routineStream__helperFiller--active" : ""}`}></div>
+                <div className={`routineStream__footer ${isOtherVisionVisible ? "routineStream__footer--otherVision" : ""}`}>
+                    <div onClick={toggleOtherVisionHandler} className="routineStream__circle">
+                        <div style={{ backgroundColor : `#${color}` }} />
+                    </div>
+                    <div className="routineStream__time">
+                        <p>From <span>{hour.from + 1}</span> To <span>{hour.to + 1}</span></p>
+                    </div>
+                    {/* {
+                        !!liftedTimeFromAboveBlocks && <div className="routineStream__timeLiftAlert">
+                            <p>Delayed for <span>{liftedTimeFromAboveBlocks} hour{liftedTimeFromAboveBlocks > 1 && "s"}</span></p>
+                        </div>
+                    } */}
+                </div>
+            </div>
+        </div>
     )
 }
 
