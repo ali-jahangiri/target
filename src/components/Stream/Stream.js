@@ -16,19 +16,28 @@ const DynamicStreamItem = ({
     layout,
     isLastStream,
     addToActiveBlockHandler,
-    setAllChildrenGetRender
+    setAllChildrenGetRender,
+    setIsStreamControllerVisible,
 }) => {
   useEffect(() => {
     if(isLastStream) setAllChildrenGetRender(true)
   } , [isLastStream])
 
-  return <div className="stream__wrapper">
-    {{
+  return {
       routine : <RoutineStream addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} {...details} />,
-      habit : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
-      todo  : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
-    }[type]}
-  </div>
+      habit : <StreamItem 
+        setIsStreamControllerVisible={setIsStreamControllerVisible} 
+        addToActiveBlockHandler={addToActiveBlockHandler} 
+          isToday={isToday} 
+          layout={layout} 
+          isInDragging={isInDragging} {...details} />,
+      todo  : <StreamItem 
+        setIsStreamControllerVisible={setIsStreamControllerVisible} 
+        addToActiveBlockHandler={addToActiveBlockHandler} 
+          isToday={isToday} 
+          layout={layout} 
+          isInDragging={isInDragging} {...details} />,
+    }[type]
 }
 
 const Stream = ({ 
@@ -52,119 +61,6 @@ const Stream = ({
   const [initialHelperScrollGetCompleted, setInitialHelperScrollGetCompleted] = useState(false);
 
   const userWasScrollByHimSelfInInitial = useRef(false);
-
-  // const [currentItemInDeleteProcess, setCurrentItemInDeleteProcess] = useState(false);
-  // const [isResizeStart, setIsResizeStart] = useState(false);
-  // const [isDetailsModeActive, setIsDetailsModeActive] = useState(false);
-  // const [detailsTimeline, setDetailsTimeline] = useState([]);
-  // const [timelineDetails , setTimelineDetails] = useState({})
-  // const [isOverlayInHideProcess, setIsOverlayInHideProcess] = useState(false);
-
-    
-  // const mainContainerRef = useRef();
-  // const deleteTimeoutRef = useRef();
-
-  // const detailsShowHandler = (blockId, possibleStep = [] , itemTopDistance) => {
-  //   if (!isDetailsModeActive && possibleStep.length) {
-  //     setCurrentDetailsModeHabit(blockId);
-  //     setIsStreamControllerVisible(false)
-  //     selfClearTimeout(() => {
-  //       setDetailsTimeline(possibleStep);
-  //       const scroll = client.nodeRef.home().scrollTop;
-  //       setIsDetailsModeActive(scroll);
-  //     }, 500);
-  //     setTimelineDetails({ topPosition : itemTopDistance })
-  //     selfClearTimeout(() => {
-  //       setTimelineDetails({height : possibleStep.length * 100 , topPosition : itemTopDistance });
-  //     } , 500);
-  //   } else {
-
-  //     setIsOverlayInHideProcess(true)
-  //     setTimelineDetails({
-  //       height: 0,
-  //       top : 0
-  //     });
-  //     setDetailsTimeline([]);
-  //     setCurrentDetailsModeHabit(null);
-  //     setIsStreamControllerVisible(true)
-  //     selfClearTimeout(() => {
-  //       setIsOverlayInHideProcess(false)
-  //       setIsDetailsModeActive(false);
-  //     } , 450);
-  //   }
-  // };
-
-  
-  const setRoutinePropertiesHandler = ({ id , propName , value }) => {
-    setStreamItem(prev => prev.map(el => el.id === id ? ({...el , [propName] : value}) : el));
-  }
-
-
-
-  // return loading ? <div className="stream__loadingScreen" /> : (
-  //   <div className="stream">
-  //       { isDetailsModeActive !== false && <StreamDetailsModeOverlayHelper isInDestroy={isOverlayInHideProcess} timelineDetails={timelineDetails} /> }
-  //       { isDisable && <PreventOverlayDisableStream protectFrom={mainContainerRef.current} /> }
-  //       
-  //       
-  //           <Droppable droppableId={TODAY_ID}>
-  //             {(provided , snapshot) => {
-  //               return (
-  //                   <div
-  //                     ref={provided.innerRef}
-  //                     {...provided.droppableProps}
-  //                     className="stream__droppableContainer">
-  //                       {streamItem.map((el, i) => {
-  //                         if (!el.name) return <EmptyHabitBlock id={el.id} index={i} key={el.id} />
-  //                         else if(el.type === "routine") 
-  //                           return <RoutineStream 
-  //                                     setIsInOtherVisionToParent={(...rest) => !isOverlayInHideProcess && detailsShowHandler(...rest)} 
-  //                                     habitInStream={streamItem} 
-  //                                     index={i} 
-  //                                     key={i}
-  //                                     setPropHandler={setRoutinePropertiesHandler}
-  //                                     {...el} />
-  //                         else return (
-  //                             <StreamItem
-  //                               isNextDayAfterToday={isNextDayAfterToday}
-  //                               addToActiveBlockHandler={addToActiveBlockHandler}
-  //                               leanDate={date}
-  //                               deleteTimeoutRef={deleteTimeoutRef}
-  //                               snapshot={snapshot}
-  //                               setCurrentItemInDeleteProcess={setCurrentItemInDeleteProcess}
-  //                               currentItemInDeleteProcess={currentItemInDeleteProcess}
-  //                               isInDetailsMode={currentDetailsModeHabit === el.id ? true : false}
-  //                               detailsShowHandler={detailsShowHandler}
-  //                               sidebarClosedByUser={sidebarClosedByUser}
-  //                               isInResizing={isResizeStart}
-  //                               isInDragging={isInDragging}
-  //                               setNthChildHandler={setIsResizeStart}
-  //                               setIsSidebarOpen={setIsSidebarVisible}
-  //                               resizeHandler={resizeHandler}
-  //                               index={i}
-  //                               hoursGoNext={el.hoursGoNext}
-  //                               id={el.id}
-  //                               color={el?.color}
-  //                               habitName={el.name}
-  //                               key={el.id}
-  //                               habitInStream={streamItem}
-  //                               setHabitInStream={setStreamItem}
-  //                             />
-  //                           );
-  //                       })}
-  //                       <AfterAllChildRenderSettled 
-  //                         showControllerHandler={setIsStreamControllerVisible} 
-  //                         setAllChildRender={setAllChildrenGetRender} />
-  //                       {provided.placeholder}
-  //                 </div>
-  //               )
-  //             }}
-  //           </Droppable>
-  //         </div>
-  
-  //       </DragDropContext>
-  //   </div>
-  // )
 
   const sideBarHandler = () => {
     setIsSidebarVisible(prev => {
@@ -334,6 +230,7 @@ const Stream = ({
                     layout={layout}
                     isInDragging={details.i === isOneStreamItemInDragging}
                     type={details.type}
+                    setIsStreamControllerVisible={setIsStreamControllerVisible}
                     isToday={isToday}
                     details={details} />
               </div>
