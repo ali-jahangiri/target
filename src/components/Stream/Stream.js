@@ -1,6 +1,6 @@
-import { useState , useEffect} from "react";
+import { useState , useEffect, useRef} from "react";
 import ReactGridLayout from "react-grid-layout";
-import { deepClone, requests } from "../../utils";
+import { deepClone, requests, selfClearTimeout } from "../../utils";
 import StreamHour from "./StreamHour";
 import StreamSidebar from "./StreamSidebar";
 import StreamItem from "./StreamItem";
@@ -14,13 +14,21 @@ const DynamicStreamItem = ({
     isToday , 
     isInDragging ,
     layout,
+    isLastStream,
     addToActiveBlockHandler,
+    setAllChildrenGetRender
 }) => {
-  return {
-    routine : <RoutineStream {...details} />,
-    habit : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
-    todo  : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
-  }[type]
+  useEffect(() => {
+    if(isLastStream) setAllChildrenGetRender(true)
+  } , [isLastStream])
+
+  return <div className="stream__wrapper">
+    {{
+      routine : <RoutineStream {...details} />,
+      habit : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
+      todo  : <StreamItem addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} isInDragging={isInDragging} {...details} />,
+    }[type]}
+  </div>
 }
 
 const Stream = ({ 
@@ -28,8 +36,7 @@ const Stream = ({
   setIsStreamControllerVisible ,
   isDisable ,
   isNextDayAfterToday,
-  parentNodeRef ,
-  isToday
+  isToday,
 }) => {
   const [loading, setLoading] = useState(true);
   const [streamItem, setStreamItem] = useState(null);
@@ -40,7 +47,12 @@ const Stream = ({
   const [isInDragging, setIsInDragging] = useState(false);
   const [isOneStreamItemInDragging, setIsOneStreamItemInDragging] = useState(false);
   const [injectedTodo, setInjectedTodo] = useState("")
-  
+  const [activeBlockList, setActiveBlockList] = useState([]);
+  const [allChildrenGetRender, setAllChildrenGetRender] = useState(false);
+  const [initialHelperScrollGetCompleted, setInitialHelperScrollGetCompleted] = useState(false);
+
+  const userWasScrollByHimSelfInInitial = useRef(false);
+
   // const [currentItemInDeleteProcess, setCurrentItemInDeleteProcess] = useState(false);
   // const [isResizeStart, setIsResizeStart] = useState(false);
   // const [isDetailsModeActive, setIsDetailsModeActive] = useState(false);
@@ -48,9 +60,6 @@ const Stream = ({
   // const [timelineDetails , setTimelineDetails] = useState({})
   // const [isOverlayInHideProcess, setIsOverlayInHideProcess] = useState(false);
 
-  const [activeBlockList, setActiveBlockList] = useState([]);
-  // const [allChildrenGetRender, setAllChildrenGetRender] = useState(false);
-  // const [initialHelperScrollGetCompleted, setInitialHelperScrollGetCompleted] = useState(false);
     
   // const mainContainerRef = useRef();
   // const deleteTimeoutRef = useRef();
@@ -85,40 +94,11 @@ const Stream = ({
   //   }
   // };
 
-  const addToActiveBlockHandler = newActiveBlock => {
-    setActiveBlockList(prev => [...prev , newActiveBlock]);
-  }
-
-
+  
   const setRoutinePropertiesHandler = ({ id , propName , value }) => {
     setStreamItem(prev => prev.map(el => el.id === id ? ({...el , [propName] : value}) : el));
   }
 
-  
-  // useEffect(function scrollToActiveBlockHandler() {
-  //   if(isToday && !loading) {
-  //     if(!initialHelperScrollGetCompleted) {
-  //       const currentHour = new Date().getHours();
-  //       const mainParentContainerRef = parentNodeRef.current;
-        
-  //       if(activeBlockList.length) {
-  //         if(activeBlockList.some(el => el.isInDoing)) {
-  //           mainParentContainerRef.scrollTo({ top : activeBlockList.find(el => el.isInDoing).startPointPosition * 100 , behavior : "smooth" })
-  //         }else {
-  //           const sortedActiveList = deepClone(activeBlockList).sort((a , b) => a.startPointPosition - b.startPointPosition).sort((_ , b) => b.startPointPosition - currentHour);
-  //           mainParentContainerRef.scrollTo({ top : sortedActiveList[0].startPointPosition * 100 , behavior : "smooth" })
-  //         }
-  //         setInitialHelperScrollGetCompleted(true)
-  //       }else if(!loading && allChildrenGetRender){
-  //         const currentTimelinePosition = ((currentHour > 0 ? currentHour - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666);
-  //         selfClearTimeout(() => {
-  //             mainParentContainerRef.scrollTo({ top : currentTimelinePosition ,  behavior : "smooth" });
-  //             setInitialHelperScrollGetCompleted(true);
-  //           } , 1500);
-  //       }
-  //     }
-  //   }
-  // } , [activeBlockList, parentNodeRef, loading, isToday, allChildrenGetRender, initialHelperScrollGetCompleted]);
 
 
   // return loading ? <div className="stream__loadingScreen" /> : (
@@ -226,16 +206,54 @@ const Stream = ({
     setIsStreamControllerVisible(true);
   }
 
+  const addToActiveBlockHandler = newActiveBlock => {
+    setActiveBlockList(prev => [...prev , newActiveBlock]);
+  }
 
   const draggingHandler = () => {
     setIsInDragging(true);
     setIsSidebarVisible(false)
   }
 
+  const userScrollHandler = () => {
+    if(!userWasScrollByHimSelfInInitial.current && !initialHelperScrollGetCompleted) {
+      userWasScrollByHimSelfInInitial.current = true;
+    }
+  }
+
   
   useEffect(function setControllerVisibility() {
     if(!loading) setIsStreamControllerVisible(true);
   } , [loading])
+
+  useEffect(function scrollToActiveBlockHandler() {
+    if(isToday && !loading) {
+      if(!initialHelperScrollGetCompleted) {
+        const currentHour = new Date().getHours();
+        
+        if(activeBlockList.length) {
+          const currentlyInProgressBlock = activeBlockList.find(el => el.isInDoing);
+          // if we have some block witch currently is open and we should focus on that , we scroll to that item
+          if(currentDetailsModeHabit) {
+            window.scrollTo({ top : currentlyInProgressBlock.startPointPosition * 100 , behavior : "smooth" })
+          }else {
+            // else if we don't have active stream block , then we should scroll to nearest item current hour for get ready to start item
+            const sortedActiveList = deepClone(activeBlockList).sort((a , b) => a.startPointPosition - b.startPointPosition).sort((_ , b) => b.startPointPosition - currentHour);
+            window.scrollTo({ top : sortedActiveList[0].startPointPosition * 100 , behavior : "smooth" })
+          }
+          setInitialHelperScrollGetCompleted(true)
+        }else if(!loading && allChildrenGetRender){
+          selfClearTimeout(() => {
+            if(!userWasScrollByHimSelfInInitial.current) {
+              const currentTimelinePosition = ((currentHour > 0 ? currentHour - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666);
+              window.scrollTo({ top : currentTimelinePosition ,  behavior : "smooth" });
+            }
+            setInitialHelperScrollGetCompleted(true);
+          } , 3500);
+        }
+      }
+    }
+  } , [activeBlockList, loading, isToday, allChildrenGetRender, initialHelperScrollGetCompleted]);
 
   useEffect(() => {
     if(streamItem?.length && isToday) {
@@ -270,7 +288,7 @@ const Stream = ({
 
 
   return loading ? <div className="stream__loadingScreen" /> : (
-    <div className="stream">
+    <div onWheel={userScrollHandler} className="stream">
       { isToday && <Timeline shouldGetHide={currentDetailsModeHabit} /> }
       <StreamOverlayHelper
           visible={shouldOverlayGetVisible && !isInDragging}
@@ -298,14 +316,15 @@ const Stream = ({
           margin={[0 , 0]}
         >
           {
-            streamItem.map(({ details , layout }) => (
+            streamItem.map(({ details , layout } , index) => (
               <div 
                 className="streamItem" 
                 key={details.i} 
                 style={{background : `#${details.color}`}}>
                   <DynamicStreamItem
-                    // addToActiveBlockHandler={addToActiveBlockHandler}
-                    addToActiveBlockHandler={() => {}}
+                    setAllChildrenGetRender={setAllChildrenGetRender}
+                    addToActiveBlockHandler={addToActiveBlockHandler}
+                    isLastStream={(streamItem.length - 1) === index}
                     layout={layout}
                     isInDragging={details.i === isOneStreamItemInDragging}
                     type={details.type}

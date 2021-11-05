@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { createDateHabitList, injectRoutineToDateStream, makeValidSnapshotData, requestWrapper, _date } from ".";
+import { createDateHabitList, makeValidSnapshotData, requestWrapper, _date } from ".";
 import { firebaseAuth, references as pureReference } from "../firebase";
 
 import { Note } from "./modules";
@@ -56,7 +56,7 @@ const stream = {
         references().habitPerWeek
             .get()
             .then(({ docs }) => {
-                let currentDateDayName = _date(date).add(2 , 'day').format('dddd');
+                let currentDateDayName = _date(date).add(1 , 'day').format('dddd');
                 const currentDateHabitList = createDateHabitList(docs.map(el => el.data()) , currentDateDayName);
 
                 references().stream.doc(date).onSnapshot(snapShot => {

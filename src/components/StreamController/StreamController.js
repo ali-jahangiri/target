@@ -17,7 +17,8 @@ const StreamController = ({
 
     useLayoutEffect(() => {
         if(visible) setTransitionDelay(0)
-    } , [visible])
+    } , [visible]);
+
 
     return (
         <div 

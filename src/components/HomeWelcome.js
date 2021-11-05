@@ -7,11 +7,10 @@ const HomeWelcome = () => {
     
     useEffect(() => {
         selfClearTimeout(() => setIsInDestroyProcess(true) , 1900);
-
         selfClearTimeout(() => {
             setIsInDestroyProcess(false);
             setShouldGetDestroy(true);
-        } , 3900);
+        } , 3000);
     } , [])
 
     if(!shouldGetDestroy) {

@@ -42,20 +42,7 @@
 //     const [detailsActive, setDetailsActive] = useState(false);
 //     const [position, setPosition] = useState(0);
 //     const [isDetailsInCloseProcess, setIsDetailsInCloseProcess] = useState(false);
-//     const mainContainerRef = useRef();
-
-//     const internalResizeHandler = (e, dir, ref, d) => {
-//       setInternalH(d.height);
-//       setIsSidebarOpen(false);
-//       setNthChildHandler(id);
-//     };
-  
-//     const resizeEndHandler = () => {
-//       resizeHandler({ id, height: internalH, index });
-//       setNthChildHandler(false);
-//       !sidebarClosedByUser && setIsSidebarOpen(true);
-//     };
-  
+//     const mainContainerRef = useRef();  
     
     
 //     useEffect(() => setForcer(Date.now()) , [hoursGoNext]);

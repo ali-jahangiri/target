@@ -27,7 +27,7 @@ const StreamOverHour = ({
     } , []);
 
     useEffect(function visualHelperHandler() {
-        // NOTE lets parent know this stream is in progress and need to scroll into it
+        // NOTE lets parent know this stream is in progress and need to scroll into it , we grab items that we don't pass them by current hour
         if(isNotStartedYet || isInDoing) {
             setIsInProgress({
                 isInDoing,

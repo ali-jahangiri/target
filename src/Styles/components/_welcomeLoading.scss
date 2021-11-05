@@ -15,7 +15,8 @@
         opacity: 0;
     }
 }
-@keyframes test123 {
+
+@keyframes destroyWelcome {
     from {
         background-color: #000000;
     }
@@ -53,6 +54,6 @@
 
 
     &--destroy {
-        animation: test123 2s forwards alternate;
+        animation: destroyWelcome 1s forwards alternate;
     }
 }

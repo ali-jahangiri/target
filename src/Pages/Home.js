@@ -89,8 +89,8 @@ const Home = () => {
 
         if(index >= min && index <= max) {
             return <Stream
-                        parentNodeRef={containerRef}
                         isToday={isToday}
+                        currentDay={currentDay}
                         isDisable={isPreviousDay}
                         isNextDayAfterToday={isNextDayAfterToday}
                         setIsStreamControllerVisible={setIsStreamControllerVisible}
