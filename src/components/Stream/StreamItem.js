@@ -42,7 +42,8 @@ const StreamItem = ({ name , color , isToday , isInDragging , layout , addToActi
         }
         {
           showPortal && <Portal>
-            <StreamDetails 
+            <StreamDetails
+              destroyTrigger={() => setShowPortal(false)}
               style={portalPosition} 
               color={color}
               name={name}
