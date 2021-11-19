@@ -26,6 +26,11 @@ const StreamItem = ({ name , color , isToday , isInDragging , layout , addToActi
     }
   }
 
+  const closeDetailsHandler = () => {
+    setShowPortal(false);
+    setIsDetailsEnable(false)
+    setIsStreamControllerVisible(true);
+  }
 
   return (
     <div ref={containerRef} className="streamItem">
@@ -43,14 +48,13 @@ const StreamItem = ({ name , color , isToday , isInDragging , layout , addToActi
         {
           showPortal && <Portal>
             <StreamDetails
-              destroyTrigger={() => setShowPortal(false)}
+              destroyTrigger={closeDetailsHandler}
               style={portalPosition} 
               color={color}
               name={name}
             />
           </Portal>
         }
-      {/* {isInDetailsMode && <WritableDetails streamId={leanDate} isInCloseProcess={isDetailsInCloseProcess} />} */}
     </div>
   )
 }
