@@ -17,7 +17,6 @@ const AlertContainer = ({ dismissibleTimeout = 1000 }) => {
       setConfig(config);
       let timer = setTimeout(() => {
         setAlertType({ type : null , message : '' })
-        console.log('clear');
         clearTimeout(timer)
       }, dismissibleTimeout);
     };
@@ -27,7 +26,6 @@ const AlertContainer = ({ dismissibleTimeout = 1000 }) => {
     if(alertType) {
       // let timer = setTimeout(() => {
       //   setAlertType({ type : null , message : '' })
-      //   console.log('clear');
       //   clearTimeout(timer)
       // }, dismissibleTimeout);
     }

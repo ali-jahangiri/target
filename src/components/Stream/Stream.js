@@ -117,7 +117,6 @@ const Stream = ({
     }
   }
 
-  
   useEffect(function setControllerVisibility() {
     if(!loading) setIsStreamControllerVisible(true);
   } , [loading])
@@ -126,7 +125,7 @@ const Stream = ({
     if(isToday && !loading) {
       if(!initialHelperScrollGetCompleted) {
         const currentHour = new Date().getHours();
-        
+
         if(activeBlockList.length) {
           // if we have some block witch currently is open and we should focus on that , we scroll to that item
           const currentlyInProgressBlockStartPoint = (() => {
@@ -144,7 +143,7 @@ const Stream = ({
             window.scrollTo({ top : sortedActiveList[0].startPointPosition * 100 , behavior : "smooth" })
           }
           setInitialHelperScrollGetCompleted(true)
-        }else if(!loading && allChildrenGetRender){
+        }else {
           selfClearTimeout(() => {
             if(!userWasScrollByHimSelfInInitial.current) {
               const currentTimelinePosition = ((currentHour > 0 ? currentHour - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666);
@@ -191,7 +190,7 @@ const Stream = ({
 
   return loading ? <div className="stream__loadingScreen" /> : (
     <div onWheel={userScrollHandler} className="stream">
-      { isToday && <Timeline shouldGetHide={currentDetailsModeHabit} /> }
+      { isToday && <Timeline /> }
       <StreamOverlayHelper
           visible={shouldOverlayGetVisible && !isInDragging}
           onClose={sideBarHandler} />
@@ -215,8 +214,7 @@ const Stream = ({
           isDroppable
           isBounded
           width={(85 / 100) * window.innerWidth}
-          margin={[0 , 0]}
-        >
+          margin={[0 , 0]} >
           {
             streamItem.map(({ details , layout } , index) => (
               <div 

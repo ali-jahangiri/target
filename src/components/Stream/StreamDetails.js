@@ -1,5 +1,6 @@
 import { useLayoutEffect, useState } from "react";
 import { selfClearTimeout } from "../../utils";
+import StreamDetailsWritable from "./StreamDetailsWritble";
 
 const StreamDetails = ({
     style ,
@@ -43,6 +44,7 @@ const StreamDetails = ({
                         <p onClick={closeHandler}>Back</p>
                     </div>
                 </div>
+                <StreamDetailsWritable mainBgColor={color} showUp={uiGetCompleteInPlace} />
             </div>
         </div>
     )

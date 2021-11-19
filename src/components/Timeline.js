@@ -1,7 +1,7 @@
 import { useEffect , useState} from "react";
 import { addZeroToAboveTenNumber } from "../utils";
 
-const Timeline = ({ shouldGetHide }) => {
+const Timeline = () => {
     const currentHr = new Date().getHours();
     const currentMin = new Date().getMinutes();
 
@@ -16,7 +16,7 @@ const Timeline = ({ shouldGetHide }) => {
     } , [])
 
     return (
-        <div style={{ top : position}} className={`timeline ${shouldGetHide ? "timeline--hide" : ""}`} >
+        <div style={{ top : position}} className="timeline" >
             <span>
                 <p>{`${addZeroToAboveTenNumber(currentHr)}:${addZeroToAboveTenNumber(currentMin)}`}</p>
             </span>

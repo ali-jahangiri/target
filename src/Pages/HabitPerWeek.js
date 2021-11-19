@@ -122,7 +122,6 @@ const HabitPerWeek = ({ match , history }) => {
 
 
 
-      console.log(currentTarget);
       return (
           <Menu loading={loading}>
             {isReady => {

@@ -1,0 +1,25 @@
+.streamDetailsWritable {
+    position: relative;
+    z-index: 99;
+    width: 90%;
+    margin: 0 auto;
+    transition: .3s;
+    opacity: 0;
+    height: calc(100% - 1rem);
+    overflow-y: scroll;
+
+    textarea {
+        width: 100%;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        resize: none;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    &--show {
+        transition-delay: opacity 1s;
+        opacity: 1;
+    }
+}
