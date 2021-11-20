@@ -18,6 +18,7 @@ const DynamicStreamItem = ({
     addToActiveBlockHandler,
     setAllChildrenGetRender,
     setIsStreamControllerVisible,
+    changeStreamDetailsHandler,
 }) => {
   useEffect(() => {
     if(isLastStream) setAllChildrenGetRender(true)
@@ -25,26 +26,26 @@ const DynamicStreamItem = ({
 
   return {
       routine : <RoutineStream addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} {...details} />,
-      habit : <StreamItem 
+      habit : <StreamItem
+        changeStreamDetailsHandler={changeStreamDetailsHandler}
         setIsStreamControllerVisible={setIsStreamControllerVisible} 
         addToActiveBlockHandler={addToActiveBlockHandler} 
-          isToday={isToday} 
-          layout={layout} 
-          isInDragging={isInDragging} {...details} />,
-      todo  : <StreamItem 
+        isToday={isToday} 
+        layout={layout} 
+        isInDragging={isInDragging} {...details} />,
+      todo  : <StreamItem
+        changeStreamDetailsHandler={changeStreamDetailsHandler}
         setIsStreamControllerVisible={setIsStreamControllerVisible} 
         addToActiveBlockHandler={addToActiveBlockHandler} 
-          isToday={isToday} 
-          layout={layout} 
-          isInDragging={isInDragging} {...details} />,
+        isToday={isToday} 
+        layout={layout} 
+        isInDragging={isInDragging} {...details} />,
     }[type]
 }
 
 const Stream = ({ 
   date ,
   setIsStreamControllerVisible ,
-  isDisable ,
-  isNextDayAfterToday,
   isToday,
 }) => {
   const [loading, setLoading] = useState(true);
@@ -52,7 +53,6 @@ const Stream = ({
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [todayHabit, setTodayHabit] = useState([]);
   const [shouldOverlayGetVisible, setShouldOverlayGetVisible] = useState(false);
-  const [currentDetailsModeHabit, setCurrentDetailsModeHabit] = useState(null);
   const [isInDragging, setIsInDragging] = useState(false);
   const [isOneStreamItemInDragging, setIsOneStreamItemInDragging] = useState(false);
   const [injectedTodo, setInjectedTodo] = useState("")
@@ -76,14 +76,6 @@ const Stream = ({
     });
   };
   
-  useEffect(function streamInitializer() {
-    requests.stream.initializer(date , ({ streamItem , todayHabit }) => {
-      setStreamItem(streamItem);
-      setTodayHabit(todayHabit);
-      setLoading(false)
-    })
-  } , [date]);
-
   const onStreamItemChange = (newStreamList) => {
     setIsOneStreamItemInDragging(null);
     const deepCloned = deepClone(streamItem.map(el => ({ details : el.details , layout : newStreamList.find(item => item.i === el.details.i) })));
@@ -116,6 +108,27 @@ const Stream = ({
       userWasScrollByHimSelfInInitial.current = true;
     }
   }
+
+  const changeStreamDetailsHandler = (id , key , data) => {
+    setStreamItem(prev => prev.map(el => (
+      el.details.i === id
+      ? ({
+        ...el,
+        details : {
+          ...el.details,
+          [key] : data
+        }
+      }) : el
+    )))
+  }
+
+  useEffect(function streamInitializer() {
+    requests.stream.initializer(date , ({ streamItem , todayHabit }) => {
+      setStreamItem(streamItem);
+      setTodayHabit(todayHabit);
+      setLoading(false)
+    })
+  } , [date]);
 
   useEffect(function setControllerVisibility() {
     if(!loading) setIsStreamControllerVisible(true);
@@ -222,6 +235,7 @@ const Stream = ({
                 key={details.i} 
                 style={{background : `#${details.color}`}}>
                   <DynamicStreamItem
+                    changeStreamDetailsHandler={changeStreamDetailsHandler}
                     setAllChildrenGetRender={setAllChildrenGetRender}
                     addToActiveBlockHandler={addToActiveBlockHandler}
                     isLastStream={(streamItem.length - 1) === index}
@@ -241,7 +255,6 @@ const Stream = ({
           isInDragging={isInDragging}
           setIsInDragging={draggingHandler}
           date={date}
-          isInStreamDetailsMode={currentDetailsModeHabit}
           injectedTodo={injectedTodo}
           isSidebarOpen={isSidebarVisible}
           setInjectedTodo={setInjectedTodo}

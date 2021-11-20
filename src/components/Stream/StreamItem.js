@@ -4,7 +4,17 @@ import { selfClearTimeout } from "../../utils";
 import StreamDetails from "./StreamDetails";
 import StreamOverHour from "./StreamOverHour";
 
-const StreamItem = ({ name , color , isToday , isInDragging , layout , addToActiveBlockHandler , setIsStreamControllerVisible }) => {
+const StreamItem = ({ 
+    name , 
+    color , 
+    i : id,
+    isToday , 
+    isInDragging , 
+    layout , 
+    addToActiveBlockHandler , 
+    setIsStreamControllerVisible , 
+    changeStreamDetailsHandler,
+}) => {
   const [isDetailsEnable, setIsDetailsEnable] = useState(false);
   const [portalPosition, setPortalPosition] = useState(null);
   const [showPortal, setShowPortal] = useState(false);
@@ -13,7 +23,6 @@ const StreamItem = ({ name , color , isToday , isInDragging , layout , addToActi
   const internalPassingUpCurrentInProgressBlockHandler = (shouldAddBlockToList) => {
     if(shouldAddBlockToList) addToActiveBlockHandler(shouldAddBlockToList);
   }
-
 
   const showDetailsHandler = status => {
     if(status) {
@@ -32,6 +41,8 @@ const StreamItem = ({ name , color , isToday , isInDragging , layout , addToActi
     setIsStreamControllerVisible(true);
   }
 
+  const syncValueHandler = value => changeStreamDetailsHandler(id , 'desc' , value);
+
   return (
     <div ref={containerRef} className="streamItem">
       <div className={`streamItem__innerContainer ${false ? "streamItem__innerContainer--setUp" : ""}`} >
@@ -48,6 +59,7 @@ const StreamItem = ({ name , color , isToday , isInDragging , layout , addToActi
         {
           showPortal && <Portal>
             <StreamDetails
+              syncValueHandler={syncValueHandler}
               destroyTrigger={closeDetailsHandler}
               style={portalPosition} 
               color={color}

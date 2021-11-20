@@ -41,14 +41,6 @@ const habitPerWeek = {
 
 
 const stream = {
-    // deleteStream(streamId) {
-    //     requestWrapper(resolve => references().stream.doc(streamId).delete().then(resolve))
-    // },
-    setStreamDetails(streamId , details) {
-        return requestWrapper(resolve => references().stream.doc(streamId).update({
-            desc : details
-        }).then(resolve))
-    },
     getStreamDetails(streamId) {
         return requestWrapper(resolve => references().stream.doc(streamId).get().then(res => resolve(res.data()?.desc || "")))
     },

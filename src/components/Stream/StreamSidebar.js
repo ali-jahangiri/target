@@ -40,7 +40,7 @@ const StreamSidebar = ({
   return (
         <div 
           style={{ width : isInFullScreen ? `${isInFullScreen}vw` : "30vw" , zIndex : 999 }} 
-          className={`streamSidebar ${isInFullScreen ? "streamSidebar--full" : ""} streamSidebar--${isSidebarOpen ? typeof isSidebarOpen === 'string' ? "fade" : "open" : "close"} ${isInStreamDetailsMode ? "streamSidebar--lock" : ""}`}>
+          className={`streamSidebar ${isInFullScreen ? "streamSidebar--full" : ""} streamSidebar--${isSidebarOpen ? typeof isSidebarOpen === 'string' ? "fade" : "open" : "close"}`}>
             <div
             onClick={() => !isInStreamDetailsMode && internalSideBarCloseHandler()}
             className={`streamSidebar__closeTrigger ${isSidebarOpen ? "streamSidebar__closeTrigger--flipped" : ""}`}>

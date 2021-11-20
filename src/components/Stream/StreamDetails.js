@@ -1,12 +1,13 @@
 import { useLayoutEffect, useState } from "react";
 import { selfClearTimeout } from "../../utils";
-import StreamDetailsWritable from "./StreamDetailsWritble";
+import StreamDetailsWritable from "./StreamDetailsWritable";
 
 const StreamDetails = ({
     style ,
     color,
     name ,
-    destroyTrigger, 
+    destroyTrigger,
+    syncValueHandler,
 }) => {
     const [uiGetCompleteInPlace, setUiGetCompleteInPlace] = useState(false);
 
@@ -18,9 +19,7 @@ const StreamDetails = ({
 
     const closeHandler = () => {
         setUiGetCompleteInPlace(false);
-        selfClearTimeout(() => {
-            destroyTrigger()
-        } , 800)
+        selfClearTimeout(() => destroyTrigger() , 800);
     }
 
     const afterOpenStyle = {
@@ -44,7 +43,7 @@ const StreamDetails = ({
                         <p onClick={closeHandler}>Back</p>
                     </div>
                 </div>
-                <StreamDetailsWritable mainBgColor={color} showUp={uiGetCompleteInPlace} />
+                <StreamDetailsWritable syncValueHandler={syncValueHandler} mainBgColor={color} showUp={uiGetCompleteInPlace} />
             </div>
         </div>
     )
