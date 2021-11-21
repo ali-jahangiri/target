@@ -6,6 +6,7 @@ const StreamDetails = ({
     style ,
     color,
     name ,
+    desc,
     destroyTrigger,
     syncValueHandler,
 }) => {
@@ -43,7 +44,11 @@ const StreamDetails = ({
                         <p onClick={closeHandler}>Back</p>
                     </div>
                 </div>
-                <StreamDetailsWritable syncValueHandler={syncValueHandler} mainBgColor={color} showUp={uiGetCompleteInPlace} />
+                <StreamDetailsWritable 
+                    value={desc} 
+                    syncValueHandler={syncValueHandler} 
+                    mainBgColor={color} 
+                    showUp={uiGetCompleteInPlace} />
             </div>
         </div>
     )

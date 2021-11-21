@@ -110,18 +110,20 @@ const Stream = ({
   }
 
   const changeStreamDetailsHandler = (id , key , data) => {
-    setStreamItem(prev => prev.map(el => (
+    const newStreamList = streamItem.map(el => (
       el.details.i === id
-      ? ({
-        ...el,
+      ? ({ ...el,
         details : {
           ...el.details,
           [key] : data
         }
       }) : el
-    )))
+    ))
+    setStreamItem(newStreamList);
+    requests.stream.sync(date , newStreamList)
   }
 
+  
   useEffect(function streamInitializer() {
     requests.stream.initializer(date , ({ streamItem , todayHabit }) => {
       setStreamItem(streamItem);
@@ -135,49 +137,47 @@ const Stream = ({
   } , [loading])
 
   useEffect(function scrollToActiveBlockHandler() {
-    if(isToday && !loading) {
-      if(!initialHelperScrollGetCompleted) {
-        const currentHour = new Date().getHours();
-
-        if(activeBlockList.length) {
-          // if we have some block witch currently is open and we should focus on that , we scroll to that item
-          const currentlyInProgressBlockStartPoint = (() => {
-            if(activeBlockList.length >= 2) {
-              const sortedInProgressList = deepClone(activeBlockList).sort((a , b) => a.startPointPosition - b.startPointPosition);
-              return sortedInProgressList[0].startPointPosition;
-            }else return activeBlockList.find(el => el.isInDoing)?.startPointPosition;
-          })();
-          
-          if(currentlyInProgressBlockStartPoint) {
-            window.scrollTo({ top : currentlyInProgressBlockStartPoint * 100 , behavior : "smooth" })
-          }else {
-            // else if we don't have active stream block , then we should scroll to nearest item current hour for get ready to start item
-            const sortedActiveList = deepClone(activeBlockList).sort((a , b) => a.startPointPosition - b.startPointPosition).sort((_ , b) => b.startPointPosition - currentHour);
-            window.scrollTo({ top : sortedActiveList[0].startPointPosition * 100 , behavior : "smooth" })
-          }
-          setInitialHelperScrollGetCompleted(true)
+    if(isToday && !loading && !initialHelperScrollGetCompleted && allChildrenGetRender) {
+      const currentHour = new Date().getHours();
+      if(activeBlockList.length) {
+        // if we have some block witch currently is open and we should focus on that , we scroll to that item
+        const currentlyInProgressBlockStartPoint = (() => {
+          if(activeBlockList.length >= 2) {
+            const sortedInProgressList = deepClone(activeBlockList).sort((a , b) => a.startPointPosition - b.startPointPosition);
+            return sortedInProgressList[0].startPointPosition;
+          }else return activeBlockList.find(el => el.isInDoing)?.startPointPosition;
+        })();
+        
+        if(currentlyInProgressBlockStartPoint) {
+          window.scrollTo({ top : currentlyInProgressBlockStartPoint * 100 , behavior : "smooth" })
         }else {
-          selfClearTimeout(() => {
-            if(!userWasScrollByHimSelfInInitial.current) {
-              const currentTimelinePosition = ((currentHour > 0 ? currentHour - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666);
-              window.scrollTo({ top : currentTimelinePosition ,  behavior : "smooth" });
-            }
-            setInitialHelperScrollGetCompleted(true);
-          } , 3500);
+          // else if we don't have active stream block , then we should scroll to nearest item current hour for get ready to start item
+          const sortedActiveList = deepClone(activeBlockList).sort((a , b) => a.startPointPosition - b.startPointPosition).sort((_ , b) => b.startPointPosition - currentHour);
+          window.scrollTo({ top : sortedActiveList[0].startPointPosition * 100 , behavior : "smooth" })
         }
+        setInitialHelperScrollGetCompleted(true)
+      }else {
+        selfClearTimeout(() => {
+          if(!userWasScrollByHimSelfInInitial.current) {
+            const currentTimelinePosition = ((currentHour > 0 ? currentHour - 1 : 0) * 100 ) + (new Date().getMinutes() * 1.66666);
+            window.scrollTo({ top : currentTimelinePosition ,  behavior : "smooth" });
+          }
+          setInitialHelperScrollGetCompleted(true);
+        } , 3500);
       }
     }
   } , [activeBlockList, loading, isToday, allChildrenGetRender, initialHelperScrollGetCompleted]);
 
+  
   useEffect(() => {
     if(streamItem?.length && isToday) {
       const allInvolvedRow = streamItem.map(el => el.layout.y);
-        if(streamItem.some(el => el.layout.x !== 0 && allInvolvedRow.filter(item => item === el.layout.y).length === 1)) {
-          const result = deepClone(streamItem).map(item => {
-            const haveOnlyInOneRow = allInvolvedRow.filter(el => el === item.layout.y).length === 1;
-            if(haveOnlyInOneRow) return ({details : item.details , layout : {...item.layout , x : 0}})
-              else return item
-          })
+      if(streamItem.some(el => el.layout.x !== 0 && allInvolvedRow.filter(item => item === el.layout.y).length === 1)) {
+        const result = deepClone(streamItem).map(item => {
+          const haveOnlyInOneRow = allInvolvedRow.filter(el => el === item.layout.y).length === 1;
+          if(haveOnlyInOneRow) return ({details : item.details , layout : {...item.layout , x : 0}})
+          else return item
+        })
           requests.stream.sync(date , result)
         }else {
             // const endResult = streamItem.map(el => {

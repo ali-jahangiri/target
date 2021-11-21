@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { debounce } from "../../utils";
 
 const StreamDetailsWritable = ({
     showUp ,
     mainBgColor,
-    syncValueHandler
+    syncValueHandler,
+    value
 }) => {
-    const [value, setValue] = useState("");
+    const [innerValue, setInnerValue] = useState(value || "");
     const [currentTextareaTopPos, setCurrentTextareaTopPos] = useState(144);
     const textareaRef = useRef();
 
@@ -28,19 +29,16 @@ const StreamDetailsWritable = ({
 
     const inputValueChange = value => {
         if(!value) setCurrentTextareaTopPos(144);
-        setValue(value);
+        setInnerValue(value);
+        debouncedValueCallback(value);
     }
 
 
     const debouncedValueCallback = useCallback(debounce(passedValue => {
-        // syncValueHandler(passedValue)
+        syncValueHandler(passedValue)
     } , 500) , [])
 
-    // useEffect(() => debouncedValueCallback(value) , [value]);
-    useEffect(() => {
-        syncValueHandler(value)
-    } , [value]);
-
+    
     return (
         <div onWheel={textAreaScrollHandler} style={{ marginTop : `${currentTextareaTopPos}px` }} className={`streamDetailsWritable ${showUp ? "streamDetailsWritable--show" : ""}`}>
             <div style={{
@@ -56,7 +54,7 @@ const StreamDetailsWritable = ({
             <TextareaAutosize
                 ref={textareaRef}
                 style={{ height : `calc(100vh - ${0}px)` }}
-                value={value}
+                value={innerValue}
                 onChange={({ target : { value } }) => inputValueChange(value)}
                 placeholder="Start write something about this Habit" />
         </div>

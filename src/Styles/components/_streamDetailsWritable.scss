@@ -19,7 +19,7 @@
     }
 
     &--show {
-        transition-delay: opacity 1s;
+        transition: all .3s , opacity .3s .9s;
         opacity: 1;
     }
 }

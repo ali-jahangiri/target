@@ -5,7 +5,6 @@ import StreamSidebarBlockItemsContainer from "./StreamSidebarBlockItemsContainer
 
 import Todo from "./Todo";
 
-
 const StreamSidebar = ({ 
   isSidebarOpen, 
   isInStreamDetailsMode, 

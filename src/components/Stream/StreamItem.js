@@ -6,7 +6,8 @@ import StreamOverHour from "./StreamOverHour";
 
 const StreamItem = ({ 
     name , 
-    color , 
+    color ,
+    desc ,
     i : id,
     isToday , 
     isInDragging , 
@@ -15,6 +16,7 @@ const StreamItem = ({
     setIsStreamControllerVisible , 
     changeStreamDetailsHandler,
 }) => {
+  
   const [isDetailsEnable, setIsDetailsEnable] = useState(false);
   const [portalPosition, setPortalPosition] = useState(null);
   const [showPortal, setShowPortal] = useState(false);
@@ -26,6 +28,7 @@ const StreamItem = ({
 
   const showDetailsHandler = status => {
     if(status) {
+      document.body.style.overflow = 'hidden';
       setIsStreamControllerVisible(false);
       setIsDetailsEnable(true);
       setPortalPosition(containerRef.current.getClientRects()[0]);
@@ -39,6 +42,7 @@ const StreamItem = ({
     setShowPortal(false);
     setIsDetailsEnable(false)
     setIsStreamControllerVisible(true);
+    document.body.style.overflow = 'auto';
   }
 
   const syncValueHandler = value => changeStreamDetailsHandler(id , 'desc' , value);
@@ -48,7 +52,7 @@ const StreamItem = ({
       <div className={`streamItem__innerContainer ${false ? "streamItem__innerContainer--setUp" : ""}`} >
         <p onClick={showDetailsHandler}>{name}</p>
       </div>
-      {
+        {
           isToday && <StreamOverHour
             shouldGetMinHight={isInDragging}
             setIsInProgress={internalPassingUpCurrentInProgressBlockHandler} 
@@ -59,6 +63,7 @@ const StreamItem = ({
         {
           showPortal && <Portal>
             <StreamDetails
+              desc={desc}
               syncValueHandler={syncValueHandler}
               destroyTrigger={closeDetailsHandler}
               style={portalPosition} 
