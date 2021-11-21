@@ -8,6 +8,7 @@ import DevPlayground from "./DevPlayground";
 import HabitPerWeek from "./HabitPerWeek";
 import Login from './Login';
 import AllWeekSchedule from "./AllWeekSchedule";
+import Recovery from "./Recovery";
 
 export { 
     Home , 
@@ -20,4 +21,5 @@ export {
     Login , 
     AllWeekSchedule,
     Profile,
+    Recovery,
 };

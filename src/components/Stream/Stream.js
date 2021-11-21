@@ -25,7 +25,7 @@ const DynamicStreamItem = ({
   } , [isLastStream])
 
   return {
-      routine : <RoutineStream addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} {...details} />,
+      routine : <RoutineStream setIsStreamControllerVisible={setIsStreamControllerVisible}  addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} {...details} />,
       habit : <StreamItem
         changeStreamDetailsHandler={changeStreamDetailsHandler}
         setIsStreamControllerVisible={setIsStreamControllerVisible} 

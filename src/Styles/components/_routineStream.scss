@@ -101,6 +101,10 @@
         top: 1rem;
         font-weight: 400;
         z-index: 5;
+        
+        p {
+            cursor: pointer;
+        }
     }
 
     &__helperFiller {
@@ -131,6 +135,7 @@
         border-radius: 50%;
         cursor: pointer;
         transition: .3s;
+        user-select: none;
 
         & > div {
             width: 80%;

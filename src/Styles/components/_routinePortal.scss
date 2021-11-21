@@ -1,0 +1,91 @@
+@keyframes showHourItem {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0px);
+
+    }
+}
+.routinePortal {
+    background-color: white;
+
+    &__basic {
+        transition: .3s;
+        position: absolute;
+        left: 5%;
+        top: 1rem;
+        font-weight: 400;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__closeTrigger {
+        font-size: 1.2rem;
+        color: $darkGrey;
+        cursor: pointer;
+    }
+
+
+    &__hourContainer {
+        position: absolute;
+        left: 0;
+        top: 100px;
+        width: 2rem;
+        height: calc(100% - 190px);
+        padding-left: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: 1.5rem;
+        opacity: .3;
+        user-select: none;
+        font-weight: 900;
+
+        & div {
+            opacity: 0;
+            transform: translateY(-10px);
+            animation: showHourItem .1s forwards alternate;
+        }
+    }
+    
+    &__container {
+        width: 100%;
+        height: 100%;
+
+    }
+
+
+    &--complete {
+        .routinePortal {
+
+            &__basic {
+                font-size: 5.5rem;
+                width: calc(100% - 112px);
+                transform: translateY(0);
+                top: 0;
+                left: 5rem;
+                font-weight: 900;
+            }
+        }
+
+        // overwrite
+        .routineStream__footer { left: 3%; }
+        .routineStream__circle {
+            width: 3rem;
+            height: 3rem;
+        }
+    }
+
+
+    &:hover {
+        .routineStream {
+            &__footer {
+                opacity: 1;
+            }
+        }
+    }
+}

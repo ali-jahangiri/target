@@ -139,12 +139,31 @@ const routine = {
     }
 }
 
+
+const recovery = {
+    entire() {
+        return requestWrapper(resolve => {
+            const reqNames = ["habitPerWeek" , "routine" , "target" , "stream"];
+            
+            const allReqList = Promise.all([references().habitPerWeek.get() , references().routine.get() , references().target.get() , references().stream.get()])
+            allReqList.then(data => {
+                const result = data.map((el , index) => ({
+                    req : reqNames[index],
+                    value : el.docs.map(el => el.data())
+                }));
+                resolve(result);
+            })
+        })
+    }
+}
+
 const requests =  {
     target,
     habitPerWeek,
     stream,
     commends,
     routine,
+    recovery,
 }
 
 

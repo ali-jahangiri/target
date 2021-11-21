@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { AllWeekSchedule, HabitPerWeek, Home, NewTarget, NotFound, DevPlayground, Targets, Profile } from "../Pages";
+import { AllWeekSchedule, HabitPerWeek, Home, NewTarget, NotFound, DevPlayground, Targets, Profile , Recovery} from "../Pages";
 
 const AppRouter = () => (
   <BrowserRouter>
@@ -10,6 +10,7 @@ const AppRouter = () => (
           <Route path="/habitPerWeek/:id" component={HabitPerWeek} />
           <Route path="/habitPerWeek" component={AllWeekSchedule} />
           <Route path="/profile" component={Profile} />
+          <Route path="/recovery" component={Recovery} />
           <Route path="/devPlayground" component={DevPlayground} />
           <Route path="*" component={NotFound} />
         </Switch>
