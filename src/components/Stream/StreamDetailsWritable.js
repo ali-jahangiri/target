@@ -1,12 +1,14 @@
 import { useCallback, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { debounce } from "../../utils";
+import DeleteStreamItem from "./DeleteStreamItem";
 
 const StreamDetailsWritable = ({
     showUp ,
     mainBgColor,
     syncValueHandler,
-    value
+    value,
+    deleteHandler,
 }) => {
     const [innerValue, setInnerValue] = useState(value || "");
     const [currentTextareaTopPos, setCurrentTextareaTopPos] = useState(144);
@@ -57,6 +59,7 @@ const StreamDetailsWritable = ({
                 value={innerValue}
                 onChange={({ target : { value } }) => inputValueChange(value)}
                 placeholder="Start write something about this Habit" />
+            <DeleteStreamItem clickHandler={deleteHandler} />
         </div>
     )
 }

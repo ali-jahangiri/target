@@ -15,6 +15,7 @@ const StreamItem = ({
     addToActiveBlockHandler , 
     setIsStreamControllerVisible , 
     changeStreamDetailsHandler,
+    deleteHandler
 }) => {
   
   const [isDetailsEnable, setIsDetailsEnable] = useState(false);
@@ -46,7 +47,7 @@ const StreamItem = ({
   }
 
   const syncValueHandler = value => changeStreamDetailsHandler(id , 'desc' , value);
-
+  
   return (
     <div ref={containerRef} className="streamItem">
       <div className={`streamItem__innerContainer ${false ? "streamItem__innerContainer--setUp" : ""}`} >
@@ -64,6 +65,7 @@ const StreamItem = ({
           showPortal && <Portal>
             <StreamDetails
               desc={desc}
+              deleteHandler={() => deleteHandler(id)}
               syncValueHandler={syncValueHandler}
               destroyTrigger={closeDetailsHandler}
               style={portalPosition} 

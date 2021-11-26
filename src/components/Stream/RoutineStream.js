@@ -100,9 +100,6 @@ const RoutineStream = ({
         if(shouldAddBlockToList) addToActiveBlockHandler(shouldAddBlockToList);
     }
 
-
-    console.log(hour);
-
     const showDetailsHandler = status => {
         if(status) {
           document.body.style.overflow = 'hidden';

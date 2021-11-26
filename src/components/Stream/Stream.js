@@ -19,6 +19,7 @@ const DynamicStreamItem = ({
     setAllChildrenGetRender,
     setIsStreamControllerVisible,
     changeStreamDetailsHandler,
+    deleteItemHandler
 }) => {
   useEffect(() => {
     if(isLastStream) setAllChildrenGetRender(true)
@@ -27,6 +28,7 @@ const DynamicStreamItem = ({
   return {
       routine : <RoutineStream setIsStreamControllerVisible={setIsStreamControllerVisible}  addToActiveBlockHandler={addToActiveBlockHandler} isToday={isToday} layout={layout} {...details} />,
       habit : <StreamItem
+        deleteHandler={deleteItemHandler}
         changeStreamDetailsHandler={changeStreamDetailsHandler}
         setIsStreamControllerVisible={setIsStreamControllerVisible} 
         addToActiveBlockHandler={addToActiveBlockHandler} 
@@ -34,6 +36,7 @@ const DynamicStreamItem = ({
         layout={layout} 
         isInDragging={isInDragging} {...details} />,
       todo  : <StreamItem
+        deleteHandler={deleteItemHandler}
         changeStreamDetailsHandler={changeStreamDetailsHandler}
         setIsStreamControllerVisible={setIsStreamControllerVisible} 
         addToActiveBlockHandler={addToActiveBlockHandler} 
@@ -59,6 +62,7 @@ const Stream = ({
   const [activeBlockList, setActiveBlockList] = useState([]);
   const [allChildrenGetRender, setAllChildrenGetRender] = useState(false);
   const [initialHelperScrollGetCompleted, setInitialHelperScrollGetCompleted] = useState(false);
+  const [currentDeletingItemId, setCurrentDeletingItemId] = useState(null);
 
   const userWasScrollByHimSelfInInitial = useRef(false);
 
@@ -123,6 +127,14 @@ const Stream = ({
     requests.stream.sync(date , newStreamList)
   }
 
+  const deleteItemHandler = id => {
+    setCurrentDeletingItemId(id);
+    const newStreamItemList = streamItem.filter(el => el.details.i !== id);
+    selfClearTimeout(() => {
+      setStreamItem(newStreamItemList);
+      requests.stream.sync(date , newStreamItemList)
+    } , 350)
+  }
   
   useEffect(function streamInitializer() {
     requests.stream.initializer(date , ({ streamItem , todayHabit }) => {
@@ -231,10 +243,11 @@ const Stream = ({
           {
             streamItem.map(({ details , layout } , index) => (
               <div 
-                className="streamItem" 
-                key={details.i} 
+                className={`streamItem ${currentDeletingItemId === details.i ? "streamItem--deleting" : ""}`} 
+                key={details.i}
                 style={{background : `#${details.color}`}}>
                   <DynamicStreamItem
+                    deleteItemHandler={deleteItemHandler}
                     changeStreamDetailsHandler={changeStreamDetailsHandler}
                     setAllChildrenGetRender={setAllChildrenGetRender}
                     addToActiveBlockHandler={addToActiveBlockHandler}

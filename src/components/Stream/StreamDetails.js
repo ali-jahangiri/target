@@ -9,6 +9,7 @@ const StreamDetails = ({
     desc,
     destroyTrigger,
     syncValueHandler,
+    deleteHandler,
 }) => {
     const [uiGetCompleteInPlace, setUiGetCompleteInPlace] = useState(false);
 
@@ -20,7 +21,7 @@ const StreamDetails = ({
 
     const closeHandler = () => {
         setUiGetCompleteInPlace(false);
-        selfClearTimeout(() => destroyTrigger() , 800);
+        selfClearTimeout(destroyTrigger , 800);
     }
 
     const afterOpenStyle = {
@@ -28,6 +29,11 @@ const StreamDetails = ({
         height : "100vh",
         left : 0 , 
         top : 0
+    }
+
+    const innerDeleteHandler = () => {
+        closeHandler()
+        selfClearTimeout(deleteHandler , 800)
     }
 
     return (
@@ -44,7 +50,8 @@ const StreamDetails = ({
                         <p onClick={closeHandler}>Back</p>
                     </div>
                 </div>
-                <StreamDetailsWritable 
+                <StreamDetailsWritable
+                    deleteHandler={innerDeleteHandler}
                     value={desc} 
                     syncValueHandler={syncValueHandler} 
                     mainBgColor={color} 
