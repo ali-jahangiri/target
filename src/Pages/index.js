@@ -9,6 +9,7 @@ import HabitPerWeek from "./HabitPerWeek";
 import Login from './Login';
 import AllWeekSchedule from "./AllWeekSchedule";
 import Recovery from "./Recovery";
+import MindBord from "./MindBord"
 
 export { 
     Home , 
@@ -22,4 +23,5 @@ export {
     AllWeekSchedule,
     Profile,
     Recovery,
+    MindBord
 };

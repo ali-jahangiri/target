@@ -2,6 +2,7 @@ import Header from "../components/Header"
 import Menu from "../components/Menu";
 import TargetBox from "../components/TargetBox";
 import TargetCreateNewOne from "../components/TargetCreateNewOne";
+import TargetMindBord from "../components/TargetMindBord";
 import useFetcher from "../Hook/useFetcher";
 
 
@@ -19,7 +20,8 @@ const Targets = () => {
                                 {
                                     data.map((el , i) => <TargetBox key={i} {...el} />)
                                 }
-                                <TargetCreateNewOne /> 
+                                <TargetCreateNewOne />
+                                <TargetMindBord />
                             </div>
                         </div>
                     </div>

@@ -48,7 +48,7 @@ const stream = {
         references().habitPerWeek
             .get()
             .then(({ docs }) => {
-                let currentDateDayName = _date(date).add(1 , 'day').format('dddd');
+                let currentDateDayName = _date(date).format('dddd');
                 const currentDateHabitList = createDateHabitList(docs.map(el => el.data()) , currentDateDayName);
 
                 references().stream.doc(date).onSnapshot(snapShot => {
